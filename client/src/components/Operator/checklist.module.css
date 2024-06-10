@@ -150,6 +150,16 @@
     /* background-color: orangered; */
     color: orangered;
   }
+  .taskNum{
+    width: 2rem;
+  height: 2rem;
+  background-color: orangered;
+  align-content: center;
+  margin: 0 5px;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  }
   
   @keyframes fade-up {
     0% {

@@ -126,7 +126,7 @@ const Checklist = () => {
                 >
                   <span className={c["poin"]}>
                    
-                    <p>{point.Num} </p>
+                    <span className={c.taskNum}>{point.Num} </span>
                     <p> {point.Description}</p>
                   </span>
                 </div>
