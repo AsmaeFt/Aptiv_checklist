@@ -27,6 +27,7 @@ const Checklist = () => {
   useEffect(() => {
     GetEquipement();
   }, [GetEquipement]);
+
   const getProblem = (num, description) => {
     console.log("Point Number:", num);
     console.log("Description:", description);
@@ -48,10 +49,12 @@ const Checklist = () => {
       setFadeIn(true);
     }, 100);
   }, []);
+
   const getdate = new Date();
   const Curent_Shift = getShiftDate(getdate);
-  console.log(Curent_Shift);
+
   const submitCheckList = () => {};
+  
   return (
     <>
       <div style={{ width: "100%" }}>
