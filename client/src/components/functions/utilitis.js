@@ -1,5 +1,3 @@
-
-
 export const getShiftDate = (date) => {
   const hour = new Date(date).getHours();
   const shiftDate = new Date(
@@ -19,4 +17,11 @@ export const getShiftDate = (date) => {
   }
 
   return { shiftDate, shift };
+};
+
+export const getExactdate = (date) => {
+  const exactdate = date.split("T")[0];
+  const [year, month, day] = exactdate.split("-");
+  const formdata = `${day}-${month}-${year}`;
+  return formdata;
 };

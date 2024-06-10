@@ -29,7 +29,7 @@ exports.createUser = async (req, res) => {
 
 exports.createTech = async (req, res) => {
   const { userName, password, role } = req.body;
-  if (!["technician"].includes(role)) {
+  if (!["technicien"].includes(role)) {
     return res.status(400).json({ error: "Invalid role for supervisor" });
   }
   try {

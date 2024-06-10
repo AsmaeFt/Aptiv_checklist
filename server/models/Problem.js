@@ -2,11 +2,7 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const problemSchema = new Schema({
-  chacklistID: {
-    type: Schema.Types.ObjectId,
-    ref: "CheckList",
-    required: true,
-  },
+
   pointDescription: { type: String, required: true },
   status: {
     type: String,

@@ -6,4 +6,6 @@ router.use("/equipe", require("./addequipment"));
 
 router.use("/Equipment", require("./Equipment"));
 
+router.use("/CheckList", require("./CheckList"));
+
 module.exports = router;

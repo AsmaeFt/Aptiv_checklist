@@ -21,4 +21,3 @@ const equip = new mongoose.Schema({
 
 const Equipe = mongoose.model("ListEquip", equip);
 module.exports = Equipe;
-

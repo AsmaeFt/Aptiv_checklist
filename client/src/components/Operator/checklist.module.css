@@ -117,7 +117,7 @@
   }
   .dragedpoints::before,
   .selected::before {
-    border: 1px solid #f84018;
+    border: 1px solid #ff2e00;
     border-radius: 50%;
     content: "";
     height: 2rem;

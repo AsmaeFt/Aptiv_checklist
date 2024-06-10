@@ -1,24 +1,40 @@
-import React, { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import c from "./checklist.module.css";
 import axios from "axios";
 import api from "../../services/api";
-import icon from "../../assets/APTV-2cd4b44e.jpg";
 import { getShiftDate } from "../functions/utilitis";
+import { message } from "antd";
 
 const Checklist = () => {
   const [image, setImage] = useState("");
   const [points, setPoints] = useState([]);
   const [fadeIn, setFadeIn] = useState(false);
-  const [selectedPoints, setSelectedPoints] = useState([]);
+  const [data, setdata] = useState(null);
+  const [allpoinsts, setallpoinsts] = useState([
+    {
+      Description: "",
+      Num: "",
+      status: "OK",
+    },
+  ]);
 
   const GetEquipement = useCallback(async () => {
     try {
-        const res = await axios.get(
-            `${api}/Equipment/GetEquipenet?name=Equipment 1`
-          );
+      const res = await axios.get(
+        `${api}/Equipment/GetEquipenet?name=teste électrique`
+      );
       const data = res.data;
-      setImage(`http://localhost:8080/${data.Pic}`); // Prepend server URL
+      setImage(`http://localhost:8080/${data.Pic}`);
       setPoints(data.Points);
+      setdata(data);
+
+      const newPoints = data.Points.map((p) => ({
+        Description: p.Description,
+        Num: p.Num,
+        status: "OK",
+      }));
+      setallpoinsts(newPoints);
+
       return data;
     } catch (err) {
       console.error(err);
@@ -28,22 +44,8 @@ const Checklist = () => {
     GetEquipement();
   }, [GetEquipement]);
 
-  const getProblem = (num, description) => {
-    console.log("Point Number:", num);
-    console.log("Description:", description);
 
-    const isPointSelected = selectedPoints.some((point) => point.Num === num);
-    if (!isPointSelected) {
-      setSelectedPoints((prevPoints) => [
-        ...prevPoints,
-        { Num: num, Description: description },
-      ]);
-    } else {
-      setSelectedPoints((prevPoints) =>
-        prevPoints.filter((point) => point.Num !== num)
-      );
-    }
-  };
+  console.log(allpoinsts);
   useEffect(() => {
     setTimeout(() => {
       setFadeIn(true);
@@ -53,14 +55,69 @@ const Checklist = () => {
   const getdate = new Date();
   const Curent_Shift = getShiftDate(getdate);
 
-  const submitCheckList = () => {};
-  
+  const submitCheckList = () => {
+    const checkList_data = {
+      /*  operatorID: "1023", */
+      EquipmentName: "teste électrique",
+      date: new Date(),
+      shift: Curent_Shift.shift,
+      project: "K9 KSK",
+      family: "HAB",
+      ref: data.ref,
+      points: allpoinsts,
+    };
+    console.log(JSON.stringify(checkList_data, null, 2));
+    message.success("technician will soon verify with you !");
+  };
+
+  const getProblem = (num) => {
+    const Points = allpoinsts.map((p) => {
+      if (p.Num === num) {
+        return { ...p, status: p.status === "OK" ? "NOK" : "OK" };
+      }
+      return p;
+    });
+    setallpoinsts(Points);
+  };
+
+  const getColor = (num) => {
+    const point = allpoinsts.find(p => p.Num === num);
+    if (point) {
+      return point.status === "OK" ? "green" : "red";
+    }
+    return "green";
+  };
+  const handleSave = async () => {
+    const checkList_data = {
+      /*  operatorID: "1023", */
+      EquipmentName: "teste électrique",
+      date: new Date(),
+      shift: Curent_Shift.shift,
+      project: "K9 KSK",
+      family: "HAB",
+      ref: data.ref,
+      points: allpoinsts,
+    };
+    console.log(JSON.stringify(checkList_data, null, 2));
+
+    try {
+      const res = await axios.post(`${api}/CheckList/NewCheckList`,checkList_data);
+      const data = res.data;
+      message.success("technician will soon verify with you !");
+      return data;
+    } catch (err) {
+      message.error(err.message);
+    }
+  };
   return (
     <>
       <div style={{ width: "100%" }}>
         <div className={c["Header-Checklist"]}>
           <div style={{ display: "flex", alignItems: "center" }}>
-            <h3> <span className={c.highlight}>Maintenance 1er Niveau</span> A Effectuer Par Les Opérateurs </h3>
+            <h3>
+              <span className={c.highlight}>Maintenance 1er Niveau</span> A
+              Effectuer Par Les Opérateurs
+            </h3>
           </div>
 
           <div>
@@ -102,23 +159,20 @@ const Checklist = () => {
             {points.map((p, i) => (
               <div
                 onClick={() => getProblem(p.Num, p.Description)}
-                className={
-                  selectedPoints.some((point) => point.Num === p.Num)
-                    ? c["selected"]
-                    : c["dragedpoints"]
-                }
+                className={c["dragedpoints"]}
                 key={i}
                 style={{
                   top: `${p.Position.y * 100}%`,
                   left: `${p.Position.x * 100}%`,
                   transform: "translate(-50%, -50%)",
+                  backgroundColor: getColor(p.Num),
+                 
                 }}
               >
                 <span className={c["poin"]}>{p.Num}</span>
               </div>
             ))}
           </div>
-
           <div className={c["Points"]}>
             <div>
               {points.map((point, i) => (
@@ -128,7 +182,6 @@ const Checklist = () => {
                   style={{ animationDelay: `${i * 0.3}s` }}
                 >
                   <span className={c["poin"]}>
-                   
                     <span className={c.taskNum}>{point.Num} </span>
                     <p> {point.Description}</p>
                   </span>
@@ -137,7 +190,7 @@ const Checklist = () => {
             </div>
 
             <div>
-              <button onClick={submitCheckList}>Submit</button>
+              <button onClick={handleSave}>Submit</button>
             </div>
           </div>
         </div>

@@ -21,7 +21,6 @@ const PointSchema = new Schema({
     },
   },
 });
-
 const EquipementSchema = new Schema({
   Name: {
     type: String,
