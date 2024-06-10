@@ -2,12 +2,12 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const OperatorSchema = new Schema({
-  OperatorID: { type: Schema.Types.ObjectId, ref: "Users" },
+  OperatorID: { type: String },
   status: {
     type: String,
     required: true,
     default: "pending",
-    enum: ["reviewed", "resolved", "pending"],
+    enum: ["Aproved", "pending"],
   },
 });
 
@@ -18,12 +18,12 @@ const technicienSchema = new Schema({
     type: String,
     required: true,
     default: "pending",
-    enum: ["reviewed", "resolved", "pending"],
+    enum: ["Aproved", "pending"],
   },
 });
 
 const CheckListSchema = new Schema({
-  /*   operatorID: { type: Schema.Types.ObjectId, ref: "Users", required: true }, */
+  OperatorID: { type: String },
   equipmentID: {
     type: Schema.Types.ObjectId,
     ref: "Equipment",
