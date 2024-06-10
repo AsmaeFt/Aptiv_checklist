@@ -55,20 +55,7 @@ const Checklist = () => {
   const getdate = new Date();
   const Curent_Shift = getShiftDate(getdate);
 
-  const submitCheckList = () => {
-    const checkList_data = {
-      /*  operatorID: "1023", */
-      EquipmentName: "teste électrique",
-      date: new Date(),
-      shift: Curent_Shift.shift,
-      project: "K9 KSK",
-      family: "HAB",
-      ref: data.ref,
-      points: allpoinsts,
-    };
-    console.log(JSON.stringify(checkList_data, null, 2));
-    message.success("technician will soon verify with you !");
-  };
+
 
   const getProblem = (num) => {
     const Points = allpoinsts.map((p) => {
@@ -87,9 +74,10 @@ const Checklist = () => {
     }
     return "green";
   };
+
   const handleSave = async () => {
     const checkList_data = {
-      /*  operatorID: "1023", */
+       operatorID: "1023", 
       EquipmentName: "teste électrique",
       date: new Date(),
       shift: Curent_Shift.shift,
@@ -109,6 +97,7 @@ const Checklist = () => {
       message.error(err.message);
     }
   };
+  
   return (
     <>
       <div style={{ width: "100%" }}>

@@ -32,9 +32,7 @@ exports.GetProblems = async (req, res) => {
     const FindProblems = await CheckList.find({
       points: { $elemMatch: { status: status } }
     });
-
-    // Extract only the "NOK" points from each document
-    const nokPoints = FindProblems.reduce((acc, doc) => {
+     const nokPoints = FindProblems.reduce((acc, doc) => {
       const docNokPoints = doc.points.filter(point => point.status === "NOK");
       return [...acc, ...docNokPoints.map(point => ({
         _id: point._id,
