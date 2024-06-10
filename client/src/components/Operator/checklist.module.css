@@ -1,0 +1,175 @@
+.Time {
+    display: flex;
+    justify-content: end;
+    margin: 0 1rem;
+  }
+  .Header-Checklist {
+    margin: 1rem 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .Header-Checklist img {
+    width: 1.3rem;
+    margin: 0 0.2rem;
+  }
+  .Header-Checklist fieldset {
+    border: 1px dashed orangered;
+    border-radius: 9px;
+    padding: 10px;
+  }
+  .Header-Checklist fieldset legend {
+    font-weight: 600;
+  }
+  
+  .Header2-Checklist {
+    margin: 1rem 0;
+    display: flex;
+    align-items: center;
+    gap: 3rem;
+    border: 1px solid rgba(255, 68, 0, 0.37);
+    text-align: center;
+    padding: 1rem 0;
+  }
+  .Header2-Checklist fieldset {
+    border: 1px dashed orangered;
+    border-radius: 9px;
+    width: 10em;
+  }
+  .Header2-Checklist fieldset legend {
+    font-weight: 600;
+    color: #f84018;
+  }
+  .span {
+    color: orangered;
+    margin: 0 0.5rem;
+  }
+  .checklist {
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+  }
+  .Image {
+    aspect-ratio: 16 / 9;
+    width: 49%;
+    border: 1px solid orangered;
+    background-color: #3f3f3f;
+    position: relative;
+    animation: fade-up 1s ease-out;
+  }
+  .Image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .Points {
+    width: 49%;
+  }
+  .Points div:nth-child(1) {
+    margin: 2rem 0;
+    box-shadow: -1px 4px 9px #060606;
+    border-bottom: 2px solid orangered;
+  }
+  .Points button{
+    border: none;
+    background-color: orangered;
+    width: 10rem;
+    padding: 8px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+  }
+  .Points button:hover
+  {
+    color: orangered;
+    background-color: white;
+  }
+  
+  .point {
+    margin: 1rem 0;
+    overflow: auto;
+    height: 10rem;
+  }
+  .poin{
+    display: flex;
+    align-items: start;
+    gap: 0.5rem;
+   justify-content: center;
+  }
+  
+  .poin img {
+    width: 1.5rem;
+  }
+  .dragedpoints {
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 11px;
+    position: absolute;
+    top: 27.7715%;
+    left: 85.4007%;
+    transform: translate(-50%, -50%);
+    background: green;
+    text-align: center;
+    position: "absolute";
+    animation: zoom-in-zoom-out 2s ease-out infinite;
+    cursor: pointer;
+  }
+  .dragedpoints::before,
+  .selected::before {
+    border: 1px solid #f84018;
+    border-radius: 50%;
+    content: "";
+    height: 2rem;
+    position: absolute;
+    right: -4px;
+    top: -5px;
+    width: 2rem;
+    box-shadow: 1px 1px 3px #f84018;
+  }
+  .selected {
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 11px;
+    position: absolute;
+    top: 27.7715%;
+    left: 85.4007%;
+    transform: translate(-50%, -50%);
+    background: red;
+    text-align: center;
+    position: "absolute";
+    animation: zoom-in-zoom-out 2s ease-out infinite;
+    cursor: pointer;
+  }
+  .fade-up {
+    animation: fade-up 0.5s ease-in-out forwards;
+    opacity: 0;
+  }
+  .highlight
+  {
+    /* background-color: orangered; */
+    color: orangered;
+  }
+  
+  @keyframes fade-up {
+    0% {
+      opacity: 0;
+      transform: translateY(-6rem); 
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0); 
+    }
+  }
+  
+  @keyframes zoom-in-zoom-out {
+    0% {
+      transform: scale(1, 1);
+    }
+    50% {
+      transform: scale(1.1, 1.1);
+    }
+    100% {
+      transform: scale(1, 1);
+    }
+  }
