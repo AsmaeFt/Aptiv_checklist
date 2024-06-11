@@ -4,8 +4,7 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: space-evenly;
-  align-items: center;
-  margin: 1rem 0;
+  margin-top: 5rem;
 }
 .container .Image,
 .points {

@@ -13,15 +13,14 @@ import "./App.css";
 function App() {
   const isAuthenticated = useSelector((st) => st.login.isLoged);
 
+ /* /:id/:project/:family/:post */
+
   return (
     <>
       <NavBar />
       <div className="App">
         <Routes>
-          {/* Public route - accessible without login */}
           <Route path="/Operator" element={<Operator />} />
-
-          {/* Protected routes - require login */}
           <Route
             path="/*"
             element={
@@ -31,7 +30,7 @@ function App() {
                 ) : isAuthenticated.role === "technicien" ? (
                   <Techn />
                 ) : (
-                  <Navigate replace to="/Operator" />
+                  <LogIn/>
                 )
               ) : (
                 <LogIn />

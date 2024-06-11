@@ -7,6 +7,6 @@ const LayoutSchema = new Schema({
   post: { type: String, required: true },
   Equipement: [{ type: String }]
 });
-
 const Layout = mongoose.model("Layout", LayoutSchema);
 module.exports = Layout;
+

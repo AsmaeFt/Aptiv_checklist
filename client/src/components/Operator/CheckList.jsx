@@ -4,6 +4,8 @@ import axios from "axios";
 import api from "../../services/api";
 import { getShiftDate } from "../functions/utilitis";
 import { message } from "antd";
+import { useParams } from "react-router-dom";
+import { getExactdate } from "../functions/utilitis";
 
 const Checklist = () => {
   const [image, setImage] = useState("");
@@ -44,8 +46,6 @@ const Checklist = () => {
     GetEquipement();
   }, [GetEquipement]);
 
-
-  console.log(allpoinsts);
   useEffect(() => {
     setTimeout(() => {
       setFadeIn(true);
@@ -54,9 +54,6 @@ const Checklist = () => {
 
   const getdate = new Date();
   const Curent_Shift = getShiftDate(getdate);
-
-
-
   const getProblem = (num) => {
     const Points = allpoinsts.map((p) => {
       if (p.Num === num) {
@@ -68,7 +65,7 @@ const Checklist = () => {
   };
 
   const getColor = (num) => {
-    const point = allpoinsts.find(p => p.Num === num);
+    const point = allpoinsts.find((p) => p.Num === num);
     if (point) {
       return point.status === "OK" ? "green" : "red";
     }
@@ -77,7 +74,7 @@ const Checklist = () => {
 
   const handleSave = async () => {
     const checkList_data = {
-       operatorID: "1023", 
+      OperatorID: "1023",
       EquipmentName: "teste électrique",
       date: new Date(),
       shift: Curent_Shift.shift,
@@ -89,7 +86,10 @@ const Checklist = () => {
     console.log(JSON.stringify(checkList_data, null, 2));
 
     try {
-      const res = await axios.post(`${api}/CheckList/NewCheckList`,checkList_data);
+      const res = await axios.post(
+        `${api}/CheckList/NewCheckList`,
+        checkList_data
+      );
       const data = res.data;
       message.success("technician will soon verify with you !");
       return data;
@@ -97,7 +97,33 @@ const Checklist = () => {
       message.error(err.message);
     }
   };
-  
+
+  const [problems, setproblems] = useState([]);
+
+  const fetchProblems = useCallback(async () => {
+    const res = await axios.get(`${api}/CheckList/GetProblems`);
+    const data = res.data;
+    const prob = data.filter((p) => p.Id_Operator === "1023");
+    setproblems(prob);
+  }, []);
+
+  useEffect(() => {
+    fetchProblems();
+  }, [fetchProblems]);
+
+  const check = (num) => {
+    for (const p of problems) {
+      for (const m of p.technicienDecision) {
+        for (const c of m.points) {
+          if (c.Num === num) {
+            return c.status;
+          }
+        }
+      }
+    }
+    return "not Aproved yet";
+  };
+
   return (
     <>
       <div style={{ width: "100%" }}>
@@ -116,6 +142,7 @@ const Checklist = () => {
             </fieldset>
           </div>
         </div>
+
         <div className={c["Header2-Checklist"]}>
           <fieldset>
             <legend>Project :</legend>
@@ -142,6 +169,7 @@ const Checklist = () => {
             <span>Anass Zeroual</span>
           </fieldset>
         </div>
+
         <div className={c["checklist"]}>
           <div className={c["Image"]}>
             {image && <img src={image} alt="Equipment" />}
@@ -155,7 +183,6 @@ const Checklist = () => {
                   left: `${p.Position.x * 100}%`,
                   transform: "translate(-50%, -50%)",
                   backgroundColor: getColor(p.Num),
-                 
                 }}
               >
                 <span className={c["poin"]}>{p.Num}</span>
@@ -183,6 +210,39 @@ const Checklist = () => {
             </div>
           </div>
         </div>
+
+        {problems.length > 0 && (
+          <div className="table">
+            <table>
+              <thead>
+                <tr>
+                  <th>Item </th>
+                  <th>Date </th>
+                  <th>Shift </th>
+                  <th>Maintenance</th>
+                  <th>Production</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {problems.map((p, i) => (
+                  <tr key={i}>
+                    <td>
+                      <div>{p.Num}</div>
+                    </td>
+                    <td>{getExactdate(p.date)}</td>
+                    <td>{p.shift}</td>
+
+                    <td>{check(p.Num)}</td>
+                    <td>
+                      <button className="button" >Aprove</button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
     </>
   );

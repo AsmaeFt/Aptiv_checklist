@@ -136,7 +136,6 @@ const Equipment = () => {
     formData.append("Points", JSON.stringify(updatedPoints));
     console.log(JSON.stringify(formData, null, 2));
 
-
     console.log("Sending data:", {
       Name: selectedEquip,
       ref: ref.trim(),
@@ -192,7 +191,7 @@ const Equipment = () => {
                   draggable
                   onDragStart={(e) => handleDragStart(e, i)}
                 >
-                  <span  className={c.taskNum}>{listPoints[i].Num}</span>
+                  <span className={c.taskNum}>{listPoints[i].Num}</span>
                 </div>
               )
           )}
@@ -231,14 +230,16 @@ const Equipment = () => {
                   >
                     {point.Num}
                   </span>
-                  <p className={c.taskDesc}>{point.Description}</p>
+                  <span className={c.taskDesc}>{point.Description}</span>
                 </div>
               ))}
             </div>
           </div>
 
           <div className={c.saveButton}>
-            <button className="button" onClick={handleSave}>SAVE</button>
+            <button className="button" onClick={handleSave}>
+              SAVE
+            </button>
           </div>
         </div>
       </div>

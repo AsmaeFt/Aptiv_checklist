@@ -35,9 +35,9 @@ const NavBar = () => {
                   <li>
                     <NavLink to="/Equipment">Add Equipment</NavLink>
                   </li>
-
-                  
-
+                  <li>
+                    <NavLink to="/Layout">Layout list</NavLink>
+                  </li>
                 </React.Fragment>
               )}
               <button

@@ -3,23 +3,36 @@ const { Schema } = mongoose;
 
 const OperatorSchema = new Schema({
   OperatorID: { type: String },
-  status: {
-    type: String,
-    required: true,
-    default: "pending",
-    enum: ["Aproved", "pending"],
-  },
+  points: [
+    {
+      Num: { type: Number, required: true },
+      Description: { type: String, required: true },
+      status: {
+        type: String,
+        required: true,
+        default: "pending",
+        enum: ["Aproved", "pending"],
+      },
+    },
+  ],
 });
 
 const technicienSchema = new Schema({
   technicienID: { type: Schema.Types.ObjectId, ref: "Users" },
-  comments: { type: String },
-  status: {
-    type: String,
-    required: true,
-    default: "pending",
-    enum: ["Aproved", "pending"],
-  },
+  points: [
+    {
+      Num: { type: Number, required: true },
+      status: {
+        type: String,
+        required: true,
+        default: "pending",
+        enum: ["Aproved", "pending"],
+      },
+      Action: { type: String },
+      Date_Action: { type: Date },
+      Date_Prevu: { type: Date },
+    },
+  ],
 });
 
 const CheckListSchema = new Schema({

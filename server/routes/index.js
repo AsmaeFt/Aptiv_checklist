@@ -8,4 +8,6 @@ router.use("/Equipment", require("./Equipment"));
 
 router.use("/CheckList", require("./CheckList"));
 
+router.use("/Layout", require("./Layout"));
+
 module.exports = router;

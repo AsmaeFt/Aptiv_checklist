@@ -3,14 +3,10 @@ import c from "./tech.module.css";
 import axios from "axios";
 import { message } from "antd";
 import api from "../../services/api";
-import React from "react";
 import { getExactdate } from "../functions/utilitis";
-
-import { useSelector  } from "react-redux";
-import { loginActions } from "../store/loginSlice";
+import { useSelector } from "react-redux";
 
 const Problem = () => {
-
   const User = useSelector((st) => st.login.isLoged);
 
   const [data, setdata] = useState([]);
@@ -27,11 +23,39 @@ const Problem = () => {
     GetProblems();
   }, [GetProblems]);
 
+  const [action, setaction] = useState("");
+  const [dateAction, setdateAction] = useState("");
+  const [datePrevu, setdatePrevu] = useState("");
+
+  const approve_main = async (id_checklist , Num) => {
+    if (action === "" || dateAction === "" || datePrevu === "") {
+      return message.error("Fill all inputs ");
+    } else {
+      const techApprovment = {
+        Id_CheckList: id_checklist,
+        userName: User.userName,
+        Num:Num,
+        Action: action.value,
+        status: "Aproved",
+        Date_Action: dateAction.value,
+        Date_Prevu: datePrevu.value,
+      };
+      console.log(JSON.stringify(techApprovment));
+      try {
+        const res = await axios.post(
+          `${api}/CheckList/Aprove_tech`,
+          techApprovment
+        );
+        message.success(res.error);
+      } catch (err) {
+        console.error(err);
+        message.error(err.response.data.error);
+      }
+    }
+  };
+
   console.log(data);
 
-  data.flatMap((p) => {
-    console.log(p.Num);
-  });
   return (
     <>
       <div className={c.container}>
@@ -39,28 +63,19 @@ const Problem = () => {
           <div className={c.header}>
             <h3>Plan d{"'"}action associe a la maintenance 1rer niveau</h3>
           </div>
-          <div className={c.table_problem}>
+          <div className="table">
             <table>
               <thead>
-                <tr>
-                  <th colSpan={3}>Problem</th>
-                  <th>Action</th>
-                  <th>Responsable</th>
-                  <th colSpan={2}>Confirmation</th>
-                  <th>Status</th>
-                  <th></th>
-                </tr>
-
                 <tr>
                   <th>Item </th>
                   <th>Date </th>
                   <th>Shift </th>
                   <th>Responsable </th>
                   <th>Action </th>
+                  <th>Date Prevu </th>
                   <th>Date Action </th>
                   <th>Maintenance</th>
                   <th>Production</th>
-                  <th>Status</th>
                 </tr>
               </thead>
               <tbody>
@@ -73,20 +88,53 @@ const Problem = () => {
                     <td>{p.shift}</td>
                     <td> {User.userName}</td>
                     <td>
-                      <textarea />
-                    </td>
-                  <td>
-                    <input type="date" />
-                  </td>
-                    <td>
-                      <button className="button">Aprove</button>
+                      <textarea
+                        onChange={(e) =>
+                          setaction((p) => ({ ...p, value: e.target.value }))
+                        }
+                      />
                     </td>
                     <td>
-                      <button className="button">Aprove</button>
+                      <input
+                        type="date"
+                        onChange={(e) =>
+                          setdatePrevu((p) => ({ ...p, value: e.target.value }))
+                        }
+                      />
                     </td>
                     <td>
-                      <label>Pending ... </label>
+                      <input
+                        type="date"
+                        onChange={(e) =>
+                          setdateAction((p) => ({
+                            ...p,
+                            value: e.target.value,
+                          }))
+                        }
+                      />
                     </td>
+                    <td>
+                      
+                      <button
+                        className="button"
+                        onClick={() => approve_main(p.Id_Checklist , p.Num)}
+                      >
+                        Aprove
+                      </button>
+                    </td>
+                    {User.role === "technicien" && (
+                      <td>
+                        <button
+                          className="button"
+                          style={{
+                            backgroundColor: "gray",
+                            pointerEvents: "none",
+                          }}
+                        >
+                          Aprove
+                        </button>
+                      </td>
+                    )}
                   </tr>
                 ))}
               </tbody>
