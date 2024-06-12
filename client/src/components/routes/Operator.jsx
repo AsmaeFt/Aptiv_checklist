@@ -1,5 +1,5 @@
 import React, { Suspense } from "react";
-import Checklist from "../Operator/CheckList";
+import Checklist from "../Operator/Operator";
 
 const Operator = () => {
   return (

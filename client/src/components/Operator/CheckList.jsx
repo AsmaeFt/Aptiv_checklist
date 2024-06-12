@@ -3,16 +3,15 @@ import c from "./checklist.module.css";
 import axios from "axios";
 import api from "../../services/api";
 import { getShiftDate } from "../functions/utilitis";
-import { message } from "antd";
+import { Card, message } from "antd";
 import { getExactdate } from "../functions/utilitis";
-import { useParams } from "react-router-dom";
 
 const Checklist = () => {
-  const { id, nameoperator, project, family, post } = useParams();
   const [image, setImage] = useState("");
   const [points, setPoints] = useState([]);
   const [fadeIn, setFadeIn] = useState(false);
   const [data, setdata] = useState(null);
+
   const [allpoinsts, setallpoinsts] = useState([
     {
       Description: "",
@@ -43,6 +42,7 @@ const Checklist = () => {
       console.error(err);
     }
   }, []);
+
   useEffect(() => {
     GetEquipement();
   }, [GetEquipement]);

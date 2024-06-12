@@ -22,4 +22,5 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 router.post("/AddNew_Equipment", upload.single("pic"), Equipment.AddEquipenet);
 router.get("/GetEquipenet", Equipment.Get_Equipent);
+router.post("/GetEquipement", Equipment.Getequipment);
 module.exports = router;

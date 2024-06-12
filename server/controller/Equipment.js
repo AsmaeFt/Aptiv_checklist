@@ -1,4 +1,5 @@
 const Equipenet = require("../models/Equipment");
+const Layout = require("../models/Layout");
 
 exports.AddEquipenet = async (req, res) => {
   try {
@@ -30,17 +31,26 @@ exports.Get_Equipent = async (req, res) => {
   }
 };
 
-/* exports.Get_Equipent = async (req, res) => {
+exports.Getequipment = async (req, res) => {
+  const { project, family, post } = req.body;
+
   try {
-   
-    const FindOne = await Equipenet.find({ });
-    if (FindOne) {
-      res.status(201).json(FindOne);
-    } else {
-      res.status(404).json("Equipement Does not Exist!");
+    const layout = await Layout.findOne({ project, family, post });
+    if (!layout) {
+      return res
+        .status(404)
+        .json({ message: "post or family or project doesnt exist !" });
     }
+
+    const equipmentNames = layout.Equipement;
+    const listEquipements = await Equipenet.find({
+      Name: { $in: equipmentNames },
+    });
+    if (listEquipements.length === 0) {
+      return res.status(404).json({ message: "no matched Equipemnts" });
+    }
+    return res.status(200).json(listEquipements);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
- */

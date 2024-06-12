@@ -18,7 +18,7 @@ function App() {
       <NavBar />
       <div className="App">
         <Routes>
-          <Route path="/Operator/:id/:nameoperator/:nameoperator/:family/:post" element={<Operator />} />
+          <Route path="/Operator/:id/:nameoperator/:project/:family/:post" element={<Operator />} />
           <Route
             path="/*"
             element={
