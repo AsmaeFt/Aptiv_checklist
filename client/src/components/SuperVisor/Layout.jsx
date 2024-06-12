@@ -1,8 +1,9 @@
-import React, { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import c from "./Layout.module.css";
 import axios from "axios";
 import { message } from "antd";
 import api from "../../services/api";
+import { Add_Equipement } from "./Add_Equipement";
 
 const Layout = () => {
   const [data, setdata] = useState([]);
@@ -27,7 +28,22 @@ const Layout = () => {
     GetLayout();
   }, [GetLayout]);
 
-  const update = () => {};
+  const [showpopup, setshowpopup] = useState(false);
+  const [pr, setpr] = useState("");
+  const [fm, setfm] = useState("");
+  const [po, setpo] = useState("");
+
+  const update = (p, f, post) => {
+    console.log({ p, f, post });
+    setpr(p);
+    setfm(f);
+    setpo(post);
+    setshowpopup(!showpopup);
+  };
+
+  const togglePopup = () => {
+    setshowpopup((p) => !p);
+  };
 
   return (
     <>
@@ -49,7 +65,13 @@ const Layout = () => {
               </thead>
               <tbody>
                 {data.map((p, i) => (
-                  <tr key={i} onClick={update} style={{ cursor: "pointer" }}>
+                  <tr
+                    key={i}
+                    onClick={() => {
+                      update(p.project, p.family, p.post);
+                    }}
+                    style={{ cursor: "pointer" }}
+                  >
                     <td>{p.project}</td>
                     <td>{p.family}</td>
                     <td>{p.post}</td>
@@ -67,9 +89,10 @@ const Layout = () => {
             </table>
           </div>
         </div>
+        {showpopup && <Add_Equipement close={togglePopup}  pr={pr} fm={fm} po={po} />}
       </div>
     </>
   );
 };
-
 export default Layout;
+

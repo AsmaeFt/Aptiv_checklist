@@ -1,6 +1,7 @@
 const Layout = require("../models/Layout");
 const xlsx = require("xlsx");
 const fs = require("fs");
+const { error } = require("console");
 
 exports.importLayout = async (req, res) => {
   try {
@@ -62,5 +63,25 @@ exports.getLayouts = async (req, res) => {
     res.status(201).json(data);
   } catch (err) {
     res.status(500).json({ error: err.message });
+  }
+};
+exports.Update = async (req, res) => {
+  const { project, family, post, Equipement } = req.body;
+
+  try {
+    const existLayout = await Layout.findOne({ project, family, post });
+    if (Equipement === "") {
+      return res.status(400).json({ message: "There is no Equipement !" });
+    }
+    if (!existLayout) {
+      return res
+        .status(400)
+        .json({ message: "project or family or post doesnt exist" });
+    }
+    existLayout.Equipement.push(Equipement);
+    await existLayout.save();
+    res.status(200).json({ message: "Equipement added successfully" });
+  } catch (err) {
+    res.status(500).json({ error: err });
   }
 };

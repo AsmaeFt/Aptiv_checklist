@@ -83,6 +83,7 @@ h3::after {
 .table table tbody tr:hover {
   background-color: rgb(107, 107, 107);
   transition: all 0.2s ease-in-out;
+  transform: scale(1.01);
 }
 
 .table table tr td,

@@ -13,14 +13,12 @@ import "./App.css";
 function App() {
   const isAuthenticated = useSelector((st) => st.login.isLoged);
 
- /* /:id/:project/:family/:post */
-
   return (
     <>
       <NavBar />
       <div className="App">
         <Routes>
-          <Route path="/Operator" element={<Operator />} />
+          <Route path="/Operator/:id/:nameoperator/:nameoperator/:family/:post" element={<Operator />} />
           <Route
             path="/*"
             element={

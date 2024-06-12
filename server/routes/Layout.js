@@ -17,6 +17,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 router.post("/ImportExcel", upload.single("excelFile"), Layout.importLayout);
-router.get("/Getlayout",Layout.getLayouts)
+router.get("/Getlayout", Layout.getLayouts);
+router.post("/Update", Layout.Update);
 
 module.exports = router;

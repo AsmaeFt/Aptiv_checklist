@@ -50,7 +50,7 @@ exports.GetProblems = async (req, res) => {
           project: doc.project,
           family: doc.family,
           ref: doc.ref,
-          technicienDecision:doc.technicienDecision
+          technicienDecision: doc.technicienDecision,
         })),
       ];
     }, []);
@@ -63,7 +63,6 @@ exports.GetProblems = async (req, res) => {
 
 exports.approveThech = async (req, res) => {
   const {
-    
     Id_CheckList,
     userName,
     Num,
@@ -85,7 +84,9 @@ exports.approveThech = async (req, res) => {
     }
 
     const alreadyApproved = existChecklist.technicienDecision.some((decision) =>
-      decision.points.some((point) => point.Num === Num && point.status === "Aproved")
+      decision.points.some(
+        (point) => point.Num === Num && point.status === "Aproved"
+      )
     );
 
     if (alreadyApproved) {
@@ -109,6 +110,39 @@ exports.approveThech = async (req, res) => {
     await existChecklist.save();
 
     res.status(200).json({ message: "Technician decision added successfully" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+exports.approveOperator = async (req, res) => {
+  try {
+    const { Id_CheckList, OperatorID, Num, status } = req.body;
+
+    const existChecklist = await CheckList.findById(Id_CheckList);
+    if (!existChecklist) {
+      return res.status(400).json({ error: "CheckList doesn't Exist!" });
+    }
+
+    const newPoint = {
+      Num: Num,
+      status: status,
+    };
+
+    const OperatorDecision = {
+      OperatorID: OperatorID,
+      points: [newPoint],
+    };
+
+    const point = existChecklist.points.findIndex((p) => p.Num === Num);
+    if (point !== -1) {
+      existChecklist.points[point].status = 'OK';
+      existChecklist.OperatornDecision.push(OperatorDecision);
+      await existChecklist.save();
+      res.status(200).json({ message: "Operator decision added successfully" });
+    } else {
+      res.status(400).json({ message: "Point doent exist" });
+    }
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

@@ -6,7 +6,6 @@ const OperatorSchema = new Schema({
   points: [
     {
       Num: { type: Number, required: true },
-      Description: { type: String, required: true },
       status: {
         type: String,
         required: true,

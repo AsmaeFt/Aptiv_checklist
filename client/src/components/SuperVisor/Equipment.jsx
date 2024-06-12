@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState, useRef } from "react";
+import  { useCallback, useEffect, useState, useRef } from "react";
 import c from "./Equip.module.css";
 import { Select, message } from "antd";
 import api from "../../services/api";
@@ -246,5 +246,4 @@ const Equipment = () => {
     </div>
   );
 };
-
 export default Equipment;

@@ -4,10 +4,11 @@ import axios from "axios";
 import api from "../../services/api";
 import { getShiftDate } from "../functions/utilitis";
 import { message } from "antd";
-import { useParams } from "react-router-dom";
 import { getExactdate } from "../functions/utilitis";
+import { useParams } from "react-router-dom";
 
 const Checklist = () => {
+  const { id, nameoperator, project, family, post } = useParams();
   const [image, setImage] = useState("");
   const [points, setPoints] = useState([]);
   const [fadeIn, setFadeIn] = useState(false);
@@ -92,6 +93,11 @@ const Checklist = () => {
       );
       const data = res.data;
       message.success("technician will soon verify with you !");
+      const currentWindow = window;
+      setTimeout(() => {
+        currentWindow.close();
+      }, 1000);
+
       return data;
     } catch (err) {
       message.error(err.message);
@@ -122,6 +128,24 @@ const Checklist = () => {
       }
     }
     return "not Aproved yet";
+  };
+
+  const approve_oper = async (id, num) => {
+    const data = {
+      Id_CheckList: id,
+      OperatorID: "OperatorID",
+      Num: num,
+      status: "Aproved",
+    };
+    console.log(JSON.stringify(data));
+    try {
+      const res = await axios.post(`${api}/CheckList/Aprove_Oper`, data);
+      message.success("Approved successfully");
+      return res.data;
+    } catch (err) {
+      message.error("Error ... ");
+      console.error(err);
+    }
   };
 
   return (
@@ -170,48 +194,7 @@ const Checklist = () => {
           </fieldset>
         </div>
 
-        <div className={c["checklist"]}>
-          <div className={c["Image"]}>
-            {image && <img src={image} alt="Equipment" />}
-            {points.map((p, i) => (
-              <div
-                onClick={() => getProblem(p.Num, p.Description)}
-                className={c["dragedpoints"]}
-                key={i}
-                style={{
-                  top: `${p.Position.y * 100}%`,
-                  left: `${p.Position.x * 100}%`,
-                  transform: "translate(-50%, -50%)",
-                  backgroundColor: getColor(p.Num),
-                }}
-              >
-                <span className={c["poin"]}>{p.Num}</span>
-              </div>
-            ))}
-          </div>
-          <div className={c["Points"]}>
-            <div>
-              {points.map((point, i) => (
-                <div
-                  key={i}
-                  className={`${fadeIn ? c["fade-up"] : ""}`}
-                  style={{ animationDelay: `${i * 0.3}s` }}
-                >
-                  <span className={c["poin"]}>
-                    <span className={c.taskNum}>{point.Num} </span>
-                    <p> {point.Description}</p>
-                  </span>
-                </div>
-              ))}
-            </div>
-
-            <div>
-              <button onClick={handleSave}>Submit</button>
-            </div>
-          </div>
-        </div>
-
-        {problems.length > 0 && (
+        {problems.length > 0 ? (
           <div className="table">
             <table>
               <thead>
@@ -235,12 +218,65 @@ const Checklist = () => {
 
                     <td>{check(p.Num)}</td>
                     <td>
-                      <button className="button" >Aprove</button>
+                      <button
+                        style={
+                          check(p.Num) !== "Aproved"
+                            ? { backgroundColor: "gray", pointerEvents: "none" }
+                            : {}
+                        }
+                        className="button"
+                        onClick={() => {
+                          approve_oper(p.Id_Checklist, p.Num);
+                        }}
+                      >
+                        Approve
+                      </button>
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
+          </div>
+        ) : (
+          <div className={c["checklist"]}>
+            <div className={c["Image"]}>
+              {image && <img src={image} alt="Equipment" />}
+              {points.map((p, i) => (
+                <div
+                  onClick={() => getProblem(p.Num, p.Description)}
+                  className={c["dragedpoints"]}
+                  key={i}
+                  style={{
+                    top: `${p.Position.y * 100}%`,
+                    left: `${p.Position.x * 100}%`,
+                    transform: "translate(-50%, -50%)",
+                    backgroundColor: getColor(p.Num),
+                  }}
+                >
+                  <span className={c["poin"]}>{p.Num}</span>
+                </div>
+              ))}
+            </div>
+            <div className={c["Points"]}>
+              <div>
+                {points.map((point, i) => (
+                  <div
+                    key={i}
+                    className={`${fadeIn ? c["fade-up"] : ""}`}
+                    style={{ animationDelay: `${i * 0.3}s` }}
+                  >
+                    <span className={c["poin"]}>
+                      <span className={c.taskNum}>{point.Num} </span>
+                      <p> {point.Description}</p>
+                    </span>
+                  </div>
+                ))}
+              </div>
+
+              <div>
+                <button onClick={handleSave}>Submit</button>
+              </div>
+            </div>
           </div>
         )}
       </div>
