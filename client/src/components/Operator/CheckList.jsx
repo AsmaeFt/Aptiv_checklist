@@ -5,7 +5,6 @@ import api from "../../services/api";
 import { getShiftDate } from "../functions/utilitis";
 import { message } from "antd";
 import { getExactdate } from "../functions/utilitis";
-
 const Checklist = ({ equip , currentIndex , handleNext , operatorInfo }) => {
   const [image, setImage] = useState("");
   const [points, setPoints] = useState([]);
