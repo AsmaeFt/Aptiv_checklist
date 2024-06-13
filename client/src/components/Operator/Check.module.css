@@ -1,3 +1,10 @@
+.container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+}
 .cards {
   display: flex;
   flex-wrap: wrap;
@@ -7,7 +14,7 @@
 }
 .cards div {
   width: 20%;
-  height: 10rem;
+  height: 16rem;
   display: flex;
   justify-content: center;
   align-items: center;

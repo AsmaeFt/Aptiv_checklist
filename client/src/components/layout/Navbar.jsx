@@ -40,7 +40,7 @@ const NavBar = () => {
                   </li>
                 </React.Fragment>
               )}
-              <button
+              <button className="button"
                 onClick={() => {
                   dispatch(loginActions.logOut());
                 }}

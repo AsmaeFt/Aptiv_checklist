@@ -1,17 +1,25 @@
 import { useCallback, useEffect, useState } from "react";
-import c from "./Check.module.css";
 import axios from "axios";
 import api from "../../services/api";
-import { Card, message } from "antd";
+import { message } from "antd";
 import { useParams } from "react-router-dom";
 import CheckList from "./CheckList";
+import { useNavigate } from "react-router-dom";
 
 const Checklist = () => {
-  const { id, nameoperator, project, family, post } = useParams();
-  console.log(JSON.stringify({ id, nameoperator, project, family, post }));
-
+  const navigate = useNavigate();
+  const { id, nameoperator, project, family, post, crew } = useParams();
+  const operatorInfo = {
+    project: project,
+    family: family,
+    post: post,
+    crew: crew,
+    id: id,
+    name: nameoperator,
+  };
+ /*  console.log(JSON.stringify({ id, nameoperator, project, family, post })); */
   const [datas, setdatas] = useState([]);
-  const [Fdata, setFdata] = useState({});
+  const [index, setindex] = useState(0);
 
   const getEquip = useCallback(async () => {
     const OperatorInfo = {
@@ -39,29 +47,31 @@ const Checklist = () => {
     getEquip();
   }, [getEquip]);
 
-  const handleClick = (name) => {
-    const fd = datas.filter((d) => d.Name === name);
-    setFdata(fd);
+  const handelnext = () => {
+    if (index < datas.length - 1) {
+      setindex(index + 1);
+      console.log(index);
+      console.log(datas.length);
+    } else {
+      navigate("/dpo");
+    }
   };
+
   return (
     <>
       {datas.length <= 0 ? (
         <div>Error ... </div>
       ) : datas.length === 1 ? (
-        <div>Single item</div>
+        <CheckList equip={datas[0]} />
       ) : (
-        <div className={c.cards}>
-          {datas.map((data, i) => (
-            <div
-              key={i}
-              onClick={() => {
-                handleClick(data.Name);
-              }}
-            >
-              <h2>{data.Name}</h2>
-            </div>
-          ))}
-        </div>
+        <>
+          <CheckList
+            equip={datas}
+            currentIndex={index}
+            handleNext={handelnext}
+            operatorInfo={operatorInfo}
+          />
+        </>
       )}
     </>
   );

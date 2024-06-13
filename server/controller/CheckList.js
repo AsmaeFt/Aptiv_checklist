@@ -1,7 +1,8 @@
 const CheckList = require("../models/CheckList");
-
 const Equipment = require("../models/Equipment");
+const listEquip = require("../models/ListEquip");
 const User = require("../models/Users");
+const { getExactdate } = require("../functions/utilis");
 
 exports.NewCheckList = async (req, res) => {
   const { EquipmentName, points, ...rest } = req.body;
@@ -16,17 +17,34 @@ exports.NewCheckList = async (req, res) => {
     points,
     ...rest,
   };
+
   try {
     const NewCheckList = new CheckList(NewChecklis);
+
+    const query = {
+      OperatorID: NewCheckList.OperatorID,
+      shift: NewCheckList.shift,
+      date: NewCheckList.date,
+      equipmentID: FindEquipment._id,
+    };
+
+    console.log(query);
+
+    const alreadyExist = await CheckList.findOne(query);
+    if (alreadyExist) {
+      console.log("Checklist already exists");
+      return res.status(400).json({ message: "Checklist already exists" });
+    }
+
     await NewCheckList.save();
-    res
+    return res
       .status(201)
-      .json({ message: "a point should be checked", NewCheckList });
+      .json({ message: "A point should be checked", NewCheckList });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error("Error:", err.message);
+    return res.status(500).json({ error: err.message });
   }
 };
-
 exports.GetProblems = async (req, res) => {
   try {
     const status = "NOK";
@@ -35,6 +53,7 @@ exports.GetProblems = async (req, res) => {
     });
     const nokPoints = FindProblems.reduce((acc, doc) => {
       const docNokPoints = doc.points.filter((point) => point.status === "NOK");
+      const existEquip = listEquip.findOne({ _id: doc.equipmentID });
       return [
         ...acc,
         ...docNokPoints.map((point) => ({
@@ -45,6 +64,7 @@ exports.GetProblems = async (req, res) => {
           Id_Checklist: doc._id,
           Id_Operator: doc.OperatorID,
           equipmentID: doc.equipmentID,
+          nameequipe: existEquip.Name,
           date: doc.date,
           shift: doc.shift,
           project: doc.project,
@@ -136,7 +156,7 @@ exports.approveOperator = async (req, res) => {
 
     const point = existChecklist.points.findIndex((p) => p.Num === Num);
     if (point !== -1) {
-      existChecklist.points[point].status = 'OK';
+      existChecklist.points[point].status = "OK";
       existChecklist.OperatornDecision.push(OperatorDecision);
       await existChecklist.save();
       res.status(200).json({ message: "Operator decision added successfully" });

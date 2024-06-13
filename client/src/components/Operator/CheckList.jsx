@@ -3,14 +3,15 @@ import c from "./checklist.module.css";
 import axios from "axios";
 import api from "../../services/api";
 import { getShiftDate } from "../functions/utilitis";
-import { Card, message } from "antd";
+import { message } from "antd";
 import { getExactdate } from "../functions/utilitis";
 
-const Checklist = () => {
+const Checklist = ({ equip, currentIndex, handleNext, operatorInfo }) => {
   const [image, setImage] = useState("");
   const [points, setPoints] = useState([]);
   const [fadeIn, setFadeIn] = useState(false);
   const [data, setdata] = useState(null);
+  const [submit, setsubmit] = useState(false);
 
   const [allpoinsts, setallpoinsts] = useState([
     {
@@ -20,33 +21,32 @@ const Checklist = () => {
     },
   ]);
 
-  const GetEquipement = useCallback(async () => {
-    try {
-      const res = await axios.get(
-        `${api}/Equipment/GetEquipenet?name=teste électrique`
-      );
-      const data = res.data;
-      setImage(`http://localhost:8080/${data.Pic}`);
-      setPoints(data.Points);
-      setdata(data);
-
-      const newPoints = data.Points.map((p) => ({
-        Description: p.Description,
-        Num: p.Num,
-        status: "OK",
-      }));
-      setallpoinsts(newPoints);
-
-      return data;
-    } catch (err) {
-      console.error(err);
-    }
-  }, []);
-
   useEffect(() => {
-    GetEquipement();
-  }, [GetEquipement]);
-
+    if (equip) {
+      if (equip.length > 1) {
+        const dt = equip[currentIndex];
+        setdata(dt);
+        setImage(`http://localhost:8080/${dt.Pic}`);
+        setPoints(dt.Points);
+        const newPoints = dt.Points.map((p) => ({
+          Description: p.Description,
+          Num: p.Num,
+          status: "OK",
+        }));
+        setallpoinsts(newPoints);
+      } else {
+        setdata(equip);
+        setImage(`http://localhost:8080/${equip.Pic}`);
+        setPoints(equip.Points);
+        const newPoints = equip.Points.map((p) => ({
+          Description: p.Description,
+          Num: p.Num,
+          status: "OK",
+        }));
+        setallpoinsts(newPoints);
+      }
+    }
+  }, [equip, currentIndex]);
   useEffect(() => {
     setTimeout(() => {
       setFadeIn(true);
@@ -75,12 +75,12 @@ const Checklist = () => {
 
   const handleSave = async () => {
     const checkList_data = {
-      OperatorID: "1023",
-      EquipmentName: "teste électrique",
+      OperatorID: operatorInfo.id,
+      EquipmentName: data.Name,
       date: new Date(),
       shift: Curent_Shift.shift,
-      project: "K9 KSK",
-      family: "HAB",
+      project: operatorInfo.project,
+      family: operatorInfo.family,
       ref: data.ref,
       points: allpoinsts,
     };
@@ -97,6 +97,7 @@ const Checklist = () => {
       setTimeout(() => {
         currentWindow.close();
       }, 1000);
+      setsubmit(true);
 
       return data;
     } catch (err) {
@@ -109,9 +110,9 @@ const Checklist = () => {
   const fetchProblems = useCallback(async () => {
     const res = await axios.get(`${api}/CheckList/GetProblems`);
     const data = res.data;
-    const prob = data.filter((p) => p.Id_Operator === "1023");
+    const prob = data.filter((p) => p.Id_Operator === operatorInfo.id);
     setproblems(prob);
-  }, []);
+  }, [operatorInfo]);
 
   useEffect(() => {
     fetchProblems();
@@ -133,7 +134,7 @@ const Checklist = () => {
   const approve_oper = async (id, num) => {
     const data = {
       Id_CheckList: id,
-      OperatorID: "OperatorID",
+      OperatorID: operatorInfo.id,
       Num: num,
       status: "Aproved",
     };
@@ -147,6 +148,12 @@ const Checklist = () => {
       console.error(err);
     }
   };
+  const handleClick = (e) => {
+    e.preventDefault();
+    handleNext();
+    setsubmit(false);
+  };
+  console.log(problems);
 
   return (
     <>
@@ -162,7 +169,7 @@ const Checklist = () => {
           <div>
             <fieldset>
               <legend>Ref</legend>
-              <span>EAGP_5-3_MG-NAF_05-F06_FR Effective date : 04/09/2023</span>
+              <span>{data && data.ref}</span>
             </fieldset>
           </div>
         </div>
@@ -170,31 +177,30 @@ const Checklist = () => {
         <div className={c["Header2-Checklist"]}>
           <fieldset>
             <legend>Project :</legend>
-            <span>K9 KSK</span>
+            <span>{operatorInfo.project}</span>
           </fieldset>
 
           <fieldset>
             <legend>FAMILY :</legend>
-            <span>PDB</span>
+            <span>{operatorInfo.family}</span>
+          </fieldset>
+          <fieldset>
+            <legend>STATION :</legend>
+            <span>{operatorInfo.post}</span>
           </fieldset>
 
           <fieldset>
             <legend>CREW :</legend>
-            <span>K03D</span>
-          </fieldset>
-
-          <fieldset>
-            <legend>STATION :</legend>
-            <span>USW 12</span>
+            <span>{operatorInfo.crew}</span>
           </fieldset>
 
           <fieldset>
             <legend>Operator Name :</legend>
-            <span>Anass Zeroual</span>
+            <span>{operatorInfo.name}</span>
           </fieldset>
         </div>
 
-        {problems.length > 0 ? (
+        {problems.length > 0 ?  (
           <div className="table">
             <table>
               <thead>
@@ -253,7 +259,7 @@ const Checklist = () => {
                     backgroundColor: getColor(p.Num),
                   }}
                 >
-                  <span className={c["poin"]}>{p.Num}</span>
+                  <span>{p.Num}</span>
                 </div>
               ))}
             </div>
@@ -265,16 +271,29 @@ const Checklist = () => {
                     className={`${fadeIn ? c["fade-up"] : ""}`}
                     style={{ animationDelay: `${i * 0.3}s` }}
                   >
-                    <span className={c["poin"]}>
+                    <div className={c["poin"]}>
                       <span className={c.taskNum}>{point.Num} </span>
                       <p> {point.Description}</p>
-                    </span>
+                    </div>
                   </div>
                 ))}
               </div>
 
-              <div>
-                <button onClick={handleSave}>Submit</button>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  gap: "2rem",
+                }}
+              >
+                <button className="button" onClick={handleSave}>
+                  Submit
+                </button>
+                {equip.length > 1 && submit && (
+                  <button className="button" onClick={handleClick}>
+                    Next
+                  </button>
+                )}
               </div>
             </div>
           </div>

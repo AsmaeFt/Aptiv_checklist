@@ -5,9 +5,9 @@
 .App {
   text-align: center;
   overflow: hidden;
-  height: 90vh;
   width: 100%;
   box-sizing: border-box;
+  height: 90vh;
 }
 ::-webkit-scrollbar {
   width: 3px;
@@ -32,11 +32,22 @@
   border-radius: 20px;
   cursor: pointer;
   transition: all 0.3s ease-in-out;
+  animation: faderight 0.3s ease-in-out;
 }
 
 .button:hover {
   background-color: white;
   color: orangered;
+}
+@keyframes faderight {
+  0% {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 h3 {
   width: fit-content;

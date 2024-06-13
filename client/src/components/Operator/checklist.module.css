@@ -66,25 +66,9 @@
   .Points {
     width: 49%;
   }
-  .Points div:nth-child(1) {
-    margin: 2rem 0;
-    box-shadow: -1px 4px 9px #060606;
-    border-bottom: 2px solid orangered;
-  }
-  .Points button{
-    border: none;
-    background-color: orangered;
-    width: 10rem;
-    padding: 8px;
-    border-radius: 20px;
-    cursor: pointer;
-    transition: all 0.3s ease-in-out;
-  }
-  .Points button:hover
-  {
-    color: orangered;
-    background-color: white;
-  }
+
+
+ 
   
   .point {
     margin: 1rem 0;
@@ -95,7 +79,12 @@
     display: flex;
     align-items: start;
     gap: 0.5rem;
-   justify-content: center;
+    justify-content: center;
+    align-items: center;
+    height: 3rem;
+    background-color: #212121;
+    margin: 1rem 0;
+    border-radius: 5px;
   }
   
   .poin img {
