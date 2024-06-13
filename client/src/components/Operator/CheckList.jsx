@@ -6,13 +6,12 @@ import { getShiftDate } from "../functions/utilitis";
 import { message } from "antd";
 import { getExactdate } from "../functions/utilitis";
 
-const Checklist = ({ equip, currentIndex, handleNext, operatorInfo }) => {
+const Checklist = ({ equip , currentIndex , handleNext , operatorInfo }) => {
   const [image, setImage] = useState("");
   const [points, setPoints] = useState([]);
   const [fadeIn, setFadeIn] = useState(false);
   const [data, setdata] = useState(null);
   const [submit, setsubmit] = useState(false);
-
   const [allpoinsts, setallpoinsts] = useState([
     {
       Description: "",
@@ -20,7 +19,6 @@ const Checklist = ({ equip, currentIndex, handleNext, operatorInfo }) => {
       status: "OK",
     },
   ]);
-
   useEffect(() => {
     if (equip) {
       if (equip.length > 1) {
@@ -52,7 +50,6 @@ const Checklist = ({ equip, currentIndex, handleNext, operatorInfo }) => {
       setFadeIn(true);
     }, 100);
   }, []);
-
   const getdate = new Date();
   const Curent_Shift = getShiftDate(getdate);
   const getProblem = (num) => {
@@ -64,7 +61,6 @@ const Checklist = ({ equip, currentIndex, handleNext, operatorInfo }) => {
     });
     setallpoinsts(Points);
   };
-
   const getColor = (num) => {
     const point = allpoinsts.find((p) => p.Num === num);
     if (point) {
@@ -72,7 +68,6 @@ const Checklist = ({ equip, currentIndex, handleNext, operatorInfo }) => {
     }
     return "green";
   };
-
   const handleSave = async () => {
     const checkList_data = {
       OperatorID: operatorInfo.id,
@@ -104,20 +99,16 @@ const Checklist = ({ equip, currentIndex, handleNext, operatorInfo }) => {
       message.error(err.message);
     }
   };
-
   const [problems, setproblems] = useState([]);
-
   const fetchProblems = useCallback(async () => {
     const res = await axios.get(`${api}/CheckList/GetProblems`);
     const data = res.data;
     const prob = data.filter((p) => p.Id_Operator === operatorInfo.id);
     setproblems(prob);
   }, [operatorInfo]);
-
   useEffect(() => {
     fetchProblems();
   }, [fetchProblems]);
-
   const check = (num) => {
     for (const p of problems) {
       for (const m of p.technicienDecision) {
@@ -130,7 +121,6 @@ const Checklist = ({ equip, currentIndex, handleNext, operatorInfo }) => {
     }
     return "not Aproved yet";
   };
-
   const approve_oper = async (id, num) => {
     const data = {
       Id_CheckList: id,
@@ -154,7 +144,6 @@ const Checklist = ({ equip, currentIndex, handleNext, operatorInfo }) => {
     setsubmit(false);
   };
   console.log(problems);
-
   return (
     <>
       <div style={{ width: "100%" }}>
