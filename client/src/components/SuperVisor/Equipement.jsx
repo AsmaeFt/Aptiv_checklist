@@ -6,6 +6,8 @@ import api from "../../services/api";
 
 const Equipement = () => {
   const [ListEquipement, setListEquipement] = useState([]);
+  const [ListPoints, setListPoints] = useState([]);
+  const [image, setimage] = useState(null);
 
   const GetEquipemnt = useCallback(async () => {
     try {
@@ -21,8 +23,31 @@ const Equipement = () => {
     GetEquipemnt();
   }, [GetEquipemnt]);
 
-  console.log(ListEquipement);
-
+  const listPoiunts = (name) => {
+    if (ListEquipement) {
+      const list = ListEquipement.find((e) => e.Name === name);
+      if (list) {
+        setListPoints(list.Points);
+      }
+    }
+  };
+  console.log(ListPoints);
+  
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const url = URL.createObjectURL(file);
+      /*  setImage(url);
+      setImageFile(file); */
+    }
+  };
+  const triggerImageUpload = () => {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = "image/*";
+    input.onchange = handleImageUpload;
+    input.click();
+  };
   return (
     <>
       <div className={c["Equip_Container"]}>
@@ -30,13 +55,23 @@ const Equipement = () => {
           <div>
             <h3>Equipement Image</h3>
           </div>
+          <div onClick={triggerImageUpload} className={c.img}></div>
         </div>
 
         <div className={c["Equip-Points"]}>
           <div>
             <h3>Tasks to be performed</h3>
           </div>
-          <div></div>
+
+          <div>
+            {ListPoints.map((p, i) => (
+              <div key={i} className={c.task}>
+                
+                <span className={c.taskNum}>{p.Num}</span>
+                <p>{p.Description}</p>
+              </div>
+            ))}
+          </div>
         </div>
 
         <div className={c["Equip-Equip"]}>
@@ -45,7 +80,12 @@ const Equipement = () => {
           </div>
           <div className={c.equips}>
             {ListEquipement.map((p, i) => (
-              <div key={i}>
+              <div
+                key={i}
+                onClick={() => {
+                  listPoiunts(p.Name);
+                }}
+              >
                 <span>{p.Name}</span>
               </div>
             ))}
@@ -55,5 +95,4 @@ const Equipement = () => {
     </>
   );
 };
-
 export default Equipement;
