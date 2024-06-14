@@ -32,7 +32,7 @@ const Equipement = () => {
     }
   };
   console.log(ListPoints);
-  
+
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -94,5 +94,6 @@ const Equipement = () => {
       </div>
     </>
   );
+  
 };
 export default Equipement;
