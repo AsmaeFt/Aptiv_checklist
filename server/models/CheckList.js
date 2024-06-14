@@ -42,9 +42,11 @@ const CheckListSchema = new Schema({
     required: true,
   },
   date: { type: Date, required: true },
+  time: { type: String, required: true },
   shift: { type: String, required: true },
   project: { type: String, required: true },
   family: { type: String, required: true },
+  post: { type: String, require: true },
   ref: { type: String, required: true },
   points: [
     {
@@ -53,6 +55,7 @@ const CheckListSchema = new Schema({
       status: { type: String, required: true },
     },
   ],
+  flag:{type:String},
   technicienDecision: {
     type: [technicienSchema],
   },

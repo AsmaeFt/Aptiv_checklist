@@ -1,6 +1,6 @@
 const CheckList = require("../models/CheckList");
 const Equipment = require("../models/Equipment");
-const listEquip = require("../models/ListEquip");
+const listEquip = require("../models/Equipment");
 const User = require("../models/Users");
 const { getExactdate } = require("../functions/utilis");
 
@@ -45,37 +45,45 @@ exports.NewCheckList = async (req, res) => {
     return res.status(500).json({ error: err.message });
   }
 };
+
 exports.GetProblems = async (req, res) => {
   try {
     const status = "NOK";
     const FindProblems = await CheckList.find({
       points: { $elemMatch: { status: status } },
     });
-    const nokPoints = FindProblems.reduce((acc, doc) => {
-      const docNokPoints = doc.points.filter((point) => point.status === "NOK");
-      const existEquip = listEquip.findOne({ _id: doc.equipmentID });
-      return [
-        ...acc,
-        ...docNokPoints.map((point) => ({
+
+    const nokPoints = await Promise.all(
+      FindProblems.map(async (doc) => {
+        const docNokPoints = doc.points.filter(
+          (point) => point.status === "NOK"
+        );
+        const existEquip = await listEquip.findOne({ _id: doc.equipmentID });
+
+        return docNokPoints.map((point) => ({
           _id: point._id,
+          project: doc.project,
+          family: doc.family,
+          post: doc.post,
+          flag: doc.flag,
           Num: point.Num,
           Description: point.Description,
           status: point.status,
           Id_Checklist: doc._id,
           Id_Operator: doc.OperatorID,
           equipmentID: doc.equipmentID,
-          nameequipe: existEquip.Name,
+          nameequipe: existEquip ? existEquip.Name : "Unknown",
           date: doc.date,
           shift: doc.shift,
           project: doc.project,
           family: doc.family,
           ref: doc.ref,
           technicienDecision: doc.technicienDecision,
-        })),
-      ];
-    }, []);
+        }));
+      })
+    );
 
-    res.status(200).json(nokPoints);
+    res.status(200).json(nokPoints.flat());
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -98,7 +106,7 @@ exports.approveThech = async (req, res) => {
       return res.status(400).json({ error: "User doesn't Exist!" });
     }
 
-    const existChecklist = await CheckList.findById(Id_CheckList);
+    const existChecklist = await CheckList.findOne({_id:Id_CheckList});
     if (!existChecklist) {
       return res.status(400).json({ error: "CheckList doesn't Exist!" });
     }

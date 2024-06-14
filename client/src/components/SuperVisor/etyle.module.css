@@ -1,0 +1,37 @@
+.Equip_Container {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  margin-top: 5rem;
+}
+.Equip-Image {
+  width: 40%;
+}
+.Equip-Points {
+  width: 20%;
+}
+.Equip-Equip {
+  width: 20%;
+  height: 78vh;
+  overflow: auto;
+  background-color: rgb(56, 56, 56);
+  padding: 10px;
+  border-radius: 10px;
+}
+.equips {
+  text-align: start;
+  width: 100%;
+}
+.equips div {
+  margin: 1rem 0;
+  background-color: rgb(39, 39, 39);
+  padding: 5px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+.equips div:hover {
+  background-color: gray;
+  transform: scale(1.03);
+}

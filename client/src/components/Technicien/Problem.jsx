@@ -67,22 +67,51 @@ const Problem = () => {
             <table>
               <thead>
                 <tr>
+                  <th colSpan={3}>
+                    Zone
+                  </th>
+                  <th colSpan={4}>
+                    Problem
+                  </th>
+                  <th colSpan={5}>
+                    Maintenance
+                  </th>
+                </tr>
+                <tr>
+                  <th>Project</th>
+                  <th>Family</th>
+                  <th>Post</th>
+
                   <th>Item </th>
+                  <th>Equipement</th>
                   <th>Date </th>
                   <th>Shift </th>
+
                   <th>Responsable </th>
                   <th>Action </th>
                   <th>Date Prevu </th>
                   <th>Date Action </th>
-                  <th>Maintenance</th>
-                  <th>Production</th>
+                  <th>Approvement</th>
+                  
                 </tr>
               </thead>
               <tbody>
                 {data.flatMap((p, i) => (
                   <tr key={i}>
                     <td>
+                      {p.project}
+                    </td>
+                    <td>
+                      {p.family}
+                    </td>
+                    <td>
+                      {p.post}
+                    </td>
+                    <td>
                       <div>{p.Num}</div>
+                    </td>
+                    <td>
+                      {p.nameequipe}
                     </td>
                     <td>{getExactdate(p.date)}</td>
                     <td>{p.shift}</td>
@@ -122,19 +151,7 @@ const Problem = () => {
                         Aprove
                       </button>
                     </td>
-                    {User.role === "technicien" && (
-                      <td>
-                        <button
-                          className="button"
-                          style={{
-                            backgroundColor: "gray",
-                            pointerEvents: "none",
-                          }}
-                        >
-                          Aprove
-                        </button>
-                      </td>
-                    )}
+                    
                   </tr>
                 ))}
               </tbody>

@@ -2,14 +2,14 @@ import { useCallback, useEffect, useState } from "react";
 import c from "./checklist.module.css";
 import axios from "axios";
 import api from "../../services/api";
-import { getShiftDate } from "../functions/utilitis";
+import { getCurentdate, getShiftDate } from "../functions/utilitis";
 import { message } from "antd";
 import { getExactdate } from "../functions/utilitis";
-const Checklist = ({ equip , currentIndex , handleNext , operatorInfo }) => {
+const Checklist = ({ equip, currentIndex, handleNext, operatorInfo }) => {
   const [image, setImage] = useState("");
   const [points, setPoints] = useState([]);
   const [fadeIn, setFadeIn] = useState(false);
-  const [data, setdata] = useState(null);
+  const [data, setdata] = useState({});
   const [submit, setsubmit] = useState(false);
   const [allpoinsts, setallpoinsts] = useState([
     {
@@ -18,12 +18,14 @@ const Checklist = ({ equip , currentIndex , handleNext , operatorInfo }) => {
       status: "OK",
     },
   ]);
+  const [show, setshow] = useState(false);
+
   useEffect(() => {
     if (equip) {
       if (equip.length > 1) {
         const dt = equip[currentIndex];
         setdata(dt);
-        setImage(`http://localhost:8080/${dt.Pic}`);
+        setImage(`http://10.236.148.30:8080/${dt.Pic}`);
         setPoints(dt.Points);
         const newPoints = dt.Points.map((p) => ({
           Description: p.Description,
@@ -33,7 +35,7 @@ const Checklist = ({ equip , currentIndex , handleNext , operatorInfo }) => {
         setallpoinsts(newPoints);
       } else {
         setdata(equip);
-        setImage(`http://localhost:8080/${equip.Pic}`);
+        setImage(`http://10.236.148.30:8080/${equip.Pic}`);
         setPoints(equip.Points);
         const newPoints = equip.Points.map((p) => ({
           Description: p.Description,
@@ -50,7 +52,10 @@ const Checklist = ({ equip , currentIndex , handleNext , operatorInfo }) => {
     }, 100);
   }, []);
   const getdate = new Date();
+  const hours = getdate.getHours();
+  const min = getdate.getMinutes();
   const Curent_Shift = getShiftDate(getdate);
+
   const getProblem = (num) => {
     const Points = allpoinsts.map((p) => {
       if (p.Num === num) {
@@ -67,17 +72,24 @@ const Checklist = ({ equip , currentIndex , handleNext , operatorInfo }) => {
     }
     return "green";
   };
+
   const handleSave = async () => {
     const checkList_data = {
       OperatorID: operatorInfo.id,
       EquipmentName: data.Name,
-      date: new Date(),
+      date: getdate,
+      time: hours + ":" + min,
       shift: Curent_Shift.shift,
       project: operatorInfo.project,
       family: operatorInfo.family,
+      post: operatorInfo.post,
       ref: data.ref,
       points: allpoinsts,
+      flag: "checked",
     };
+    if (currentIndex === equip.length - 1) {
+      checkList_data.flag = "checked";
+    }
     console.log(JSON.stringify(checkList_data, null, 2));
 
     try {
@@ -87,10 +99,6 @@ const Checklist = ({ equip , currentIndex , handleNext , operatorInfo }) => {
       );
       const data = res.data;
       message.success("technician will soon verify with you !");
-      const currentWindow = window;
-      setTimeout(() => {
-        currentWindow.close();
-      }, 1000);
       setsubmit(true);
 
       return data;
@@ -98,7 +106,9 @@ const Checklist = ({ equip , currentIndex , handleNext , operatorInfo }) => {
       message.error(err.message);
     }
   };
+
   const [problems, setproblems] = useState([]);
+
   const fetchProblems = useCallback(async () => {
     const res = await axios.get(`${api}/CheckList/GetProblems`);
     const data = res.data;
@@ -108,11 +118,12 @@ const Checklist = ({ equip , currentIndex , handleNext , operatorInfo }) => {
   useEffect(() => {
     fetchProblems();
   }, [fetchProblems]);
-  const check = (num) => {
+
+  const check = (num, name) => {
     for (const p of problems) {
       for (const m of p.technicienDecision) {
         for (const c of m.points) {
-          if (c.Num === num) {
+          if (c.Num === num && p.nameequipe === name) {
             return c.status;
           }
         }
@@ -120,6 +131,7 @@ const Checklist = ({ equip , currentIndex , handleNext , operatorInfo }) => {
     }
     return "not Aproved yet";
   };
+
   const approve_oper = async (id, num) => {
     const data = {
       Id_CheckList: id,
@@ -137,12 +149,27 @@ const Checklist = ({ equip , currentIndex , handleNext , operatorInfo }) => {
       console.error(err);
     }
   };
+
   const handleClick = (e) => {
-    e.preventDefault();
     handleNext();
     setsubmit(false);
   };
-  console.log(problems);
+
+  const checkFlag = useCallback(() => {
+    const hasCheckedEquipment = problems.some(
+      (p) =>
+        p.nameequipe === data.Name &&
+        p.flag === "checked" &&
+        getExactdate(p.date) === getCurentdate(new Date())
+    );
+    console.log(hasCheckedEquipment);
+    setshow(hasCheckedEquipment);
+  }, [data, problems]);
+  
+  useEffect(() => {
+    checkFlag();
+  }, [checkFlag]);
+
   return (
     <>
       <div style={{ width: "100%" }}>
@@ -188,50 +215,7 @@ const Checklist = ({ equip , currentIndex , handleNext , operatorInfo }) => {
           </fieldset>
         </div>
 
-        {problems.length > 0 ?  (
-          <div className="table">
-            <table>
-              <thead>
-                <tr>
-                  <th>Item </th>
-                  <th>Date </th>
-                  <th>Shift </th>
-                  <th>Maintenance</th>
-                  <th>Production</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {problems.map((p, i) => (
-                  <tr key={i}>
-                    <td>
-                      <div>{p.Num}</div>
-                    </td>
-                    <td>{getExactdate(p.date)}</td>
-                    <td>{p.shift}</td>
-
-                    <td>{check(p.Num)}</td>
-                    <td>
-                      <button
-                        style={
-                          check(p.Num) !== "Aproved"
-                            ? { backgroundColor: "gray", pointerEvents: "none" }
-                            : {}
-                        }
-                        className="button"
-                        onClick={() => {
-                          approve_oper(p.Id_Checklist, p.Num);
-                        }}
-                      >
-                        Approve
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        ) : (
+        {!show && (
           <div className={c["checklist"]}>
             <div className={c["Image"]}>
               {image && <img src={image} alt="Equipment" />}
@@ -284,6 +268,52 @@ const Checklist = ({ equip , currentIndex , handleNext , operatorInfo }) => {
                 )}
               </div>
             </div>
+          </div>
+        )}
+
+        {problems.length > 0 && (
+          <div className="table">
+            <table>
+              <thead>
+                <tr>
+                  <th>Item </th>
+                  <th>Equipement</th>
+                  <th>Date </th>
+                  <th>Shift </th>
+                  <th>Maintenance</th>
+                  <th>Production</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {problems.map((p, i) => (
+                  <tr key={i}>
+                    <td>
+                      <div>{p.Num}</div>
+                    </td>
+                    <td>{p.nameequipe}</td>
+                    <td>{getExactdate(p.date)}</td>
+                    <td>{p.shift}</td>
+                    <td>{check(p.Num, p.nameequipe)}</td> 
+                    <td>
+                      <button
+                        style={
+                          check(p.Num, p.nameequipe) !== "Aproved"
+                            ? { backgroundColor: "gray", pointerEvents: "none" }
+                            : {}
+                        }
+                        className="button"
+                        onClick={() => {
+                          approve_oper(p.Id_Checklist, p.Num);
+                        }}
+                      >
+                        Approve
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         )}
       </div>
