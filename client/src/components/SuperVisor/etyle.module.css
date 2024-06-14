@@ -9,7 +9,12 @@
   width: 40%;
 }
 .Equip-Points {
-  width: 20%;
+    width: 20%;
+    height: 78vh;
+    overflow: auto;
+    background-color: rgb(56, 56, 56);
+    padding: 10px;
+    border-radius: 10px;
 }
 .Equip-Equip {
   width: 20%;
