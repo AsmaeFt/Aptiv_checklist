@@ -36,7 +36,14 @@ const Equipement = () => {
           params: { Name },
         });
         const data = res.data;
-        setimage(`http://10.236.148.30:8080/${data.Pic}`);
+        console.log(data);
+        if(!data){
+          return setimage(null)
+        }
+        else{
+          setimage(`http://10.236.148.30:8080/${data.Pic}`);
+        }
+        
       } catch (err) {
         console.error(err);
       }
@@ -47,8 +54,8 @@ const Equipement = () => {
     const file = e.target.files[0];
     if (file) {
       const url = URL.createObjectURL(file);
-      /*  setImage(url);
-      setImageFile(file); */
+      setimage(url);
+      /* setImageFile(file);  */
     }
   };
   const triggerImageUpload = () => {
@@ -75,6 +82,7 @@ const Equipement = () => {
         </div>
 
         <div className={c["Equip-Points"]}>
+
           <div>
             <h3>Tasks to be performed</h3>
           </div>
@@ -107,6 +115,7 @@ const Equipement = () => {
             ))}
           </div>
         </div>
+
       </div>
     </>
   );
