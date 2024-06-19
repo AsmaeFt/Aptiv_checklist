@@ -74,6 +74,7 @@ const Equipement = () => {
             <h3>Equipement Image</h3>
           </div>
           <div onClick={triggerImageUpload} className={c.img}>
+            
             {image && <img src={image} alt="Uploaded Equipment" />}
           </div>
           <div>
