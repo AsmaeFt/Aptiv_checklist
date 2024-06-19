@@ -58,6 +58,7 @@ const Equipement = () => {
       /* setImageFile(file);  */
     }
   };
+
   const triggerImageUpload = () => {
     const input = document.createElement("input");
     input.type = "file";
@@ -74,7 +75,7 @@ const Equipement = () => {
             <h3>Equipement Image</h3>
           </div>
           <div onClick={triggerImageUpload} className={c.img}>
-            
+
             {image && <img src={image} alt="Uploaded Equipment" />}
           </div>
           <div>
@@ -120,5 +121,6 @@ const Equipement = () => {
       </div>
     </>
   );
+  
 };
 export default Equipement;
