@@ -18,19 +18,6 @@ exports.AddEquipenet = async (req, res) => {
   }
 };
 
-exports.Get_Equipent = async (req, res) => {
-  try {
-    const { name } = req.query;
-    const FindOne = await Equipenet.findOne({ Name: name });
-    if (!FindOne) {
-      return res.status(404).json("Equipement Does not Exist!");
-    }
-    return res.status(201).json(FindOne);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
-
 exports.Getequipment = async (req, res) => {
   const { project, family, post } = req.body;
 
@@ -50,6 +37,16 @@ exports.Getequipment = async (req, res) => {
       return res.status(404).json({ message: "no matched Equipemnts" });
     }
     return res.status(200).json(listEquipements);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+exports.getall = async (req, res) => {
+  const { Name } = req.query;
+  try {
+    const data = await Equipenet.findOne({Name});
+    return res.status(201).json(data);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

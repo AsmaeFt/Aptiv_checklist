@@ -3,6 +3,7 @@ import c from "./etyle.module.css";
 import { List, Select, message } from "antd";
 import axios from "axios";
 import api from "../../services/api";
+import edit from "../../assets/edit.png"
 
 const Equipement = () => {
   const [ListEquipement, setListEquipement] = useState([]);
@@ -23,15 +24,24 @@ const Equipement = () => {
     GetEquipemnt();
   }, [GetEquipemnt]);
 
-  const listPoiunts = (name) => {
+  const handleclick = async (Name) => {
     if (ListEquipement) {
-      const list = ListEquipement.find((e) => e.Name === name);
+      const list = ListEquipement.find((e) => e.Name === Name);
       if (list) {
         setListPoints(list.Points);
       }
+
+      try {
+        const res = await axios.get(`${api}/Equipment/get`, {
+          params: { Name },
+        });
+        const data = res.data;
+        setimage(`http://10.236.148.30:8080/${data.Pic}`);
+      } catch (err) {
+        console.error(err);
+      }
     }
   };
-  console.log(ListPoints);
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
@@ -48,6 +58,7 @@ const Equipement = () => {
     input.onchange = handleImageUpload;
     input.click();
   };
+
   return (
     <>
       <div className={c["Equip_Container"]}>
@@ -55,7 +66,12 @@ const Equipement = () => {
           <div>
             <h3>Equipement Image</h3>
           </div>
-          <div onClick={triggerImageUpload} className={c.img}></div>
+          <div onClick={triggerImageUpload} className={c.img}>
+            {image && <img src={image} alt="Uploaded Equipment" />}
+          </div>
+          <div>
+            <button className="button">save</button>
+          </div>
         </div>
 
         <div className={c["Equip-Points"]}>
@@ -66,9 +82,9 @@ const Equipement = () => {
           <div>
             {ListPoints.map((p, i) => (
               <div key={i} className={c.task}>
-                
                 <span className={c.taskNum}>{p.Num}</span>
                 <p>{p.Description}</p>
+                <button className={c.edit}><img src={edit}/></button>
               </div>
             ))}
           </div>
@@ -83,7 +99,7 @@ const Equipement = () => {
               <div
                 key={i}
                 onClick={() => {
-                  listPoiunts(p.Name);
+                  handleclick(p.Name);
                 }}
               >
                 <span>{p.Name}</span>
@@ -94,6 +110,5 @@ const Equipement = () => {
       </div>
     </>
   );
-  
 };
 export default Equipement;
