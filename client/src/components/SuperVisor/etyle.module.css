@@ -11,12 +11,12 @@
   padding: 10px;
 }
 .Equip-Points {
-    width: 20%;
-    height: 30rem;
-    overflow: auto;
-    background-color: rgb(56, 56, 56);
-    padding: 10px;
-    border-radius: 10px;
+  width: 20%;
+  height: 30rem;
+  overflow: auto;
+  background-color: rgb(56, 56, 56);
+  padding: 10px;
+  border-radius: 10px;
 }
 .Equip-Equip {
   width: 20%;
@@ -41,54 +41,97 @@
   background-color: gray;
   transform: scale(1.03);
 }
-.task{
+.task {
   display: flex;
   margin: 1rem 0;
   justify-content: space-between;
   align-items: start;
-  }
-  .task p{
-    text-align: start;
-  }
+}
+.task p {
+  text-align: start;
+}
 .img {
-    aspect-ratio: 16 / 9;
-    width: 100%;
-    border: 2px dashed rgb(126, 126, 126);
-    position: relative;
-    align-content: center;
-    cursor: pointer;
-    transition: all 0.3s ease-in-out;
+  aspect-ratio: 16 / 9;
+  width: 100%;
+  border: 2px dashed rgb(126, 126, 126);
+  position: relative;
+  align-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  background-color: #0d0d0d;
+}
+.img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.taskNum {
+  min-width: 2rem;
+  height: 2rem;
+  background-color: orangered;
+  align-content: center;
+  margin: 0 5px;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+.edit {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.edit img {
+  width: 1.3rem;
+  background-color: rgb(255, 255, 255);
+  text-align: center;
+  padding: 0.3rem;
+  border-radius: 1rem;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 6px 6px 9px #272727;
+}
+.edit img:hover {
+  transform: scale(1.1);
+}
+#imageupload {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+}
+#imageupload img {
+  width: 1rem;
+}
+.dragedpoints {
+  width: 1.5rem;
+  height: 1.5rem;
+  background-color: green;
+  border-radius: 11px;
+  position: absolute;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  animation: zoom-in-zoom-out 2s ease-out infinite;
+}
+
+@keyframes zoom-in-zoom-out {
+  0% {
+    transform: scale(1, 1);
   }
-  .img img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+  50% {
+    transform: scale(1.1, 1.1);
   }
-  .taskNum {
-    min-width: 2rem;
-    height: 2rem;
-    background-color: orangered;
-    align-content: center;
-    margin: 0 5px;
-    border-radius: 50px;
-    cursor: pointer;
-    transition: all 0.3s ease-in-out;
+  100% {
+    transform: scale(1, 1);
   }
-  .edit{
-    background-color: transparent;
-    border: none;
-    cursor: pointer;
-  }
- 
-  .edit img{
-    width: 1.3rem;
-    background-color: rgb(255, 255, 255);
-    text-align: center;
-    padding: 0.3rem;
-    border-radius: 1rem;
-    transition: all 0.2s ease-in-out;
-    box-shadow: 6px 6px 9px #272727;
-  }
-  .edit img:hover{
-    transform: scale(1.1);
-  }
+}
+.dragedpoints::before {
+  border: 1px solid #ff2e00;
+  border-radius: 50%;
+  content: "";
+  height: 2rem;
+  position: absolute;
+  right: -4px;
+  top: -5px;
+  width: 2rem;
+  box-shadow: 1px 1px 3px #f84018;
+}

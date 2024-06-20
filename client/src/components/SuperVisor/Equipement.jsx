@@ -3,12 +3,16 @@ import c from "./etyle.module.css";
 import { List, Select, message } from "antd";
 import axios from "axios";
 import api from "../../services/api";
-import edit from "../../assets/edit.png"
+import edit from "../../assets/edit.png";
+import upload from "../../assets/uplo.png";
 
 const Equipement = () => {
   const [ListEquipement, setListEquipement] = useState([]);
   const [ListPoints, setListPoints] = useState([]);
   const [image, setimage] = useState(null);
+  const [points, setPoints] = useState([]);
+  const [draggedPoint, setDraggedPoint] = useState(null);
+  const [activ, setactiv] = useState(false);
 
   const GetEquipemnt = useCallback(async () => {
     try {
@@ -37,13 +41,13 @@ const Equipement = () => {
         });
         const data = res.data;
         console.log(data);
-        if(!data){
-          return setimage(null)
-        }
-        else{
+        if (!data) {
+          setimage(null);
+          setPoints([]);
+        } else {
           setimage(`http://10.236.148.30:8080/${data.Pic}`);
+          setPoints(data.Points);
         }
-        
       } catch (err) {
         console.error(err);
       }
@@ -66,7 +70,13 @@ const Equipement = () => {
     input.onchange = handleImageUpload;
     input.click();
   };
-
+  const handleStart = (e, i) => {
+    setDraggedPoint(i);
+  };
+  const handleDragOver = (e) => {
+    e.preventDefault();
+  };
+  const handleDrop = () => {};
   return (
     <>
       <div className={c["Equip_Container"]}>
@@ -74,9 +84,35 @@ const Equipement = () => {
           <div>
             <h3>Equipement Image</h3>
           </div>
-          <div onClick={triggerImageUpload} className={c.img}>
-
-            {image && <img src={image} alt="Uploaded Equipment" />}
+          <div
+            onClick={!image ? triggerImageUpload : undefined}
+            className={c.img}
+            onDragOver={handleDragOver}
+            onDrop={handleDrop}
+          >
+            {image ? (
+              <>
+                <img src={image} alt=" Equipment Image " />
+                {points.map((p, i) => (
+                  <div
+                    className={c["dragedpoints"]}
+                    key={i}
+                    style={{
+                      top: `${p.Position.y * 100}%`,
+                      left: `${p.Position.x * 100}%`,
+                    }}
+                  >
+                    <span>{p.Num}</span>
+                  </div>
+                ))}
+              </>
+            ) : (
+              <>
+                <p id={c.imageupload}>
+                  upload image <img src={upload} />
+                </p>
+              </>
+            )}
           </div>
           <div>
             <button className="button">save</button>
@@ -84,7 +120,6 @@ const Equipement = () => {
         </div>
 
         <div className={c["Equip-Points"]}>
-
           <div>
             <h3>Tasks to be performed</h3>
           </div>
@@ -92,9 +127,16 @@ const Equipement = () => {
           <div>
             {ListPoints.map((p, i) => (
               <div key={i} className={c.task}>
-                <span className={c.taskNum}>{p.Num}</span>
+                <span
+                  onDragStart={(e) => handleStart(e, i)}
+                  className={c.taskNum}
+                >
+                  {p.Num}
+                </span>
                 <p>{p.Description}</p>
-                <button className={c.edit}><img src={edit}/></button>
+                <button className={c.edit}>
+                  <img src={edit} />
+                </button>
               </div>
             ))}
           </div>
@@ -117,10 +159,8 @@ const Equipement = () => {
             ))}
           </div>
         </div>
-
       </div>
     </>
   );
-  
 };
 export default Equipement;
