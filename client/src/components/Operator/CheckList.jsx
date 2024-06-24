@@ -199,13 +199,13 @@ const Checklist = ({ equip, currentIndex, handleNext, operatorInfo }) => {
   const name = data.Name;
   console.log(name);
 
-
-    const exist = fch.find(
-      (p) =>
-        p.shift === Curent_Shift.shift &&
-        getExactdate(p.date) === getCurentdate(getdate)
-    );
-    exist ? console.log(true) : console.log(false);
+  const exist = fch.find(
+    (p) =>
+      p.shift === Curent_Shift.shift &&
+      getExactdate(p.date) === getCurentdate(getdate) &&
+      p.equipmentName === data.Name
+  );
+  exist ? console.log(true) : console.log(false);
 
   return (
     <>

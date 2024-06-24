@@ -180,10 +180,19 @@ exports.GetCheckList = async (req, res) => {
   const { OperatorID } = req.body;
   try {
     const exist = await CheckList.find({ OperatorID });
-    if(!exist){
+    if (!exist || exist.length === 0) {
       return res.status(400).json({ error: "OperatorID not found!" });
     }
-    return res.status(200).json(exist);
+
+    const checkListWithNames = await Promise.all(exist.map(async (p) => {
+      const equipment = await Equipment.findOne({ _id: p.equipmentID });
+      return {
+        ...p.toObject(),
+        equipmentName: equipment ? equipment.Name : 'Unknown'
+      };
+    }));
+
+    return res.status(200).json(checkListWithNames);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
