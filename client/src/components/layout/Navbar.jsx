@@ -33,10 +33,10 @@ const NavBar = () => {
                   </li>
 
                   <li>
-                    <NavLink to="/Equip">Add Equipment</NavLink>
+                    <NavLink to="/Equip">Equipments</NavLink>
                   </li>
                   <li>
-                    <NavLink to="/Layout">Layout list</NavLink>
+                    <NavLink to="/Layout">Layout</NavLink>
                   </li>
                 </React.Fragment>
               )}

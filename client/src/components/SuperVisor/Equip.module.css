@@ -69,6 +69,10 @@
   margin: 1rem 0;
   align-items: center;
 }
+.task textarea{
+  width: 100%;
+    height: 10rem;
+}
 .taskNum {
   width: 2rem;
   height: 2rem;

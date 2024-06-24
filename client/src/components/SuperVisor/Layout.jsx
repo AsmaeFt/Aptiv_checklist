@@ -1,13 +1,18 @@
 import { useCallback, useEffect, useState } from "react";
 import c from "./Layout.module.css";
 import axios from "axios";
-import { message } from "antd";
+import { message, Select } from "antd";
 import api from "../../services/api";
 import { Add_Equipement } from "./Add_Equipement";
 
 const Layout = () => {
   const [data, setdata] = useState([]);
   const [maxEquipLength, setMaxEquipLength] = useState(0);
+  const [filterData, setfilterData] = useState("");
+
+  const [project, setproject] = useState([]);
+  const [family, setfamily] = useState([]);
+  const [post, setpost] = useState([]);
 
   const GetLayout = useCallback(async () => {
     try {
@@ -17,6 +22,18 @@ const Layout = () => {
 
       const maxEquipLength = Math.max(...data.map((p) => p.Equipement.length));
       setMaxEquipLength(maxEquipLength);
+
+      const pr = [...new Set(data.map((p) => p.project))];
+      const prs = pr.map((e) => ({ value: e, label: e }));
+      setproject(prs);
+
+      const fm = [...new Set(data.map((p) => p.family))];
+      const fms = fm.map((e) => ({ value: e, label: e }));
+      setfamily(fms);
+
+      const ps = [...new Set(data.map((p) => p.post))];
+      const pss = ps.map((e) => ({ value: e, label: e }));
+      setpost(pss);
 
       return data;
     } catch (err) {
@@ -44,14 +61,37 @@ const Layout = () => {
   const togglePopup = () => {
     setshowpopup((p) => !p);
   };
+  const handleFilterChange = (e) => {
+    setfilterData( e.target.value);
+  };
+
+  const filteredData = data.filter((p) => 
+    p.project.toLowerCase().includes(filterData.toLowerCase()) ||
+    p.family.toLowerCase().includes(filterData.toLowerCase()) ||
+    p.post.toLowerCase().includes(filterData.toLowerCase()) ||
+    p.Equipement.some(e => e.toLowerCase().includes(filterData.toLowerCase()))
+  );
+
+  console.log(filteredData);
+
+  console.log(filteredData);
 
   return (
     <>
       <div className={c.container}>
         <div className={c.cont}>
           <div className={c.header}>
-            <h3>The Layout</h3>
+            <h3>M4 Layout</h3>
           </div>
+
+          <div className={c.seach}>
+            <input
+              type="text"
+              placeholder="Serach and filter"
+              onChange={handleFilterChange}
+            />
+          </div>
+
           <div className="table">
             <table>
               <thead>
@@ -64,7 +104,7 @@ const Layout = () => {
                 </tr>
               </thead>
               <tbody>
-                {data.map((p, i) => (
+                {filteredData.map((p, i) => (
                   <tr
                     key={i}
                     onClick={() => {
@@ -89,10 +129,11 @@ const Layout = () => {
             </table>
           </div>
         </div>
-        {showpopup && <Add_Equipement close={togglePopup}  pr={pr} fm={fm} po={po} />}
+        {showpopup && (
+          <Add_Equipement close={togglePopup} pr={pr} fm={fm} po={po} />
+        )}
       </div>
     </>
   );
 };
 export default Layout;
-

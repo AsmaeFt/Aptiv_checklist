@@ -1,6 +1,6 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState, useRef, act } from "react";
 import c from "./etyle.module.css";
-import { List, Select, message } from "antd";
+import { message } from "antd";
 import axios from "axios";
 import api from "../../services/api";
 import edit from "../../assets/edit.png";
@@ -9,10 +9,18 @@ import upload from "../../assets/uplo.png";
 const Equipement = () => {
   const [ListEquipement, setListEquipement] = useState([]);
   const [ListPoints, setListPoints] = useState([]);
+  const [positions, setPositions] = useState([]);
   const [image, setimage] = useState(null);
+  const [imageFile, setImageFile] = useState(null);
   const [points, setPoints] = useState([]);
   const [draggedPoint, setDraggedPoint] = useState(null);
-  const [activ, setactiv] = useState(false);
+  const [activ, setactiv] = useState(true);
+  const imageRef = useRef(null);
+  const [ref, setRef] = useState("");
+  const [selectedEquip, setSelectedEquip] = useState("");
+  const [activeEdit, setactiveEdit] = useState(null);
+  const [editText, seteditText] = useState(null);
+  const [importData, setimportData] = useState(null);
 
   const GetEquipemnt = useCallback(async () => {
     try {
@@ -29,6 +37,7 @@ const Equipement = () => {
   }, [GetEquipemnt]);
 
   const handleclick = async (Name) => {
+    setSelectedEquip(Name);
     if (ListEquipement) {
       const list = ListEquipement.find((e) => e.Name === Name);
       if (list) {
@@ -44,9 +53,13 @@ const Equipement = () => {
         if (!data) {
           setimage(null);
           setPoints([]);
+          setactiv(true);
+          setPositions([]);
         } else {
           setimage(`http://10.236.148.30:8080/${data.Pic}`);
           setPoints(data.Points);
+          setactiv(false);
+          setPositions(null);
         }
       } catch (err) {
         console.error(err);
@@ -59,7 +72,7 @@ const Equipement = () => {
     if (file) {
       const url = URL.createObjectURL(file);
       setimage(url);
-      /* setImageFile(file);  */
+      setImageFile(file);
     }
   };
 
@@ -76,19 +89,115 @@ const Equipement = () => {
   const handleDragOver = (e) => {
     e.preventDefault();
   };
-  const handleDrop = () => {};
+  const handleDrop = (e) => {
+    e.preventDefault();
+    if (draggedPoint !== null && imageRef.current) {
+      const rect = imageRef.current.getBoundingClientRect();
+      const x = (e.clientX - rect.left) / rect.width;
+      const y = (e.clientY - rect.top) / rect.height;
+      const newPosition = [...positions];
+      newPosition[draggedPoint] = { x, y };
+      setPositions(newPosition);
+      setDraggedPoint(null);
+    }
+  };
+  const UpdatePoint = (i) => {
+    setactiveEdit(i);
+    seteditText(ListPoints[i].Description);
+  };
+
+  const saveUpdates = async (i) => {
+    const newPoint = {
+      Name: selectedEquip,
+      num: i,
+      Description: editText,
+    };
+    setactiveEdit(null);
+    try {
+      const res = await axios.post(`${api}/Equipment/Update`, newPoint);
+      message.success(res.data.message);
+      return res.data;
+    } catch (err) {
+      console.error("Error fetching equipments:", err);
+      message.error("Failed to load equipments.");
+    }
+  };
+  const handleSave = async () => {
+    if (!imageFile) {
+      message.warning("Please Upload an Image first !");
+    }
+    if (!ref.trim()) {
+      message.warning("Please provide a reference.");
+      return;
+    }
+
+    const Points = ListPoints.map((p, i) => ({
+      Description: p.Description,
+      Num: p.Num,
+      Position: positions[i] || null,
+    })).filter((p) => p.Position !== null);
+
+    if (Points.length === 0) {
+      message.warning("No points have been placed on the image.");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("name", selectedEquip);
+    formData.append("ref", ref.trim());
+    formData.append("pic", imageFile);
+    formData.append("Points", JSON.stringify(Points));
+    console.log("Sending data:", {
+      Name: selectedEquip,
+      ref: ref.trim(),
+      pic: imageFile.name,
+      Points: Points,
+    });
+    try {
+      const res = await axios.post(
+        `${api}/Equipment/AddNew_Equipment`,
+        formData
+      );
+      console.log(res.data);
+      message.success("Equipment Successfully Added");
+      setImageFile(null);
+      setimage(null);
+      setPositions([]);
+      setSelectedEquip("");
+    } catch (err) {
+      message.error(err.message || "An error occurred while saving.");
+      console.error(err);
+    }
+  };
+
+  const handleAddData = (e) => {
+    setimportData(e.target.files[0]);
+  };
+  const addDataFile = async () => {
+    if (!importData) return alert("please select a file first ! ");
+    const formData = new FormData();
+    formData.append("excelFile", importData);
+    try {
+      const res = await axios.post(`${api}/equipe/ImportExcel`, formData);
+      const data = res.data;
+      console.log(data);
+      message.success("Equipement Added Succefuly !");
+      return data;
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
     <>
       <div className={c["Equip_Container"]}>
         <div className={c["Equip-Image"]}>
-          <div>
-            <h3>Equipement Image</h3>
-          </div>
           <div
             onClick={!image ? triggerImageUpload : undefined}
             className={c.img}
             onDragOver={handleDragOver}
             onDrop={handleDrop}
+            ref={imageRef}
           >
             {image ? (
               <>
@@ -113,10 +222,42 @@ const Equipement = () => {
                 </p>
               </>
             )}
+            {positions?.map(
+              (p, i) =>
+                p && (
+                  <div
+                    key={i}
+                    className={c["dragedpoints"]}
+                    style={{
+                      top: `${p.y * 100}%`,
+                      left: `${p.x * 100}%`,
+                      cursor: "move",
+                    }}
+                    draggable
+                    onDragStart={(e) => handleStart(e, i)}
+                  >
+                    <span>{ListPoints[i].Num}</span>
+                  </div>
+                )
+            ) ?? null}
           </div>
-          <div>
-            <button className="button">save</button>
-          </div>
+          {activ && (
+            <React.Fragment>
+              <div className={c.ref}>
+                <textarea
+                  placeholder="Enter Reference..."
+                  value={ref}
+                  onChange={(e) => setRef(e.target.value)}
+                />
+              </div>
+
+              <div>
+                <button onClick={handleSave} className="button">
+                  save
+                </button>
+              </div>
+            </React.Fragment>
+          )}
         </div>
 
         <div className={c["Equip-Points"]}>
@@ -128,13 +269,27 @@ const Equipement = () => {
             {ListPoints.map((p, i) => (
               <div key={i} className={c.task}>
                 <span
+                  draggable={activ ? true : false}
                   onDragStart={(e) => handleStart(e, i)}
                   className={c.taskNum}
                 >
                   {p.Num}
                 </span>
-                <p>{p.Description}</p>
-                <button className={c.edit}>
+                {activeEdit === i ? (
+                  <>
+                    <textarea
+                      value={editText}
+                      onChange={(e) => seteditText(e.target.value)}
+                      onBlur={() => saveUpdates(p.Num)}
+                    />
+                  </>
+                ) : (
+                  <>
+                    <p>{p.Description}</p>
+                  </>
+                )}
+
+                <button className={c.edit} onClick={() => UpdatePoint(i)}>
                   <img src={edit} />
                 </button>
               </div>
@@ -157,6 +312,18 @@ const Equipement = () => {
                 <span>{p.Name}</span>
               </div>
             ))}
+          </div>
+          <div className={c.equips}>
+            <label>
+              <input
+                type="file"
+                accept=".xlsx,.xls"
+                onChange={handleAddData}
+              />
+            </label>
+            <button  onClick={addDataFile}>
+              Submit
+            </button>
           </div>
         </div>
       </div>

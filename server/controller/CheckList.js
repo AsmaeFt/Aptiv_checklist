@@ -106,7 +106,7 @@ exports.approveThech = async (req, res) => {
       return res.status(400).json({ error: "User doesn't Exist!" });
     }
 
-    const existChecklist = await CheckList.findOne({_id:Id_CheckList});
+    const existChecklist = await CheckList.findOne({ _id: Id_CheckList });
     if (!existChecklist) {
       return res.status(400).json({ error: "CheckList doesn't Exist!" });
     }
@@ -171,6 +171,19 @@ exports.approveOperator = async (req, res) => {
     } else {
       res.status(400).json({ message: "Point doent exist" });
     }
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+exports.GetCheckList = async (req, res) => {
+  const { OperatorID } = req.body;
+  try {
+    const exist = await CheckList.find({ OperatorID });
+    if(!exist){
+      return res.status(400).json({ error: "OperatorID not found!" });
+    }
+    return res.status(200).json(exist);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

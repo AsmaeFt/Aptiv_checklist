@@ -32,7 +32,7 @@ exports.Importexcel = async (req, res, next) => {
     const getdata = await listEquip.find({});
     res.status(200).json(getdata);
   } catch (err) {
-    next(err);
+    res.status(500).json({ error: err.message });
   }
 };
 
@@ -47,7 +47,6 @@ exports.GetEquip = async (req, res, next) => {
 
 exports.Addequip = async (req, res) => {
   const { Name, Points } = req.body;
-
   try {
     const existEquip = await listEquip.findOne({ Name });
     if (existEquip) {

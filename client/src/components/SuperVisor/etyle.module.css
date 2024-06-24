@@ -41,6 +41,23 @@
   background-color: gray;
   transform: scale(1.03);
 }
+.equips button{
+  width: 7rem;
+  background-color: white;
+  color: orangered;
+  padding: 0.4rem;
+  border-radius: 17px;
+  border: 1px solid orangered;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+.equips button:hover{
+  background-color: orangered;
+  color: white;
+}
+.equips button:focus{
+background-color:rgb(255, 255, 255);
+}
 .task {
   display: flex;
   margin: 1rem 0;
@@ -49,6 +66,10 @@
 }
 .task p {
   text-align: start;
+}
+.task textarea{
+  width: 100%;
+    height: 10rem;
 }
 .img {
   aspect-ratio: 16 / 9;
@@ -124,6 +145,16 @@
     transform: scale(1, 1);
   }
 }
+@keyframes faderight {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 .dragedpoints::before {
   border: 1px solid #ff2e00;
   border-radius: 50%;
@@ -135,3 +166,23 @@
   width: 2rem;
   box-shadow: 1px 1px 3px #f84018;
 }
+.ref {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  margin: 1rem 0;
+  animation: faderight 0.3s ease-out;
+}
+.ref textarea {
+  width: 100%;
+  height: 1.4rem;
+  align-content: center;
+  padding: 0 0.5rem;
+  outline: none;
+  transition: all 0.3s ease-in-out;
+  background: transparent;
+}
+.ref textarea:focus-visible {
+  border: 1px solid orangered;
+}
+

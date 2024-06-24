@@ -23,5 +23,6 @@ const upload = multer({ storage: storage });
 router.post("/AddNew_Equipment", upload.single("pic"), Equipment.AddEquipenet);
 router.post("/GetEquipement", Equipment.Getequipment);
 router.get("/get", Equipment.getall);
+router.post("/Update", Equipment.UpdateEquip);
 
 module.exports = router;

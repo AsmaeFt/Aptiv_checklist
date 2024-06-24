@@ -19,6 +19,7 @@ const Checklist = ({ equip, currentIndex, handleNext, operatorInfo }) => {
     },
   ]);
   const [show, setshow] = useState(false);
+  const [fch, setfch] = useState([]);
 
   useEffect(() => {
     if (equip) {
@@ -51,6 +52,31 @@ const Checklist = ({ equip, currentIndex, handleNext, operatorInfo }) => {
       setFadeIn(true);
     }, 100);
   }, []);
+
+  const GetCheckList = useCallback(async () => {
+    const OperatorID = operatorInfo.id;
+    try {
+      const res = await axios.post(`${api}/CheckList/GetChecklist`, {
+        OperatorID,
+      });
+
+      setfch(res.data);
+      return res.data;
+    } catch (err) {
+      if (err.response && err.response.status === 400) {
+        console.log("OperatorID not found");
+      } else {
+        console.error("Error fetching checklist:", err);
+      }
+      setfch([]);
+      return [];
+    }
+  }, [operatorInfo.id]);
+
+  useEffect(() => {
+    GetCheckList();
+  }, [GetCheckList]);
+
   const getdate = new Date();
   const hours = getdate.getHours();
   const min = getdate.getMinutes();
@@ -143,6 +169,7 @@ const Checklist = ({ equip, currentIndex, handleNext, operatorInfo }) => {
     try {
       const res = await axios.post(`${api}/CheckList/Aprove_Oper`, data);
       message.success("Approved successfully");
+
       return res.data;
     } catch (err) {
       message.error("Error ... ");
@@ -162,13 +189,23 @@ const Checklist = ({ equip, currentIndex, handleNext, operatorInfo }) => {
         p.flag === "checked" &&
         getExactdate(p.date) === getCurentdate(new Date())
     );
-    console.log(hasCheckedEquipment);
     setshow(hasCheckedEquipment);
   }, [data, problems]);
-  
+
   useEffect(() => {
     checkFlag();
   }, [checkFlag]);
+
+  const name = data.Name;
+  console.log(name);
+
+
+    const exist = fch.find(
+      (p) =>
+        p.shift === Curent_Shift.shift &&
+        getExactdate(p.date) === getCurentdate(getdate)
+    );
+    exist ? console.log(true) : console.log(false);
 
   return (
     <>
@@ -215,7 +252,7 @@ const Checklist = ({ equip, currentIndex, handleNext, operatorInfo }) => {
           </fieldset>
         </div>
 
-        {!show && (
+        {
           <div className={c["checklist"]}>
             <div className={c["Image"]}>
               {image && <img src={image} alt="Equipment" />}
@@ -235,6 +272,7 @@ const Checklist = ({ equip, currentIndex, handleNext, operatorInfo }) => {
                 </div>
               ))}
             </div>
+
             <div className={c["Points"]}>
               <div>
                 {points.map((point, i) => (
@@ -258,9 +296,11 @@ const Checklist = ({ equip, currentIndex, handleNext, operatorInfo }) => {
                   gap: "2rem",
                 }}
               >
-                <button className="button" onClick={handleSave}>
-                  Submit
-                </button>
+                {!submit && (
+                  <button className="button" onClick={handleSave}>
+                    Submit
+                  </button>
+                )}
                 {equip.length > 1 && submit && (
                   <button className="button" onClick={handleClick}>
                     Next
@@ -269,7 +309,7 @@ const Checklist = ({ equip, currentIndex, handleNext, operatorInfo }) => {
               </div>
             </div>
           </div>
-        )}
+        }
 
         {problems.length > 0 && (
           <div className="table">
@@ -294,7 +334,7 @@ const Checklist = ({ equip, currentIndex, handleNext, operatorInfo }) => {
                     <td>{p.nameequipe}</td>
                     <td>{getExactdate(p.date)}</td>
                     <td>{p.shift}</td>
-                    <td>{check(p.Num, p.nameequipe)}</td> 
+                    <td>{check(p.Num, p.nameequipe)}</td>
                     <td>
                       <button
                         style={

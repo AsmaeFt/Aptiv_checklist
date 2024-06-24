@@ -4,6 +4,7 @@ const router = express.Router();
 
 router.post("/NewCheckList", CheckList.NewCheckList);
 router.get("/GetProblems", CheckList.GetProblems);
+router.post("/GetChecklist", CheckList.GetCheckList);
 
 //Aprove by tech
 router.post("/Aprove_tech", CheckList.approveThech);
