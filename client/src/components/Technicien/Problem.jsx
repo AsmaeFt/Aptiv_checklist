@@ -10,6 +10,7 @@ const Problem = () => {
   const User = useSelector((st) => st.login.isLoged);
 
   const [data, setdata] = useState([]);
+  
   const GetProblems = useCallback(async () => {
     try {
       const res = await axios.get(`${api}/CheckList/GetProblems`);
@@ -27,33 +28,28 @@ const Problem = () => {
   const [dateAction, setdateAction] = useState("");
   const [datePrevu, setdatePrevu] = useState("");
 
-  const approve_main = async (id_checklist , Num) => {
-    if (action === "" || dateAction === "" || datePrevu === "") {
-      return message.error("Fill all inputs ");
-    } else {
-      const techApprovment = {
-        Id_CheckList: id_checklist,
-        userName: User.userName,
-        Num:Num,
-        Action: action.value,
-        status: "Aproved",
-        Date_Action: dateAction.value,
-        Date_Prevu: datePrevu.value,
-      };
-      console.log(JSON.stringify(techApprovment));
-      try {
+  const approve_main = async (id_checklist, Num) => {
+    const techApprovment = {
+      Id_CheckList: id_checklist,
+      userName: User.userName,
+      Num: Num,
+      Action: action.value,
+      status: "Aproved",
+      Date_Action: dateAction.value,
+      Date_Prevu: datePrevu.value,
+    };
+    console.log(JSON.stringify(techApprovment));
+    /*       try {
         const res = await axios.post(
-          `${api}/CheckList/Aprove_tech`,
+          `${api}/CheckList/Aprove_T`,
           techApprovment
         );
         message.success(res.error);
       } catch (err) {
         console.error(err);
         message.error(err.response.data.error);
-      }
-    }
+      } */
   };
-
   console.log(data);
 
   return (
@@ -63,19 +59,14 @@ const Problem = () => {
           <div className={c.header}>
             <h3>Plan d{"'"}action associe a la maintenance 1rer niveau</h3>
           </div>
+
           <div className="table">
             <table>
               <thead>
                 <tr>
-                  <th colSpan={3}>
-                    Zone
-                  </th>
-                  <th colSpan={4}>
-                    Problem
-                  </th>
-                  <th colSpan={5}>
-                    Maintenance
-                  </th>
+                  <th colSpan={3}>Zone</th>
+                  <th colSpan={4}>Problem</th>
+                  <th colSpan={5}>Maintenance</th>
                 </tr>
                 <tr>
                   <th>Project</th>
@@ -88,41 +79,27 @@ const Problem = () => {
                   <th>Shift </th>
 
                   <th>Responsable </th>
-                  <th>Action </th>
                   <th>Date Prevu </th>
+                  <th>Action </th>
+
                   <th>Date Action </th>
                   <th>Approvement</th>
-                  
                 </tr>
               </thead>
+
               <tbody>
                 {data.flatMap((p, i) => (
                   <tr key={i}>
-                    <td>
-                      {p.project}
-                    </td>
-                    <td>
-                      {p.family}
-                    </td>
-                    <td>
-                      {p.post}
-                    </td>
+                    <td>{p.project}</td>
+                    <td>{p.family}</td>
+                    <td>{p.post}</td>
                     <td>
                       <div>{p.Num}</div>
                     </td>
-                    <td>
-                      {p.nameequipe}
-                    </td>
+                    <td>{p.nameequipe}</td>
                     <td>{getExactdate(p.date)}</td>
                     <td>{p.shift}</td>
                     <td> {User.userName}</td>
-                    <td>
-                      <textarea
-                        onChange={(e) =>
-                          setaction((p) => ({ ...p, value: e.target.value }))
-                        }
-                      />
-                    </td>
                     <td>
                       <input
                         type="date"
@@ -131,6 +108,14 @@ const Problem = () => {
                         }
                       />
                     </td>
+                    <td>
+                      <textarea
+                        onChange={(e) =>
+                          setaction((p) => ({ ...p, value: e.target.value }))
+                        }
+                      />
+                    </td>
+
                     <td>
                       <input
                         type="date"
@@ -143,20 +128,19 @@ const Problem = () => {
                       />
                     </td>
                     <td>
-                      
                       <button
                         className="button"
-                        onClick={() => approve_main(p.Id_Checklist , p.Num)}
+                        onClick={() => approve_main(p.Id_Checklist, p.Num)}
                       >
                         Aprove
                       </button>
                     </td>
-                    
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
+
         </div>
       </div>
     </>

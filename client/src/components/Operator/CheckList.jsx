@@ -20,6 +20,7 @@ const Checklist = ({ equip, currentIndex, handleNext, operatorInfo }) => {
   ]);
   const [show, setshow] = useState(false);
   const [fch, setfch] = useState([]);
+  const [showCh, setshowCh] = useState(true);
 
   useEffect(() => {
     if (equip) {
@@ -196,16 +197,18 @@ const Checklist = ({ equip, currentIndex, handleNext, operatorInfo }) => {
     checkFlag();
   }, [checkFlag]);
 
-  const name = data.Name;
-  console.log(name);
 
-  const exist = fch.find(
-    (p) =>
-      p.shift === Curent_Shift.shift &&
-      getExactdate(p.date) === getCurentdate(getdate) &&
-      p.equipmentName === data.Name
-  );
-  exist ? console.log(true) : console.log(false);
+  useEffect(() => {
+    const exist = fch.find(
+      (p) =>
+        p.shift === Curent_Shift.shift &&
+        getExactdate(p.date) === getCurentdate(getdate) &&
+        p.equipmentName === data.Name
+    );
+    exist ? setshowCh(false) : setshowCh(true);
+  }, [Curent_Shift.shift, data.Name, fch, getdate]);
+
+  console.log(showCh);
 
   return (
     <>
@@ -252,8 +255,8 @@ const Checklist = ({ equip, currentIndex, handleNext, operatorInfo }) => {
           </fieldset>
         </div>
 
-        {
-          <div className={c["checklist"]}>
+        {showCh && 
+          (<div className={c["checklist"]}>
             <div className={c["Image"]}>
               {image && <img src={image} alt="Equipment" />}
               {points.map((p, i) => (
@@ -308,7 +311,7 @@ const Checklist = ({ equip, currentIndex, handleNext, operatorInfo }) => {
                 )}
               </div>
             </div>
-          </div>
+          </div>)
         }
 
         {problems.length > 0 && (

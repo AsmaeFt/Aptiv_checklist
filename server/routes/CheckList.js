@@ -9,4 +9,6 @@ router.post("/GetChecklist", CheckList.GetCheckList);
 //Aprove by tech
 router.post("/Aprove_tech", CheckList.approveThech);
 router.post("/Aprove_Oper", CheckList.approveOperator);
+
+router.post("/Aprove_T", CheckList.Thechnician);
 module.exports = router;

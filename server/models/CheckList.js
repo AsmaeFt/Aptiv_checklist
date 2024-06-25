@@ -18,6 +18,7 @@ const OperatorSchema = new Schema({
 
 const technicienSchema = new Schema({
   technicienID: { type: Schema.Types.ObjectId, ref: "Users" },
+  name : {type : String },
   points: [
     {
       Num: { type: Number, required: true },
@@ -56,6 +57,7 @@ const CheckListSchema = new Schema({
     },
   ],
   flag:{type:String},
+  
   technicienDecision: {
     type: [technicienSchema],
   },

@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { Navigate , Route , Routes } from "react-router-dom";
-import Problem from "../Technicien/Problem";
+import Problem from "../common/problems";
 
 const Thecnicien = () => {
   return (

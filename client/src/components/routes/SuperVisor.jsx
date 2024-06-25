@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { Navigate , Route , Routes } from "react-router-dom";
-import Problem from "../SuperVisor/Problems";
+import Problem from "../common/problems";
 import Dashboard from "../SuperVisor/Dashboard";
 import Equipment from "../SuperVisor/Equipment";
 import Layout from "../SuperVisor/Layout";

@@ -79,6 +79,7 @@ exports.GetProblems = async (req, res) => {
           family: doc.family,
           ref: doc.ref,
           technicienDecision: doc.technicienDecision,
+          OperatornDecision: doc.OperatornDecision,
         }));
       })
     );
@@ -184,15 +185,84 @@ exports.GetCheckList = async (req, res) => {
       return res.status(400).json({ error: "OperatorID not found!" });
     }
 
-    const checkListWithNames = await Promise.all(exist.map(async (p) => {
-      const equipment = await Equipment.findOne({ _id: p.equipmentID });
-      return {
-        ...p.toObject(),
-        equipmentName: equipment ? equipment.Name : 'Unknown'
-      };
-    }));
+    const checkListWithNames = await Promise.all(
+      exist.map(async (p) => {
+        const equipment = await Equipment.findOne({ _id: p.equipmentID });
+        return {
+          ...p.toObject(),
+          equipmentName: equipment ? equipment.Name : "Unknown",
+        };
+      })
+    );
 
     return res.status(200).json(checkListWithNames);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+exports.Thechnician = async (req, res) => {
+  const {
+    Id_CheckList,
+    userName,
+    Num,
+    Action,
+    status,
+    Date_Action,
+    Date_Prevu,
+  } = req.body;
+
+  try {
+    const existUser = await User.findOne({ userName });
+    if (!existUser) {
+      return res.status(400).json({ error: "User Not Found!" });
+    }
+    const existCheckList = await CheckList.findOne({ _id: Id_CheckList });
+    if (!existCheckList) {
+      return res.status(400).json({ error: "Checklist Not Found!" });
+    }
+    const alreadyApproved = existCheckList.technicienDecision.some((d) =>
+      d.points.some((p) => p.Num === Num && p.status === "Aproved")
+    );
+    if (alreadyApproved) {
+      return res.status(400).json({ error: "Point already approved" });
+    }
+
+    const newPoint = {
+      Num,
+      status: status || "pending",
+      ...(Action && { Action }),
+      ...(Date_Action && { Date_Action }),
+      ...(Date_Prevu && { Date_Prevu }),
+    };
+
+    let technicianDecision = existCheckList.technicienDecision.find(
+      (d) => d.technicienID.toString() === existUser._id.toString()
+    );
+
+    if (!technicianDecision) {
+      technicianDecision = {
+        technicienID: existUser._id,
+        name: existUser.userName,
+        points: [newPoint],
+      };
+      existCheckList.technicienDecision.push(technicianDecision);
+    }
+
+    const pointIndex = technicianDecision.points.findIndex(
+      (p) => p.Num === Num
+    );
+    if (pointIndex !== -1) {
+      technicianDecision.points[pointIndex] = {
+        ...technicianDecision.points[pointIndex],
+        ...newPoint,
+      };
+    } else {
+      technicianDecision.points.push(newPoint);
+    }
+
+    await existCheckList.save();
+    res.status(200).json({ message: "Technician decision added successfully" });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
