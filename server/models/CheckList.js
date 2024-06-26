@@ -15,7 +15,6 @@ const OperatorSchema = new Schema({
     },
   ],
 });
-
 const technicienSchema = new Schema({
   technicienID: { type: Schema.Types.ObjectId, ref: "Users" },
   name : {type : String },
@@ -34,7 +33,6 @@ const technicienSchema = new Schema({
     },
   ],
 });
-
 const CheckListSchema = new Schema({
   OperatorID: { type: String },
   equipmentID: {
@@ -68,6 +66,6 @@ const CheckListSchema = new Schema({
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
 });
-
 const CheckList = mongoose.model("CheckList", CheckListSchema);
 module.exports = CheckList;
+

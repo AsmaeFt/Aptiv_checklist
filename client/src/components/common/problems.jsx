@@ -10,10 +10,6 @@ const Problems = () => {
   const User = useSelector((st) => st.login.isLoged);
   const [data, setdata] = useState([]);
 
-  const [action, setaction] = useState("");
-  const [dateAction, setdateAction] = useState("");
-  const [datePrevu, setdatePrevu] = useState("");
-
   const [rowData, setRowData] = useState({});
 
   const GetProblems = useCallback(async () => {
@@ -30,8 +26,6 @@ const Problems = () => {
     GetProblems();
   }, [GetProblems]);
 
-  console.log(data);
-
   const handleChnage = (i, f, e) => {
     setRowData((p) => ({
       ...p,
@@ -42,20 +36,49 @@ const Problems = () => {
     }));
   };
 
-  const approve_main = async (id_checklist, Num) => {
-    const rowDataForChecklist = rowData[id_checklist] || {};
+  const approve_main = async (i, id_checklist, Num) => {
+    let date_prevu = "";
+    const checklist = data.find((d) => d.Id_Checklist === id_checklist);
+    if (checklist && checklist.technicienDecision) {
+      checklist.technicienDecision.forEach((techDecision) => {
+        const point = techDecision.points.find((p) => p.Num === Num);
+        if (point) {
+          date_prevu = point.Date_Prevu;
+        }
+      });
+    } else {
+      date_prevu = "";
+    }
+
+    const r = rowData[Num] || {};
+    const isActionComplete = r.Action && r.Date_Action;
+    const isOnlyDatePrevuFilled = r.Date_Prevu && !r.Action && !r.Date_Action;
+
+    if (!isActionComplete && !isOnlyDatePrevuFilled) {
+      return message.error(
+        "Please fill both Action and Date Action, or only Date Prevu"
+      );
+    }
+
     const techApproval = {
       Id_CheckList: id_checklist,
       userName: User.userName,
       Num: Num,
-      Action: rowDataForChecklist.action || "",
-      status: "Approved",
-      Date_Action: rowDataForChecklist.dateAction || "",
-      Date_Prevu: rowDataForChecklist.datePrevu || "",
+      Action: r.Action || "",
+      status: isActionComplete ? "Aproved" : "pending",
+      Date_Action: r.Date_Action || "",
+      Date_Prevu: r.Date_Prevu || date_prevu,
     };
     console.log(JSON.stringify(techApproval));
-   
+    try {
+      const res = await axios.post(`${api}/CheckList/Aprove_T`, techApproval);
+      message.success(res.error);
+    } catch (err) {
+      console.error(err);
+      message.error(err.response.data.error);
+    }
   };
+  console.log(rowData);
 
   return (
     <>
@@ -65,15 +88,6 @@ const Problems = () => {
       <div className="table">
         <table>
           <thead>
-            {User.role === "supervisor" && (
-              <tr>
-                <th colSpan={4}>Zone </th>
-                <th colSpan={4}>Problem </th>
-                <th colSpan={3}>Maintenance </th>
-                <th colSpan={1}>Operator </th>
-              </tr>
-            )}
-
             <tr>
               <th>Project </th>
               <th>Family </th>
@@ -149,18 +163,50 @@ const Problems = () => {
                 {User.role === "technicien" && (
                   <React.Fragment>
                     <td>
-                      <input
-                        type="date"
-                        onChange={(e) =>
-                          handleChnage(i, "Date_Prevu", e.target.value)
-                        }
-                      />
+                      {p.technicienDecision &&
+                      p.technicienDecision.length > 0 ? (
+                        p.technicienDecision.flatMap((x, i) => {
+                          const matchingPoints = x.points.filter(
+                            (k) => k.Num === p.Num
+                          );
+                          return matchingPoints.length > 0 ? (
+                            matchingPoints.map((k, m) => (
+                              <span
+                                style={{ color: "orangered" }}
+                                key={`${i}-${m}`}
+                              >
+                                {getExactdate(k.Date_Prevu)}
+                              </span>
+                            ))
+                          ) : (
+                            <input
+                              key={i}
+                              type="date"
+                              onChange={(e) =>
+                                handleChnage(
+                                  p.Num,
+                                  "Date_Prevu",
+                                  e.target.value
+                                )
+                              }
+                            />
+                          );
+                        })
+                      ) : (
+                        <input
+                          type="date"
+                          onChange={(e) =>
+                            handleChnage(p.Num, "Date_Prevu", e.target.value)
+                          }
+                        />
+                      )}
                     </td>
+
                     <td>
                       <input
                         type="date"
                         onChange={(e) =>
-                          handleChnage(i, "Date_Action", e.target.value)
+                          handleChnage(p.Num, "Date_Action", e.target.value)
                         }
                       />
                     </td>
@@ -186,7 +232,7 @@ const Problems = () => {
                     <textarea
                       placeholder="Enter Your Action ..."
                       onChange={(e) =>
-                        handleChnage(i, "Action", e.target.value)
+                        handleChnage(p.Num, "Action", e.target.value)
                       }
                     />
                   </td>
@@ -209,7 +255,7 @@ const Problems = () => {
                   <td>
                     <button
                       className="button"
-                      onClick={() => approve_main(p.Id_Checklist, p.Num)}
+                      onClick={() => approve_main(i, p.Id_Checklist, p.Num)}
                     >
                       Aprove
                     </button>
@@ -223,5 +269,4 @@ const Problems = () => {
     </>
   );
 };
-
 export default Problems;

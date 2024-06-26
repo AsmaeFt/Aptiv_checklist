@@ -267,3 +267,23 @@ exports.Thechnician = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+exports.GetAll = async (req, res) => {
+  try {
+    const data = await CheckList.find({})
+      .populate({
+        path: "equipmentID",
+        select: "Name -_id",
+      })
+      .lean();
+    const formattedData = data.map((item) => ({
+      ...item,
+      equipment: item.equipmentID ? item.equipmentID.Name : null,
+      equipmentID: undefined,
+    }));
+
+    res.status(200).json(formattedData);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
