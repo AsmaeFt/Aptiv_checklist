@@ -54,7 +54,7 @@ const Problems = () => {
       Date_Prevu: rowDataForChecklist.datePrevu || "",
     };
     console.log(JSON.stringify(techApproval));
-    // ... rest of the function
+   
   };
 
   return (
