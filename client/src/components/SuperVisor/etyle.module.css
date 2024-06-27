@@ -28,6 +28,7 @@
 .equips {
   text-align: start;
   width: 100%;
+
 }
 .equips div {
   margin: 1rem 0;
@@ -36,12 +37,15 @@
   border-radius: 5px;
   cursor: pointer;
   transition: all 0.3s ease-in-out;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 .equips div:hover {
   background-color: gray;
   transform: scale(1.03);
 }
-.equips button{
+.equips .submit{
   width: 7rem;
   background-color: white;
   color: orangered;
@@ -51,11 +55,11 @@
   cursor: pointer;
   transition: all 0.3s ease-in-out;
 }
-.equips button:hover{
+.equips .submit:hover{
   background-color: orangered;
   color: white;
 }
-.equips button:focus{
+.equips .submit:focus{
 background-color:rgb(255, 255, 255);
 }
 .task {

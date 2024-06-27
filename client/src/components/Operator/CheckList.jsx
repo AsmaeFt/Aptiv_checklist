@@ -5,6 +5,7 @@ import api from "../../services/api";
 import { getCurentdate, getShiftDate } from "../functions/utilitis";
 import { message } from "antd";
 import { getExactdate } from "../functions/utilitis";
+import TextArea from "antd/es/input/TextArea";
 const Checklist = ({ equip, currentIndex, handleNext, operatorInfo }) => {
   const [image, setImage] = useState("");
   const [points, setPoints] = useState([]);
@@ -197,7 +198,6 @@ const Checklist = ({ equip, currentIndex, handleNext, operatorInfo }) => {
     checkFlag();
   }, [checkFlag]);
 
-
   useEffect(() => {
     const exist = fch.find(
       (p) =>
@@ -208,8 +208,7 @@ const Checklist = ({ equip, currentIndex, handleNext, operatorInfo }) => {
     exist ? setshowCh(false) : setshowCh(true);
   }, [Curent_Shift.shift, data.Name, fch, getdate]);
 
-  console.log(showCh);
-
+  console.log(data.Name);
   return (
     <>
       <div style={{ width: "100%" }}>
@@ -255,8 +254,8 @@ const Checklist = ({ equip, currentIndex, handleNext, operatorInfo }) => {
           </fieldset>
         </div>
 
-        {showCh && 
-          (<div className={c["checklist"]}>
+        {showCh && (
+          <div className={c["checklist"]}>
             <div className={c["Image"]}>
               {image && <img src={image} alt="Equipment" />}
               {points.map((p, i) => (
@@ -274,9 +273,14 @@ const Checklist = ({ equip, currentIndex, handleNext, operatorInfo }) => {
                   <span>{p.Num}</span>
                 </div>
               ))}
+              <div>
+                <span>Observation</span>
+                <textarea style={{width:'90%'}}/>
+              </div>
             </div>
 
             <div className={c["Points"]}>
+              <h3>{data.Name}</h3>
               <div>
                 {points.map((point, i) => (
                   <div
@@ -311,8 +315,8 @@ const Checklist = ({ equip, currentIndex, handleNext, operatorInfo }) => {
                 )}
               </div>
             </div>
-          </div>)
-        }
+          </div>
+        )}
 
         {problems.length > 0 && (
           <div className="table">

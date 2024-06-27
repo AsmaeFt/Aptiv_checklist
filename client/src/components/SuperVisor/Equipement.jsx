@@ -22,6 +22,9 @@ const Equipement = () => {
   const [editText, seteditText] = useState(null);
   const [importData, setimportData] = useState(null);
 
+  const [editEquipment, seteditEquipment] = useState(null);
+  const [activEditEquip, setactivEditEquip] = useState(null);
+
   const GetEquipemnt = useCallback(async () => {
     try {
       const res = await axios.get(`${api}/equipe/Getequip`);
@@ -122,6 +125,31 @@ const Equipement = () => {
       message.error("Failed to load equipments.");
     }
   };
+
+  const UpdateEquipemnent = (e) => {
+    setactivEditEquip(e);
+    seteditEquipment(e);
+  };
+  const saveEquipement = async (Name) => {
+    setactivEditEquip(null);
+
+    const newPoint = {
+      Name: Name,
+      newOne: editEquipment,
+    };
+    console.log(newPoint);
+
+    try {
+      const res = await axios.post(`${api}/Equipment/UpdateEq`, newPoint);
+      setListEquipement(res.data.data);
+      message.success(res.data.message);
+      return res.data;
+    } catch (err) {
+      console.error("Error fetching equipments:", err);
+      message.error("Failed to load equipments.");
+    }
+  };
+
   const handleSave = async () => {
     if (!imageFile) {
       message.warning("Please Upload an Image first !");
@@ -169,7 +197,6 @@ const Equipement = () => {
       console.error(err);
     }
   };
-
   const handleAddData = (e) => {
     setimportData(e.target.files[0]);
   };
@@ -187,6 +214,7 @@ const Equipement = () => {
       console.error(err);
     }
   };
+  console.log(ListEquipement);
 
   return (
     <>
@@ -303,25 +331,43 @@ const Equipement = () => {
           </div>
           <div className={c.equips}>
             {ListEquipement.map((p, i) => (
-              <div
-                key={i}
-                onClick={() => {
-                  handleclick(p.Name);
-                }}
-              >
-                <span>{p.Name}</span>
-              </div>
+              <React.Fragment key={i}>
+                <div
+                  onClick={() => {
+                    handleclick(p.Name);
+                  }}
+                >
+                  {activEditEquip === p.Name ? (
+                    <>
+                      <input
+                        value={editEquipment}
+                        onChange={(e) => seteditEquipment(e.target.value)}
+                        onBlur={() => {
+                          saveEquipement(p.Name);
+                        }}
+                      />
+                    </>
+                  ) : (
+                    <>
+                      <span>{p.Name}</span>
+                    </>
+                  )}
+
+                  <button
+                    className={c.edit}
+                    onClick={() => UpdateEquipemnent(p.Name)}
+                  >
+                    <img src={edit} />
+                  </button>
+                </div>
+              </React.Fragment>
             ))}
           </div>
           <div className={c.equips}>
             <label>
-              <input
-                type="file"
-                accept=".xlsx,.xls"
-                onChange={handleAddData}
-              />
+              <input type="file" accept=".xlsx,.xls" onChange={handleAddData} />
             </label>
-            <button  onClick={addDataFile}>
+            <button className={c.submit} onClick={addDataFile}>
               Submit
             </button>
           </div>

@@ -17,7 +17,7 @@ const OperatorSchema = new Schema({
 });
 const technicienSchema = new Schema({
   technicienID: { type: Schema.Types.ObjectId, ref: "Users" },
-  name : {type : String },
+  name: { type: String },
   points: [
     {
       Num: { type: Number, required: true },
@@ -33,6 +33,7 @@ const technicienSchema = new Schema({
     },
   ],
 });
+
 const CheckListSchema = new Schema({
   OperatorID: { type: String },
   equipmentID: {
@@ -52,10 +53,11 @@ const CheckListSchema = new Schema({
       Num: { type: Number, required: true },
       Description: { type: String, required: true },
       status: { type: String, required: true },
+      observation: { type: String },
     },
   ],
-  flag:{type:String},
-  
+  flag: { type: String },
+
   technicienDecision: {
     type: [technicienSchema],
   },
@@ -68,4 +70,3 @@ const CheckListSchema = new Schema({
 });
 const CheckList = mongoose.model("CheckList", CheckListSchema);
 module.exports = CheckList;
-

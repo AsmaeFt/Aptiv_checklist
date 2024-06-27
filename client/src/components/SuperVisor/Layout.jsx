@@ -1,18 +1,28 @@
 import { useCallback, useEffect, useState } from "react";
 import c from "./Layout.module.css";
 import axios from "axios";
-import { message, Select } from "antd";
+import { message } from "antd";
+
 import api from "../../services/api";
 import { Add_Equipement } from "./Add_Equipement";
+import Selectdropdown from "../UI/SelectDropdown";
+import { OptionsFormat } from "../functions/utilitis";
 
 const Layout = () => {
   const [data, setdata] = useState([]);
   const [maxEquipLength, setMaxEquipLength] = useState(0);
-  const [filterData, setfilterData] = useState("");
+
+/*   const [filterData, setfilterData] = useState(""); */
 
   const [project, setproject] = useState([]);
   const [family, setfamily] = useState([]);
   const [post, setpost] = useState([]);
+
+  const [dataF, setDataF] = useState({
+    p: [],
+    f: [],
+    po: [],
+  });
 
   const GetLayout = useCallback(async () => {
     try {
@@ -24,16 +34,14 @@ const Layout = () => {
       setMaxEquipLength(maxEquipLength);
 
       const pr = [...new Set(data.map((p) => p.project))];
-      const prs = pr.map((e) => ({ value: e, label: e }));
-      setproject(prs);
+
+      setproject(pr);
 
       const fm = [...new Set(data.map((p) => p.family))];
-      const fms = fm.map((e) => ({ value: e, label: e }));
-      setfamily(fms);
+      setfamily(fm);
 
       const ps = [...new Set(data.map((p) => p.post))];
-      const pss = ps.map((e) => ({ value: e, label: e }));
-      setpost(pss);
+      setpost(ps);
 
       return data;
     } catch (err) {
@@ -61,20 +69,28 @@ const Layout = () => {
   const togglePopup = () => {
     setshowpopup((p) => !p);
   };
-  const handleFilterChange = (e) => {
-    setfilterData( e.target.value);
-  };
 
-  const filteredData = data.filter((p) => 
-    p.project.toLowerCase().includes(filterData.toLowerCase()) ||
-    p.family.toLowerCase().includes(filterData.toLowerCase()) ||
-    p.post.toLowerCase().includes(filterData.toLowerCase()) ||
-    p.Equipement.some(e => e.toLowerCase().includes(filterData.toLowerCase()))
-  );
+/*   const handleFilterChange = (e) => {
+    setfilterData(e.target.value);
+  }; */
 
-  console.log(filteredData);
+/*   const filteredData = data.filter(
+    (p) =>
+      p.project.toLowerCase().includes(filterData.toLowerCase()) ||
+      p.family.toLowerCase().includes(filterData.toLowerCase()) ||
+      p.post.toLowerCase().includes(filterData.toLowerCase()) ||
+      p.Equipement.some((e) =>
+        e.toLowerCase().includes(filterData.toLowerCase())
+      )
+  ); */
 
-  console.log(filteredData);
+  const FilterData = data.filter((item) => {
+    const projectMath = dataF.p.length === 0 || dataF.p.includes(item.project);
+    const familyMatch = dataF.f.length === 0 || dataF.f.includes(item.family);
+    const postMatch = dataF.po.length === 0 || dataF.po.includes(item.post);
+    return projectMath && familyMatch && postMatch;
+  });
+  console.log(FilterData);
 
   return (
     <>
@@ -84,11 +100,32 @@ const Layout = () => {
             <h3>M4 Layout</h3>
           </div>
 
-          <div className={c.seach}>
+          {/*  <div className={c.seach}>
             <input
               type="text"
               placeholder="Serach and filter"
               onChange={handleFilterChange}
+            />
+          </div> */}
+
+          {/*   <SelectDropdown /> */}
+
+          <div className={c.filterdata}>
+            <Selectdropdown
+              
+              options={OptionsFormat(project)}
+              placeholder={"select Project ..."}
+              onChange={(e) => setDataF((prev) => ({ ...prev, p: e }))}
+            />
+            <Selectdropdown
+              options={OptionsFormat(family)}
+              placeholder={"select Family ..."}
+              onChange={(e) => setDataF((prev) => ({ ...prev, f: e }))}
+            />
+            <Selectdropdown
+              options={OptionsFormat(post)}
+              placeholder={"select Post ..."}
+              onChange={(e) => setDataF((prev) => ({ ...prev, po: e }))}
             />
           </div>
 
@@ -104,7 +141,7 @@ const Layout = () => {
                 </tr>
               </thead>
               <tbody>
-                {filteredData.map((p, i) => (
+                {FilterData.map((p, i) => (
                   <tr
                     key={i}
                     onClick={() => {

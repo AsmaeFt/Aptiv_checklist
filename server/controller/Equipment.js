@@ -67,7 +67,44 @@ exports.UpdateEquip = async (req, res) => {
 
     point.Description = Description;
     await existEquip.save();
-    res.status(200).json({ message: "Point updated successfully!" });
+    const data = await Equipenet.find({});
+    res.status(200).json({ data });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+exports.UpdateEquipName = async (req, res) => {
+  const { Name, newOne } = req.body;
+
+  try {
+    const findEquip = await Equipenet.findOne({ Name });
+
+    if (!findEquip) {
+      return res.status(404).json({ message: "Equipment Not Found" });
+    }
+    const e = await listEquip.findOne({ Name });
+    e.Name = newOne;
+    await e.save();
+
+    findEquip.Name = newOne;
+    await findEquip.save();
+
+    const data = await listEquip.find({});
+    res.status(200).json({
+      message: "Equipment updated successfully",
+      data,
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+exports.GetNames = async (req, res) => {
+  try {
+    const names = await Equipenet.find({}, "Name");
+    const name = names.map(e => e.Name);
+    res.status(200).json(name);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

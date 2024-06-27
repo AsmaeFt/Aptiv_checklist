@@ -24,5 +24,7 @@ router.post("/AddNew_Equipment", upload.single("pic"), Equipment.AddEquipenet);
 router.post("/GetEquipement", Equipment.Getequipment);
 router.get("/get", Equipment.getall);
 router.post("/Update", Equipment.UpdateEquip);
+router.post("/UpdateEq", Equipment.UpdateEquipName);
+router.get("/GetNames", Equipment.GetNames);
 
 module.exports = router;

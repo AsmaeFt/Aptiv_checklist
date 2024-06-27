@@ -138,3 +138,8 @@ th {
     transform: translateY(0);
   }
 }
+
+.option-item:hover{
+  background-color: orangered !important;
+  color: white  !important;
+}
