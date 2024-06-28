@@ -5,7 +5,7 @@ import api from "../../services/api";
 import { getCurentdate, getShiftDate } from "../functions/utilitis";
 import { message } from "antd";
 import { getExactdate } from "../functions/utilitis";
-import TextArea from "antd/es/input/TextArea";
+import AlreadyCgecked from "../UI/AlreadyCgecked";
 const Checklist = ({ equip, currentIndex, handleNext, operatorInfo }) => {
   const [image, setImage] = useState("");
   const [points, setPoints] = useState([]);
@@ -254,7 +254,7 @@ const Checklist = ({ equip, currentIndex, handleNext, operatorInfo }) => {
           </fieldset>
         </div>
 
-        {showCh && (
+        {showCh ? (
           <div className={c["checklist"]}>
             <div className={c["Image"]}>
               {image && <img src={image} alt="Equipment" />}
@@ -316,7 +316,11 @@ const Checklist = ({ equip, currentIndex, handleNext, operatorInfo }) => {
               </div>
             </div>
           </div>
-        )}
+        ):
+        (<>
+        <AlreadyCgecked/>
+        </>)
+        }
 
         {problems.length > 0 && (
           <div className="table">
@@ -363,6 +367,8 @@ const Checklist = ({ equip, currentIndex, handleNext, operatorInfo }) => {
             </table>
           </div>
         )}
+
+        
       </div>
     </>
   );
