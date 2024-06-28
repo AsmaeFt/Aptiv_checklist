@@ -34,7 +34,6 @@ const Layout = () => {
       setMaxEquipLength(maxEquipLength);
 
       const pr = [...new Set(data.map((p) => p.project))];
-
       setproject(pr);
 
       const fm = [...new Set(data.map((p) => p.family))];
@@ -112,7 +111,6 @@ const Layout = () => {
 
           <div className={c.filterdata}>
             <Selectdropdown
-              
               options={OptionsFormat(project)}
               placeholder={"select Project ..."}
               onChange={(e) => setDataF((prev) => ({ ...prev, p: e }))}

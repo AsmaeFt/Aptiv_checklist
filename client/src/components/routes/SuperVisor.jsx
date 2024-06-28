@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import { Navigate , Route , Routes } from "react-router-dom";
 import Problem from "../SuperVisor//Problems";
 import Dashboard from "../SuperVisor/Dashboard";
-import Equipment from "../SuperVisor/Equipment";
+
 import Layout from "../SuperVisor/Layout";
 import Equip from "../SuperVisor/Equipement"
 import Check from "../SuperVisor/CheckLists"

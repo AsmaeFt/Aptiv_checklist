@@ -218,6 +218,7 @@ const Equipement = () => {
 
   return (
     <>
+    
       <div className={c["Equip_Container"]}>
         <div className={c["Equip-Image"]}>
           <div
@@ -339,7 +340,8 @@ const Equipement = () => {
                 >
                   {activEditEquip === p.Name ? (
                     <>
-                      <input
+                      <input 
+                      className="input"
                         value={editEquipment}
                         onChange={(e) => seteditEquipment(e.target.value)}
                         onBlur={() => {
