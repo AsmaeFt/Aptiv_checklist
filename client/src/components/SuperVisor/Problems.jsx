@@ -250,7 +250,7 @@ const Problems = () => {
                 {User.role === "supervisor" && (
                   <td>
                     {p.OperatornDecision && p.OperatornDecision.length > 0 ? (
-                      p.technicienDecision.flatMap((x, i) =>
+                      p.OperatornDecision.flatMap((x, i) =>
                         x.points.map((k, m) => (
                           <span key={`${i}-${m}`}>{k.status}</span>
                         ))
