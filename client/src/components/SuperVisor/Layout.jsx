@@ -12,11 +12,12 @@ const Layout = () => {
   const [data, setdata] = useState([]);
   const [maxEquipLength, setMaxEquipLength] = useState(0);
 
-/*   const [filterData, setfilterData] = useState(""); */
+  /*   const [filterData, setfilterData] = useState(""); */
 
   const [project, setproject] = useState([]);
   const [family, setfamily] = useState([]);
   const [post, setpost] = useState([]);
+  const [importData, setimportData] = useState(null);
 
   const [dataF, setDataF] = useState({
     p: [],
@@ -69,11 +70,11 @@ const Layout = () => {
     setshowpopup((p) => !p);
   };
 
-/*   const handleFilterChange = (e) => {
+  /*   const handleFilterChange = (e) => {
     setfilterData(e.target.value);
   }; */
 
-/*   const filteredData = data.filter(
+  /*   const filteredData = data.filter(
     (p) =>
       p.project.toLowerCase().includes(filterData.toLowerCase()) ||
       p.family.toLowerCase().includes(filterData.toLowerCase()) ||
@@ -91,14 +92,37 @@ const Layout = () => {
   });
   console.log(FilterData);
 
+  const handleAddData = (e) => {
+    setimportData(e.target.files[0]);
+  };
+
+  const addDataFile = async () => {
+    if (!importData) return alert("please select a file first ! ");
+    const formData = new FormData();
+    formData.append("excelFile", importData);
+    try {
+      const res = await axios.post(`${api}/Layout/ImportExcel`, formData);
+      const data = await res.data;
+
+      console.log(data);
+      GetLayout();
+      message.success("Layout Data Added Succefuly !");
+      return data;
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  console.log(data);
   return (
     <>
       <div className={c.container}>
         <div className={c.cont}>
+
           <div className={c.header}>
             <h3>M4 Layout</h3>
           </div>
-
+          
           {/*  <div className={c.seach}>
             <input
               type="text"
@@ -106,9 +130,7 @@ const Layout = () => {
               onChange={handleFilterChange}
             />
           </div> */}
-
           {/*   <SelectDropdown /> */}
-
           <div className={c.filterdata}>
             <Selectdropdown
               options={OptionsFormat(project)}
@@ -127,42 +149,62 @@ const Layout = () => {
             />
           </div>
 
-          <div className="table">
-            <table>
-              <thead>
-                <tr>
-                  <th>Project</th>
-                  <th>Family</th>
-                  <th>Post</th>
+          {FilterData.length > 0 ? (
+            <div className="table">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Project</th>
+                    <th>Family</th>
+                    <th>Post</th>
 
-                  <th colSpan={maxEquipLength}>Equipement</th>
-                </tr>
-              </thead>
-              <tbody>
-                {FilterData.map((p, i) => (
-                  <tr
-                    key={i}
-                    onClick={() => {
-                      update(p.project, p.family, p.post);
-                    }}
-                    style={{ cursor: "pointer" }}
-                  >
-                    <td>{p.project}</td>
-                    <td>{p.family}</td>
-                    <td>{p.post}</td>
-                    {p.Equipement.map((e, i) => (
-                      <td key={i}>{e}</td>
-                    ))}
-                    {Array(maxEquipLength - p.Equipement.length)
-                      .fill("")
-                      .map((_, i) => (
-                        <td key={i + p.Equipement.length}>-</td>
-                      ))}
+                    <th colSpan={maxEquipLength}>Equipement</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody>
+                  {FilterData.map((p, i) => (
+                    <tr
+                      key={i}
+                      onClick={() => {
+                        update(p.project, p.family, p.post);
+                      }}
+                      style={{ cursor: "pointer" }}
+                    >
+                      <td>{p.project}</td>
+                      <td>{p.family}</td>
+                      <td>{p.post}</td>
+                      {p.Equipement.map((e, i) => (
+                        <td key={i}>{e}</td>
+                      ))}
+                      {maxEquipLength.length != 0 && (
+                        <>
+                          {Array(maxEquipLength - p.Equipement.length)
+                            .fill("")
+                            .map((_, i) => (
+                              <td key={i + p.Equipement.length}>-</td>
+                            ))}
+                        </>
+                      )}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <>
+              <span>Upload Data</span>{" "}
+              <label>
+                <input
+                  type="file"
+                  accept=".xlsx,.xls"
+                  onChange={handleAddData}
+                />
+              </label>
+              <button className={c.submit} onClick={addDataFile}>
+                Upload
+              </button>
+            </>
+          )}
         </div>
         {showpopup && (
           <Add_Equipement close={togglePopup} pr={pr} fm={fm} po={po} />

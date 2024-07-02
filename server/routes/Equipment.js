@@ -23,7 +23,10 @@ const upload = multer({ storage: storage });
 router.post("/AddNew_Equipment", upload.single("pic"), Equipment.AddEquipenet);
 router.post("/GetEquipement", Equipment.Getequipment);
 router.get("/get", Equipment.getall);
+
 router.post("/Update", Equipment.UpdateEquip);
+router.post("/Delete", Equipment.Delete);
+
 router.post("/UpdateEq", Equipment.UpdateEquipName);
 router.get("/GetNames", Equipment.GetNames);
 

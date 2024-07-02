@@ -100,10 +100,24 @@ exports.UpdateEquipName = async (req, res) => {
   }
 };
 
+exports.Delete = async (req, res) => {
+  const { Name } = req.body;
+  try {
+    await listEquip.deleteOne({ Name }); 
+    res.status(200).json({ message: "Equipment deleted successfully" });
+
+  } catch (err) {
+    console.error("Error deleting equipment:", err);
+    res
+      .status(500)
+      .json({ error: "An error occurred while deleting the equipment" });
+  }
+};
+
 exports.GetNames = async (req, res) => {
   try {
     const names = await Equipenet.find({}, "Name");
-    const name = names.map(e => e.Name);
+    const name = names.map((e) => e.Name);
     res.status(200).json(name);
   } catch (err) {
     res.status(500).json({ error: err.message });

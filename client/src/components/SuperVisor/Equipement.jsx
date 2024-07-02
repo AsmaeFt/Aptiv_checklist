@@ -5,6 +5,7 @@ import axios from "axios";
 import api from "../../services/api";
 import edit from "../../assets/edit.png";
 import upload from "../../assets/uplo.png";
+import delet from "../../assets/delete.png";
 
 const Equipement = () => {
   const [ListEquipement, setListEquipement] = useState([]);
@@ -21,7 +22,7 @@ const Equipement = () => {
   const [activeEdit, setactiveEdit] = useState(null);
   const [editText, seteditText] = useState(null);
   const [importData, setimportData] = useState(null);
-
+  const [refe, setrefe] = useState("");
   const [editEquipment, seteditEquipment] = useState(null);
   const [activEditEquip, setactivEditEquip] = useState(null);
 
@@ -55,12 +56,14 @@ const Equipement = () => {
         console.log(data);
         if (!data) {
           setimage(null);
+          setrefe("");
           setPoints([]);
           setactiv(true);
           setPositions([]);
         } else {
           setimage(`http://10.236.148.30:8080/${data.Pic}`);
           setPoints(data.Points);
+          setrefe(data.ref);
           setactiv(false);
           setPositions(null);
         }
@@ -130,6 +133,7 @@ const Equipement = () => {
     setactivEditEquip(e);
     seteditEquipment(e);
   };
+
   const saveEquipement = async (Name) => {
     setactivEditEquip(null);
 
@@ -200,6 +204,7 @@ const Equipement = () => {
   const handleAddData = (e) => {
     setimportData(e.target.files[0]);
   };
+
   const addDataFile = async () => {
     if (!importData) return alert("please select a file first ! ");
     const formData = new FormData();
@@ -214,15 +219,27 @@ const Equipement = () => {
       console.error(err);
     }
   };
+
   console.log(ListEquipement);
+
+  const deleteEquipment = async (Name) => {
+    console.log('Deleting equipment:', Name);
+    try {
+      const response = await axios.post(`${api}/Equipment/Delete`, { Name });
+      console.log('Delete response:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Error deleting equipment:', error.response?.data || error.message);
+      throw error; // Re-throw the error for the caller to handle
+    }
+  };
 
   return (
     <>
-    
       <div className={c["Equip_Container"]}>
         <div className={c["Equip-Image"]}>
           <div
-            onClick={!image ? triggerImageUpload : undefined}
+            onClick={triggerImageUpload}
             className={c.img}
             onDragOver={handleDragOver}
             onDrop={handleDrop}
@@ -238,11 +255,15 @@ const Equipement = () => {
                     style={{
                       top: `${p.Position.y * 100}%`,
                       left: `${p.Position.x * 100}%`,
+                      cursor: "move",
                     }}
+                    draggable
+                    onDragStart={(e) => handleStart(e, i)}
                   >
                     <span>{p.Num}</span>
                   </div>
                 ))}
+                <span>{refe}</span>
               </>
             ) : (
               <>
@@ -334,14 +355,15 @@ const Equipement = () => {
             {ListEquipement.map((p, i) => (
               <React.Fragment key={i}>
                 <div
+                  className={c.equipsContainet}
                   onClick={() => {
                     handleclick(p.Name);
                   }}
                 >
                   {activEditEquip === p.Name ? (
                     <>
-                      <input 
-                      className="input"
+                      <input
+                        className="input"
                         value={editEquipment}
                         onChange={(e) => seteditEquipment(e.target.value)}
                         onBlur={() => {
@@ -354,13 +376,20 @@ const Equipement = () => {
                       <span>{p.Name}</span>
                     </>
                   )}
-
-                  <button
-                    className={c.edit}
-                    onClick={() => UpdateEquipemnent(p.Name)}
-                  >
-                    <img src={edit} />
-                  </button>
+                  <div>
+                    <button
+                      className={c.edit}
+                      onClick={() => UpdateEquipemnent(p.Name)}
+                    >
+                      <img src={edit} />
+                    </button>
+                    <button
+                      className={c.edit}
+                      onClick={() => deleteEquipment(p.Name)}
+                    >
+                      <img src={delet} />
+                    </button>
+                  </div>
                 </div>
               </React.Fragment>
             ))}

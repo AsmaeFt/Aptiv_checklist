@@ -1,11 +1,13 @@
 import React, { useCallback, useEffect, useState } from "react";
 import c from "./Layout.module.css";
 import axios from "axios";
-import { message, Space, Switch } from "antd";
+import { message, Space, Switch, DatePicker } from "antd";
 import api from "../../services/api";
 import { getExactdate } from "../functions/utilitis";
 import Selectdropdown from "../UI/SelectDropdown";
 import { OptionsFormat } from "../functions/utilitis";
+
+const { RangePicker } = DatePicker;
 
 const CheckLists = () => {
   const [data, setdata] = useState([]);
@@ -20,6 +22,13 @@ const CheckLists = () => {
     p: [],
     f: [],
     po: [],
+    sdate: '',
+    edate: '',
+  });
+
+  const [Fdates, setFdates] = useState({
+    sdate: "",
+    edate: "",
   });
 
   const GetFiltredData = (data) => {
@@ -69,8 +78,13 @@ const CheckLists = () => {
     const projectMath = dataF.p.length === 0 || dataF.p.includes(item.project);
     const familyMatch = dataF.f.length === 0 || dataF.f.includes(item.family);
     const postMatch = dataF.po.length === 0 || dataF.po.includes(item.post);
-    return projectMath && familyMatch && postMatch;
+    const sdateMatch = dataF.sdate === '' || dataF.sdate <= item.date;
+    const edateMatch = dataF.edate === ''|| dataF.edate >= item.date;
+    return projectMath && familyMatch && postMatch && sdateMatch && edateMatch;
+
   });
+
+
   console.log(FilterData);
 
   return (
@@ -79,6 +93,26 @@ const CheckLists = () => {
         <div className={c.cont}>
           <div className={c.header}>
             <h3>M4 CheckLists</h3>
+          </div>
+          <div className={c.date}>
+            <form>
+            <input
+              type="date"
+              name="start"
+              onChange={(e) =>
+                setDataF((prev) => ({ ...prev, sdate: e.target.value }))
+              }
+            />
+            <input
+              type="date"
+              name="end"
+              min={dataF.sdate}
+              onChange={(e) =>
+                setDataF((prev) => ({ ...prev, edate: e.target.value }))
+              }
+            />
+            </form>
+           
           </div>
 
           <div className={c.filterdata}>
@@ -112,6 +146,7 @@ const CheckLists = () => {
               />
             </Space>
           </div>
+
           <div className="table">
             <table>
               <thead>

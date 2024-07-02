@@ -5,6 +5,7 @@ import { message } from "antd";
 import { useParams } from "react-router-dom";
 import CheckList from "./CheckList";
 import { useNavigate } from "react-router-dom";
+import err from "../../assets/error.svg";
 
 const Checklist = () => {
   const navigate = useNavigate();
@@ -17,7 +18,7 @@ const Checklist = () => {
     id: id,
     name: nameoperator,
   };
- /*  console.log(JSON.stringify({ id, nameoperator, project, family, post })); */
+  /*  console.log(JSON.stringify({ id, nameoperator, project, family, post })); */
   const [datas, setdatas] = useState([]);
   const [index, setindex] = useState(0);
 
@@ -60,14 +61,21 @@ const Checklist = () => {
   return (
     <>
       {datas.length <= 0 ? (
-        <div>Error ... </div>
+        <div
+          style={{ height: "100%", display: "flex", justifyContent: "center", alignItems:'center' }}
+        >
+          <div>
+            <img style={{ width: "30rem" }} src={err} />
+            <p> No Project or Family Or Post or just no Data Found !</p>
+          </div>
+        </div>
       ) : datas.length === 1 ? (
         <CheckList equip={datas[0]} />
       ) : (
         <>
           <CheckList
             equip={datas}
-            currentIndex={index}
+            currentIndex={index} 
             handleNext={handelnext}
             operatorInfo={operatorInfo}
           />

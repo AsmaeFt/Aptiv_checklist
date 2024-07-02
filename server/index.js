@@ -1,13 +1,16 @@
 const express = require("express");
+const morgan = require("morgan");
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const cors = require("cors");
 const path = require("path");
 const bodyParser = require("body-parser");
 const dotenv = require("dotenv");
+
 dotenv.config();
 
 const app = express();
+app.use(morgan('common'))
 
 const User = require("./models/Users");
 

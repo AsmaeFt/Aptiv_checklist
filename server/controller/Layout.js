@@ -49,9 +49,8 @@ exports.importLayout = async (req, res) => {
     }
     //for removing files
     fs.unlinkSync(filePath);
-    res
-      .status(200)
-      .json({ message: "File uploaded and data processed successfully." });
+    const layout = await Layout.find({});
+    res.status(200).json(layout);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

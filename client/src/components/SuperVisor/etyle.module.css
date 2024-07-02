@@ -33,7 +33,7 @@
 .equips input{
   animation:  faderight 0.3s ease-in-out;
 }
-.equips div {
+.equips .equipsContainet {
   margin: 1rem 0;
   background-color: rgb(39, 39, 39);
   padding: 5px;
@@ -44,7 +44,7 @@
   justify-content: space-between;
   align-items: center;
 }
-.equips div:hover {
+.equips .equipsContainet:hover {
   background-color: gray;
   transform: scale(1.03);
 }
@@ -115,10 +115,11 @@ background-color:rgb(255, 255, 255);
 }
 
 .edit img {
-  width: 1.3rem;
+  width: 1rem;
   background-color: rgb(255, 255, 255);
   text-align: center;
-  padding: 0.3rem;
+  margin: 0 0.1rem;
+  padding: 0.1rem;
   border-radius: 1rem;
   transition: all 0.2s ease-in-out;
   box-shadow: 6px 6px 9px #272727;
