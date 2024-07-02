@@ -3,7 +3,6 @@ const listEquip = require("../models/ListEquip");
 const Layout = require("../models/Layout");
 
 ////
-
 exports.Get = async (req, res) => {
   try {
     const data = await Equipment.find();
@@ -34,12 +33,43 @@ exports.AddEquipenet = async (req, res) => {
 
       exist.updatedAt = new Date();
       await exist.save();
-      res.status(200).json(exist);
+      const data = await Equipment.find({});
+      res.status(200).json(data);
     } else {
       return res.status(404).json({ message: "Equipement Not Found!" });
     }
   } catch (err) {
     res.status(500).json({ error: err.message });
+  }
+};
+
+exports.UpdateEquipName = async (req, res) => {
+  const { Name, newOne } = req.body;
+  try {
+    const findEquip = await Equipment.findOne({ Name });
+    if (!findEquip) {
+      return res.status(404).json({ message: "Equipment Not Found" });
+    }
+    findEquip.Name = newOne;
+    await findEquip.save();
+    const datas = await Equipment.find({});
+    res.status(200).json(datas);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+exports.Delete = async (req, res) => {
+  const { Name } = req.body;
+  try {
+    await Equipment.deleteOne({ Name });
+    const data = await Equipment.find({});
+    res.status(200).json(data);
+  } catch (err) {
+    console.error("Error deleting equipment:", err);
+    res
+      .status(500)
+      .json({ error: "An error occurred while deleting the equipment" });
   }
 };
 
@@ -97,45 +127,6 @@ exports.UpdateEquip = async (req, res) => {
     res.status(200).json({ data });
   } catch (err) {
     res.status(500).json({ error: err.message });
-  }
-};
-
-exports.UpdateEquipName = async (req, res) => {
-  const { Name, newOne } = req.body;
-
-  try {
-    const findEquip = await Equipment.findOne({ Name });
-
-    if (!findEquip) {
-      return res.status(404).json({ message: "Equipment Not Found" });
-    }
-    const e = await listEquip.findOne({ Name });
-    e.Name = newOne;
-    await e.save();
-
-    findEquip.Name = newOne;
-    await findEquip.save();
-
-    const data = await listEquip.find({});
-    res.status(200).json({
-      message: "Equipment updated successfully",
-      data,
-    });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
-
-exports.Delete = async (req, res) => {
-  const { Name } = req.body;
-  try {
-    await listEquip.deleteOne({ Name });
-    res.status(200).json({ message: "Equipment deleted successfully" });
-  } catch (err) {
-    console.error("Error deleting equipment:", err);
-    res
-      .status(500)
-      .json({ error: "An error occurred while deleting the equipment" });
   }
 };
 

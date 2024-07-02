@@ -26,7 +26,7 @@ const Equipement = () => {
   const [editEquipment, seteditEquipment] = useState(null);
   const [activEditEquip, setactivEditEquip] = useState(null);
 
-  /// Get Data
+  ////////
 
   const GetEquipemnt = useCallback(async () => {
     try {
@@ -43,23 +43,27 @@ const Equipement = () => {
     GetEquipemnt();
   }, [GetEquipemnt]);
 
-  /// Get Data
-
-  const handleclick = async (Name) => {
-    setSelectedEquip(Name);
-    if (ListEquipement) {
-      const list = ListEquipement.find((e) => e.Name === Name);
-      if (list) {
-        setListPoints(list.Points);
-        setimage(list.Pic ? `http://10.236.148.30:8000/${list.Pic}` : null);
-        setrefe(list.ref ? list.ref : "");
-        list.Points.map((p) => {
-          console.log(p.Position);
-        });
-        setPoints(list.Points);
+  const handleclick = useCallback(
+    async (Name) => {
+      setSelectedEquip(Name);
+      if (ListEquipement) {
+        const list = ListEquipement.find((e) => e.Name === Name);
+        if (list) {
+          setListPoints(list.Points);
+          setimage(list.Pic ? `http://10.236.148.30:8000/${list.Pic}` : null);
+          setrefe(list.ref ? list.ref : "");
+          list.Points.map((p) => {
+            console.log(p.Position);
+          });
+          setPoints(list.Points);
+        }
       }
-    }
-  };
+    },
+    [ListEquipement]
+  );
+  useEffect(() => {
+    handleclick();
+  }, [handleclick]);
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
@@ -69,7 +73,6 @@ const Equipement = () => {
       setImageFile(file);
     }
   };
-
   const triggerImageUpload = () => {
     const input = document.createElement("input");
     input.type = "file";
@@ -77,6 +80,9 @@ const Equipement = () => {
     input.onchange = handleImageUpload;
     input.click();
   };
+
+  //////////
+
   const handleStart = (e, i) => {
     setDraggedPoint(i);
   };
@@ -95,6 +101,8 @@ const Equipement = () => {
       setDraggedPoint(null);
     }
   };
+
+  ///
   const UpdatePoint = (i) => {
     setactiveEdit(i);
     seteditText(ListPoints[i].Description);
@@ -116,6 +124,7 @@ const Equipement = () => {
       message.error("Failed to load equipments.");
     }
   };
+
   const UpdateEquipemnent = (e) => {
     setactivEditEquip(e);
     seteditEquipment(e);
@@ -130,14 +139,35 @@ const Equipement = () => {
 
     try {
       const res = await axios.post(`${api}/Equipment/UpdateEq`, newPoint);
-      setListEquipement(res.data.data);
-      message.success(res.data.message);
+      const data = res.data;
+      setListEquipement(data);
+      message.success("Equipement is Updated");
       return res.data;
     } catch (err) {
       console.error("Error fetching equipments:", err);
       message.error("Failed to load equipments.");
     }
   };
+
+  const deleteEquipment = async (Name) => {
+    try {
+      const res = await axios.post(`${api}/Equipment/Delete`, { Name });
+      console.log("Delete response:", res.data);
+      const data = res.data;
+      setListEquipement(data);
+      setListPoints([]);
+      return data;
+    } catch (error) {
+      console.error(
+        "Error deleting equipment:",
+        error.response?.data || error.message
+      );
+      throw error;
+    }
+  };
+
+  ///
+
   const handleSave = async () => {
     if (!imageFile) {
       message.warning("Please Upload an Image first !");
@@ -174,12 +204,14 @@ const Equipement = () => {
         `${api}/Equipment/AddNew_Equipment`,
         formData
       );
+      const data = res.data;
       console.log(res.data);
       message.success("Equipment Successfully Added");
       setImageFile(null);
       setimage(null);
       setPositions([]);
       setSelectedEquip("");
+      setListEquipement(data);
     } catch (err) {
       message.error(err.message || "An error occurred while saving.");
       console.error(err);
@@ -190,11 +222,13 @@ const Equipement = () => {
   };
   const addDataFile = async () => {
     if (!importData) return alert("please select a file first ! ");
+
     const formData = new FormData();
     formData.append("excelFile", importData);
     try {
       const res = await axios.post(`${api}/equipe/ImportExcel`, formData);
       const data = res.data;
+      setListEquipement(data);
       console.log(data);
       message.success("Equipement Added Succefuly !");
       return data;
@@ -202,22 +236,6 @@ const Equipement = () => {
       console.error(err);
     }
   };
-  const deleteEquipment = async (Name) => {
-    console.log("Deleting equipment:", Name);
-    try {
-      const response = await axios.post(`${api}/Equipment/Delete`, { Name });
-      console.log("Delete response:", response.data);
-      return response.data;
-    } catch (error) {
-      console.error(
-        "Error deleting equipment:",
-        error.response?.data || error.message
-      );
-      throw error; // Re-throw the error for the caller to handle
-    }
-  };
-
-
 
   return (
     <>
@@ -243,7 +261,6 @@ const Equipement = () => {
                           left: `${p.Position.x * 100}%`,
                           cursor: "move",
                         }}
-                       
                       >
                         <span>{p.Num}</span>
                       </div>
@@ -259,6 +276,7 @@ const Equipement = () => {
                 </p>
               </>
             )}
+
             {positions?.map(
               (p, i) =>
                 p && (
@@ -278,6 +296,7 @@ const Equipement = () => {
                 )
             ) ?? null}
           </div>
+
           {activ && (
             <React.Fragment>
               <div className={c.ref}>
