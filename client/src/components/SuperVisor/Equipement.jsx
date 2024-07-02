@@ -56,7 +56,7 @@ const Equipement = () => {
         list.Points.map((p) => {
           console.log(p.Position);
         });
-        setPoints(list.Points );
+        setPoints(list.Points);
       }
     }
   };
@@ -188,7 +188,6 @@ const Equipement = () => {
   const handleAddData = (e) => {
     setimportData(e.target.files[0]);
   };
-
   const addDataFile = async () => {
     if (!importData) return alert("please select a file first ! ");
     const formData = new FormData();
@@ -217,7 +216,8 @@ const Equipement = () => {
       throw error; // Re-throw the error for the caller to handle
     }
   };
-  console.log(points);
+
+
 
   return (
     <>
@@ -243,8 +243,7 @@ const Equipement = () => {
                           left: `${p.Position.x * 100}%`,
                           cursor: "move",
                         }}
-                        draggable
-                        onDragStart={(e) => handleStart(e, i)}
+                       
                       >
                         <span>{p.Num}</span>
                       </div>
