@@ -1,7 +1,10 @@
 const listEquip = require("../models/ListEquip");
+const Equipements = require("../models/Equipment");
 const xlsx = require("xlsx");
-//import equipments
-exports.Importexcel = async (req, res, next) => {
+
+
+
+exports.Importexcel = async (req, res) => {
   try {
     const workbook = xlsx.readFile(req.file.path);
     const sheetNames = workbook.SheetNames;
@@ -20,7 +23,7 @@ exports.Importexcel = async (req, res, next) => {
           Num: parseInt(row[numIndex], 10),
           Description: row[descIndex].toString(),
         }));
-        const newEquip = new listEquip({
+        const newEquip = new Equipements({
           Name: shn,
           Points: points,
         });
@@ -29,7 +32,7 @@ exports.Importexcel = async (req, res, next) => {
         console.log(`No data found in sheet: ${shn}`);
       }
     }
-    const getdata = await listEquip.find({});
+    const getdata = await Equipements.find({});
     res.status(200).json(getdata);
   } catch (err) {
     res.status(500).json({ error: err.message });

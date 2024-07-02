@@ -26,9 +26,12 @@ const Equipement = () => {
   const [editEquipment, seteditEquipment] = useState(null);
   const [activEditEquip, setactivEditEquip] = useState(null);
 
+
+  /// Get Data 
+
   const GetEquipemnt = useCallback(async () => {
     try {
-      const res = await axios.get(`${api}/equipe/Getequip`);
+      const res = await axios.get(`${api}/Equipment/Gete`);
       const data = res.data;
       setListEquipement(data);
     } catch (err) {
@@ -36,42 +39,30 @@ const Equipement = () => {
       message.error("Failed to load equipments.");
     }
   }, []);
+
   useEffect(() => {
     GetEquipemnt();
   }, [GetEquipemnt]);
 
-  const handleclick = async (Name) => {
-    setSelectedEquip(Name);
-    if (ListEquipement) {
-      const list = ListEquipement.find((e) => e.Name === Name);
-      if (list) {
-        setListPoints(list.Points);
-      }
+    /// Get Data 
 
-      try {
-        const res = await axios.get(`${api}/Equipment/get`, {
-          params: { Name },
-        });
-        const data = res.data;
-        console.log(data);
-        if (!data) {
-          setimage(null);
-          setrefe("");
-          setPoints([]);
-          setactiv(true);
-          setPositions([]);
-        } else {
-          setimage(`http://10.236.148.30:8080/${data.Pic}`);
-          setPoints(data.Points);
-          setrefe(data.ref);
-          setactiv(false);
-          setPositions(null);
-        }
-      } catch (err) {
-        console.error(err);
+
+    const handleclick = async (Name) => {
+      setSelectedEquip(Name);
+      if (ListEquipement) {
+          const list = ListEquipement.find((e) => e.Name === Name);
+          if (list) {
+              setListPoints(list.Points);
+              setimage(`http://10.236.148.30:8080/${list.Pic}`  || null);
+              setrefe(list.ref ? list.ref :"");
+              setPoints(list.Points ? list.points:null);
+          }
       }
-    }
-  };
+  }
+
+  console.log(ListEquipement);
+
+  
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -199,8 +190,9 @@ const Equipement = () => {
   const handleAddData = (e) => {
     setimportData(e.target.files[0]);
   };
+
   const addDataFile = async () => {
-    if (!importData) return alert("please select a file first ! ");
+    if(!importData) return alert("please select a file first ! ");
     const formData = new FormData();
     formData.append("excelFile", importData);
     try {
@@ -338,9 +330,11 @@ const Equipement = () => {
         </div>
 
         <div className={c["Equip-Equip"]}>
+
           <div>
             <h3>All Equipement</h3>
           </div>
+
           <div className={c.equips}>
             {ListEquipement.map((p, i) => (
               <React.Fragment key={i}>
@@ -384,14 +378,18 @@ const Equipement = () => {
               </React.Fragment>
             ))}
           </div>
+
           <div className={c.equips}>
+
             <label>
               <input type="file" accept=".xlsx,.xls" onChange={handleAddData} />
             </label>
+
             <button className={c.submit} onClick={addDataFile}>
               Submit
             </button>
           </div>
+
         </div>
       </div>
     </>

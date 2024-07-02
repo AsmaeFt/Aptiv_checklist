@@ -30,4 +30,8 @@ router.post("/Delete", Equipment.Delete);
 router.post("/UpdateEq", Equipment.UpdateEquipName);
 router.get("/GetNames", Equipment.GetNames);
 
+///
+
+router.get("/Gete", Equipment.Get);
+
 module.exports = router;

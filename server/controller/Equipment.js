@@ -1,11 +1,25 @@
-const Equipenet = require("../models/Equipment");
+const Equipment = require("../models/Equipment");
 const listEquip = require("../models/ListEquip");
 const Layout = require("../models/Layout");
+
+////
+
+exports.Get = async (req, res) => {
+  try {
+    const data = await Equipment.find();
+    console.log(data);
+    res.status(200).json(data);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+////
 
 exports.AddEquipenet = async (req, res) => {
   try {
     const { name, ref, Points } = req.body;
-    const newEquipenet = new Equipenet({
+    const newEquipenet = new Equipment({
       Name: name,
       ref: ref,
       Pic: req.file ? req.file.path : null,
@@ -31,7 +45,7 @@ exports.Getequipment = async (req, res) => {
     }
 
     const equipmentNames = layout.Equipement;
-    const listEquipements = await Equipenet.find({
+    const listEquipements = await Equipment.find({
       Name: { $in: equipmentNames },
     });
     if (listEquipements.length === 0) {
@@ -46,7 +60,7 @@ exports.Getequipment = async (req, res) => {
 exports.getall = async (req, res) => {
   const { Name } = req.query;
   try {
-    const data = await Equipenet.findOne({ Name });
+    const data = await Equipment.findOne({ Name });
     return res.status(201).json(data);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -67,7 +81,7 @@ exports.UpdateEquip = async (req, res) => {
 
     point.Description = Description;
     await existEquip.save();
-    const data = await Equipenet.find({});
+    const data = await Equipment.find({});
     res.status(200).json({ data });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -78,7 +92,7 @@ exports.UpdateEquipName = async (req, res) => {
   const { Name, newOne } = req.body;
 
   try {
-    const findEquip = await Equipenet.findOne({ Name });
+    const findEquip = await Equipment.findOne({ Name });
 
     if (!findEquip) {
       return res.status(404).json({ message: "Equipment Not Found" });
@@ -103,9 +117,8 @@ exports.UpdateEquipName = async (req, res) => {
 exports.Delete = async (req, res) => {
   const { Name } = req.body;
   try {
-    await listEquip.deleteOne({ Name }); 
+    await listEquip.deleteOne({ Name });
     res.status(200).json({ message: "Equipment deleted successfully" });
-
   } catch (err) {
     console.error("Error deleting equipment:", err);
     res
@@ -116,7 +129,7 @@ exports.Delete = async (req, res) => {
 
 exports.GetNames = async (req, res) => {
   try {
-    const names = await Equipenet.find({}, "Name");
+    const names = await Equipment.find({}, "Name");
     const name = names.map((e) => e.Name);
     res.status(200).json(name);
   } catch (err) {
