@@ -109,15 +109,19 @@ const Equipement = () => {
   };
 
   const saveUpdates = async (i) => {
+    setactiveEdit(null);
     const newPoint = {
       Name: selectedEquip,
       num: i,
       Description: editText,
     };
-    setactiveEdit(null);
+    
     try {
       const res = await axios.post(`${api}/Equipment/Update`, newPoint);
-      message.success(res.data.message);
+      const data = res.data;
+      console.log(data);
+      setListEquipement(data);
+      message.success("Point Updated");
       return res.data;
     } catch (err) {
       console.error("Error fetching equipments:", err);
