@@ -26,8 +26,7 @@ const Equipement = () => {
   const [editEquipment, seteditEquipment] = useState(null);
   const [activEditEquip, setactivEditEquip] = useState(null);
 
-
-  /// Get Data 
+  /// Get Data
 
   const GetEquipemnt = useCallback(async () => {
     try {
@@ -44,25 +43,24 @@ const Equipement = () => {
     GetEquipemnt();
   }, [GetEquipemnt]);
 
-    /// Get Data 
+  /// Get Data
 
-
-    const handleclick = async (Name) => {
-      setSelectedEquip(Name);
-      if (ListEquipement) {
-          const list = ListEquipement.find((e) => e.Name === Name);
-          if (list) {
-              setListPoints(list.Points);
-              setimage(`http://10.236.148.30:8080/${list.Pic}`  || null);
-              setrefe(list.ref ? list.ref :"");
-              setPoints(list.Points ? list.points:null);
-          }
+  const handleclick = async (Name) => {
+    setSelectedEquip(Name);
+    if (ListEquipement) {
+      const list = ListEquipement.find((e) => e.Name === Name);
+      if (list) {
+        setListPoints(list.Points);
+        setimage(list.Pic ? `http://10.236.148.30:8000/${list.Pic}` : null);
+        setrefe(list.ref ? list.ref : "");
+        list.Points.map((p) => {
+          console.log(p.Position);
+        });
+        setPoints(list.Points );
       }
-  }
+    }
+  };
 
-  console.log(ListEquipement);
-
-  
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -71,6 +69,7 @@ const Equipement = () => {
       setImageFile(file);
     }
   };
+
   const triggerImageUpload = () => {
     const input = document.createElement("input");
     input.type = "file";
@@ -128,7 +127,6 @@ const Equipement = () => {
       Name: Name,
       newOne: editEquipment,
     };
-    console.log(newPoint);
 
     try {
       const res = await axios.post(`${api}/Equipment/UpdateEq`, newPoint);
@@ -161,7 +159,7 @@ const Equipement = () => {
     }
 
     const formData = new FormData();
-    formData.append("name", selectedEquip);
+    formData.append("Name", selectedEquip);
     formData.append("ref", ref.trim());
     formData.append("pic", imageFile);
     formData.append("Points", JSON.stringify(Points));
@@ -192,7 +190,7 @@ const Equipement = () => {
   };
 
   const addDataFile = async () => {
-    if(!importData) return alert("please select a file first ! ");
+    if (!importData) return alert("please select a file first ! ");
     const formData = new FormData();
     formData.append("excelFile", importData);
     try {
@@ -206,16 +204,21 @@ const Equipement = () => {
     }
   };
   const deleteEquipment = async (Name) => {
-    console.log('Deleting equipment:', Name);
+    console.log("Deleting equipment:", Name);
     try {
       const response = await axios.post(`${api}/Equipment/Delete`, { Name });
-      console.log('Delete response:', response.data);
+      console.log("Delete response:", response.data);
       return response.data;
     } catch (error) {
-      console.error('Error deleting equipment:', error.response?.data || error.message);
+      console.error(
+        "Error deleting equipment:",
+        error.response?.data || error.message
+      );
       throw error; // Re-throw the error for the caller to handle
     }
   };
+  console.log(points);
+
   return (
     <>
       <div className={c["Equip_Container"]}>
@@ -231,19 +234,22 @@ const Equipement = () => {
               <>
                 <img src={image} alt=" Equipment Image " />
                 {points.map((p, i) => (
-                  <div
-                    className={c["dragedpoints"]}
-                    key={i}
-                    style={{
-                      top: `${p.Position.y * 100}%`,
-                      left: `${p.Position.x * 100}%`,
-                      cursor: "move",
-                    }}
-                    draggable
-                    onDragStart={(e) => handleStart(e, i)}
-                  >
-                    <span>{p.Num}</span>
-                  </div>
+                  <React.Fragment key={i}>
+                    {p.Position && (
+                      <div
+                        className={c["dragedpoints"]}
+                        style={{
+                          top: `${p.Position.y * 100}%`,
+                          left: `${p.Position.x * 100}%`,
+                          cursor: "move",
+                        }}
+                        draggable
+                        onDragStart={(e) => handleStart(e, i)}
+                      >
+                        <span>{p.Num}</span>
+                      </div>
+                    )}
+                  </React.Fragment>
                 ))}
                 <span>{refe}</span>
               </>
@@ -330,7 +336,6 @@ const Equipement = () => {
         </div>
 
         <div className={c["Equip-Equip"]}>
-
           <div>
             <h3>All Equipement</h3>
           </div>
@@ -380,7 +385,6 @@ const Equipement = () => {
           </div>
 
           <div className={c.equips}>
-
             <label>
               <input type="file" accept=".xlsx,.xls" onChange={handleAddData} />
             </label>
@@ -389,7 +393,6 @@ const Equipement = () => {
               Submit
             </button>
           </div>
-
         </div>
       </div>
     </>

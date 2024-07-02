@@ -14,24 +14,36 @@ exports.Get = async (req, res) => {
   }
 };
 
-////
-
 exports.AddEquipenet = async (req, res) => {
   try {
-    const { name, ref, Points } = req.body;
-    const newEquipenet = new Equipment({
-      Name: name,
-      ref: ref,
-      Pic: req.file ? req.file.path : null,
-      Points: JSON.parse(Points),
-    });
+    const { Name, ref, Points } = req.body;
+    const exist = await Equipment.findOne({ Name });
+    const parsedPoints = JSON.parse(Points);
 
-    await newEquipenet.save();
-    res.status(201).json(newEquipenet);
+    if (exist) {
+      exist.ref = ref;
+      exist.Pic = req.file ? req.file.path : exist.Pic;
+
+      parsedPoints.map((p) => {
+        const existp = exist.Points.find((m) => m.Num === p.Num);
+        if (existp) {
+          existp.Description = p.Description;
+          existp.Position = p.Position;
+        }
+      });
+
+      exist.updatedAt = new Date();
+      await exist.save();
+      res.status(200).json(exist);
+    } else {
+      return res.status(404).json({ message: "Equipement Not Found!" });
+    }
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
+
+////
 
 exports.Getequipment = async (req, res) => {
   const { project, family, post } = req.body;
