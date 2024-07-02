@@ -72,7 +72,6 @@ const Equipement = () => {
       }
     }
   };
-
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -81,7 +80,6 @@ const Equipement = () => {
       setImageFile(file);
     }
   };
-
   const triggerImageUpload = () => {
     const input = document.createElement("input");
     input.type = "file";
@@ -128,12 +126,10 @@ const Equipement = () => {
       message.error("Failed to load equipments.");
     }
   };
-
   const UpdateEquipemnent = (e) => {
     setactivEditEquip(e);
     seteditEquipment(e);
   };
-
   const saveEquipement = async (Name) => {
     setactivEditEquip(null);
 
@@ -153,7 +149,6 @@ const Equipement = () => {
       message.error("Failed to load equipments.");
     }
   };
-
   const handleSave = async () => {
     if (!imageFile) {
       message.warning("Please Upload an Image first !");
@@ -204,7 +199,6 @@ const Equipement = () => {
   const handleAddData = (e) => {
     setimportData(e.target.files[0]);
   };
-
   const addDataFile = async () => {
     if (!importData) return alert("please select a file first ! ");
     const formData = new FormData();
@@ -219,9 +213,6 @@ const Equipement = () => {
       console.error(err);
     }
   };
-
-  console.log(ListEquipement);
-
   const deleteEquipment = async (Name) => {
     console.log('Deleting equipment:', Name);
     try {
@@ -233,7 +224,6 @@ const Equipement = () => {
       throw error; // Re-throw the error for the caller to handle
     }
   };
-
   return (
     <>
       <div className={c["Equip_Container"]}>
