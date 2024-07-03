@@ -36,6 +36,10 @@ const NavBar = () => {
                     <NavLink to="/Equip">Equipments</NavLink>
                   </li>
                   <li>
+                    <NavLink to="/new">new</NavLink>
+                  </li>
+
+                  <li>
                     <NavLink to="/Layout">Layout</NavLink>
                   </li>
                 </React.Fragment>

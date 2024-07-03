@@ -7,28 +7,23 @@ import edit from "../../assets/edit.png";
 import upload from "../../assets/uplo.png";
 import delet from "../../assets/delete.png";
 
-const Equipement = () => {
+const NewEquip = () => {
   const [ListEquipement, setListEquipement] = useState([]);
+  const [activEditEquip, setactivEditEquip] = useState(null);
+  const [importData, setimportData] = useState(null);
+  const [editEquipment, seteditEquipment] = useState(null);
   const [ListPoints, setListPoints] = useState([]);
-  const [positions, setPositions] = useState([]);
   const [image, setimage] = useState(null);
-  const [imageFile, setImageFile] = useState(null);
-  const [points, setPoints] = useState([]);
-  const [draggedPoint, setDraggedPoint] = useState(null);
-  const [activ, setactiv] = useState(true);
-  const imageRef = useRef(null);
-  const [ref, setRef] = useState("");
+  const [refe, setrefe] = useState("");
   const [selectedEquip, setSelectedEquip] = useState("");
   const [activeEdit, setactiveEdit] = useState(null);
   const [editText, seteditText] = useState(null);
-  const [importData, setimportData] = useState(null);
-  const [refe, setrefe] = useState("");
-  const [editEquipment, seteditEquipment] = useState(null);
-  const [activEditEquip, setactivEditEquip] = useState(null);
+  const [draggedPoint, setDraggedPoint] = useState(null);
+  const [imageFile, setImageFile] = useState(null);
+  const imageRef = useRef(null);
+  const [positions, setPositions] = useState([]);
 
-
-
-  ////////
+  /// GET EQUIPEMENTS
 
   const GetEquipemnt = useCallback(async () => {
     try {
@@ -45,6 +40,8 @@ const Equipement = () => {
     GetEquipemnt();
   }, [GetEquipemnt]);
 
+  ////
+
   const handleclick = useCallback(
     async (Name) => {
       setSelectedEquip(Name);
@@ -54,69 +51,86 @@ const Equipement = () => {
           setListPoints(list.Points);
           setimage(list.Pic ? `http://10.236.148.30:8080/${list.Pic}` : null);
           setrefe(list.ref ? list.ref : "");
-          setPoints(list.Points);
         }
       }
     },
     [ListEquipement]
   );
+
   useEffect(() => {
     handleclick();
   }, [handleclick]);
 
-  const check = (name, num) => {
-    const list = ListEquipement.find((e) => e.Name === name);
-    if (list) {
-      const p = list.Points.find((m) => m.Num === num).map((x) => x.Position);
-      return p ? false : true;
+  const handleAddData = (e) => {
+    setimportData(e.target.files[0]);
+  };
+
+  const saveEquipement = async (Name) => {
+    setactivEditEquip(null);
+
+    const newPoint = {
+      Name: Name,
+      newOne: editEquipment,
+    };
+
+    try {
+      const res = await axios.post(`${api}/Equipment/UpdateEq`, newPoint);
+      const data = res.data;
+      setListEquipement(data);
+      message.success("Equipement is Updated");
+      return res.data;
+    } catch (err) {
+      console.error("Error fetching equipments:", err);
+      message.error("Failed to load equipments.");
     }
   };
 
-  const handleImageUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const url = URL.createObjectURL(file);
-      setimage(url);
-      setImageFile(file);
-    }
-  };
-  const triggerImageUpload = () => {
-    const input = document.createElement("input");
-    input.type = "file";
-    input.accept = "image/*";
-    input.onchange = handleImageUpload;
-    input.click();
+  const UpdateEquipemnent = (e) => {
+    setactivEditEquip(e);
+    seteditEquipment(e);
   };
 
-  //////////
-
-  const handleStart = (e, i) => {
-    setDraggedPoint(i);
-  };
-
-  const handleDragOver = (e) => {
-    e.preventDefault();
-  };
-
-  const handleDrop = (e) => {
-    e.preventDefault();
-    if (draggedPoint !== null && imageRef.current) {
-      const rect = imageRef.current.getBoundingClientRect();
-      const x = (e.clientX - rect.left) / rect.width;
-      const y = (e.clientY - rect.top) / rect.height;
-      const newPosition = [...positions];
-      newPosition[draggedPoint] = { x, y };
-      setPositions(newPosition);
-      setDraggedPoint(null);
+  const deleteEquipment = async (Name) => {
+    try {
+      const res = await axios.post(`${api}/Equipment/Delete`, { Name });
+      console.log("Delete response:", res.data);
+      const data = res.data;
+      setListEquipement(data);
+      setListPoints([]);
+      setimage(null);
+      return data;
+    } catch (error) {
+      console.error(
+        "Error deleting equipment:",
+        error.response?.data || error.message
+      );
+      throw error;
     }
   };
 
-  ///
+  const addDataFile = async () => {
+    if (!importData) return alert("please select a file first ! ");
+
+    const formData = new FormData();
+    formData.append("excelFile", importData);
+    try {
+      const res = await axios.post(`${api}/equipe/ImportExcel`, formData);
+      const data = res.data;
+      setListEquipement(data);
+      console.log(data);
+      message.success("Equipement Added Succefuly !");
+      return data;
+    } catch (err) {
+      console.error(err);
+    }
+  };
+  ////
+
+  ////
   const UpdatePoint = (i) => {
     setactiveEdit(i);
     seteditText(ListPoints[i].Description);
   };
-
   const saveUpdates = async (i) => {
     setactiveEdit(null);
     const newPoint = {
@@ -138,118 +152,42 @@ const Equipement = () => {
     }
   };
 
-  const UpdateEquipemnent = (e) => {
-    setactivEditEquip(e);
-    seteditEquipment(e);
-  };
-  const saveEquipement = async (Name) => {
-    setactivEditEquip(null);
-
-    const newPoint = {
-      Name: Name,
-      newOne: editEquipment,
-    };
-
-    try {
-      const res = await axios.post(`${api}/Equipment/UpdateEq`, newPoint);
-      const data = res.data;
-      setListEquipement(data);
-      message.success("Equipement is Updated");
-      return res.data;
-    } catch (err) {
-      console.error("Error fetching equipments:", err);
-      message.error("Failed to load equipments.");
+  ////
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const url = URL.createObjectURL(file);
+      setimage(url);
+      setImageFile(file);
     }
   };
+  const triggerImageUpload = () => {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = "image/*";
+    input.onchange = handleImageUpload;
+    input.click();
+  };
 
-  const deleteEquipment = async (Name) => {
-    try {
-      const res = await axios.post(`${api}/Equipment/Delete`, { Name });
-      console.log("Delete response:", res.data);
-      const data = res.data;
-      setListEquipement(data);
-      setListPoints([]);
-      setimage(null);
-      return data;
-    } catch (error) {
-      console.error(
-        "Error deleting equipment:",
-        error.response?.data || error.message
-      );
-      throw error;
+  const handleStart = (e, i) => {
+    setDraggedPoint(i);
+  };
+  const handleDrop = (e) => {
+    e.preventDefault();
+    if (draggedPoint !== null && imageRef.current) {
+      const rect = imageRef.current.getBoundingClientRect();
+      const x = (e.clientX - rect.left) / rect.width;
+      const y = (e.clientY - rect.top) / rect.height;
+      const newPosition = [...positions];
+      newPosition[draggedPoint] = { x, y };
+      setPositions(newPosition);
+      setDraggedPoint(null);
     }
   };
 
-  ///
+  ////
 
-  const handleSave = async () => {
-    if (!imageFile) {
-      message.warning("Please Upload an Image first !");
-    }
-    if (!ref.trim()) {
-      message.warning("Please provide a reference.");
-      return;
-    }
-
-    const Points = ListPoints.map((p, i) => ({
-      Description: p.Description,
-      Num: p.Num,
-      Position: positions[i] || null,
-    })).filter((p) => p.Position !== null);
-
-    if (Points.length === 0) {
-      message.warning("No points have been placed on the image.");
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append("Name", selectedEquip);
-    formData.append("ref", ref.trim());
-    formData.append("pic", imageFile);
-    formData.append("Points", JSON.stringify(Points));
-    console.log("Sending data:", {
-      Name: selectedEquip,
-      ref: ref.trim(),
-      pic: imageFile.name,
-      Points: Points,
-    });
-    try {
-      const res = await axios.post(
-        `${api}/Equipment/AddNew_Equipment`,
-        formData
-      );
-      const data = res.data;
-      console.log(res.data);
-      message.success("Equipment Successfully Added");
-      setImageFile(null);
-      setimage(null);
-      setPositions([]);
-      setSelectedEquip("");
-      setListEquipement(data);
-    } catch (err) {
-      message.error(err.message || "An error occurred while saving.");
-      console.error(err);
-    }
-  };
-  const handleAddData = (e) => {
-    setimportData(e.target.files[0]);
-  };
-  const addDataFile = async () => {
-    if (!importData) return alert("please select a file first ! ");
-
-    const formData = new FormData();
-    formData.append("excelFile", importData);
-    try {
-      const res = await axios.post(`${api}/equipe/ImportExcel`, formData);
-      const data = res.data;
-      setListEquipement(data);
-      console.log(data);
-      message.success("Equipement Added Succefuly !");
-      return data;
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  console.log(positions);
 
   return (
     <>
@@ -258,16 +196,16 @@ const Equipement = () => {
           <div
             onClick={triggerImageUpload}
             className={c.img}
-            onDragOver={handleDragOver}
+            onDragOver={(e) => e.preventDefault()}
             onDrop={handleDrop}
             ref={imageRef}
           >
             {image ? (
               <>
                 <img src={image} alt=" Equipment Image " />
-                {points.map((p, i) => (
+                {ListPoints.map((p, i) => (
                   <React.Fragment key={i}>
-                    {p.Position && (
+                    {p.Position ? (
                       <div
                         className={c["dragedpoints"]}
                         style={{
@@ -278,6 +216,8 @@ const Equipement = () => {
                       >
                         <span>{p.Num}</span>
                       </div>
+                    ) : (
+                      <></>
                     )}
                   </React.Fragment>
                 ))}
@@ -289,53 +229,7 @@ const Equipement = () => {
                 </p>
               </>
             )}
-
-         {positions?.map(
-              (p, i) =>
-                p && (
-                  <div
-                    key={i}
-                    className={c["dragedpoints"]}
-                    style={{
-                      top: `${p.y * 100}%`,
-                      left: `${p.x * 100}%`,
-                      cursor: "move",
-                    }}
-                    draggable
-                    onDragStart={(e) => handleStart(e, i)}
-                  >
-                    <span>{ListPoints[i].Num}</span>
-                  </div>
-                )
-            ) ?? null} 
           </div>
-
-          {!refe ? (
-            <React.Fragment>
-              <div className={c.ref}>
-                <textarea
-                  placeholder="Enter Reference..."
-                  value={ref}
-                  onChange={(e) => setRef(e.target.value)}
-                />
-              </div>
-
-              <div>
-                <button onClick={handleSave} className="button">
-                  save
-                </button>
-              </div>
-            </React.Fragment>
-          ) : (
-            <>
-              <div>
-                <fieldset>
-                  <legend style={{ color: "orangered" }}> Reference :</legend>
-                  <span>{refe}</span>
-                </fieldset>
-              </div>
-            </>
-          )}
         </div>
 
         <div className={c["Equip-Points"]}>
@@ -347,8 +241,10 @@ const Equipement = () => {
             {ListPoints.map((p, i) => (
               <div key={i} className={c.task}>
                 <span
-                  draggable={!ListPoints.find(point => point.Num === p.Num)?.Position}
-                  onDragStart={(e) => handleStart(e, i)}
+                  draggable={
+                    !ListPoints.find((point) => point.Num === p.Num)?.Position
+                  }
+                  onDragStart={(e) => handleStart(e, p.Num)}
                   className={c.taskNum}
                 >
                   {p.Num}
@@ -435,9 +331,9 @@ const Equipement = () => {
             </button>
           </div>
         </div>
-        
       </div>
     </>
   );
 };
-export default Equipement;
+
+export default NewEquip;
