@@ -26,8 +26,6 @@ const Equipement = () => {
   const [editEquipment, seteditEquipment] = useState(null);
   const [activEditEquip, setactivEditEquip] = useState(null);
 
-
-
   ////////
 
   const GetEquipemnt = useCallback(async () => {
@@ -251,6 +249,18 @@ const Equipement = () => {
     }
   };
 
+  const changePosition = (e, num) => {
+    const list = ListEquipement.find((item) => item.Name === selectedEquip);
+    if (list) {
+      const p = list.points.find((x) => x.Num === num);
+      if (p && p.Position) {
+        const rect = imageRef.current.getBoundingClientRect();
+        p.Position.x = (e.clientX - rect.left) / rect.width;
+        p.Position.y = (e.clientY - rect.top) / rect.height;
+      }
+    }
+  };
+
   return (
     <>
       <div className={c["Equip_Container"]}>
@@ -275,6 +285,8 @@ const Equipement = () => {
                           left: `${p.Position.x * 100}%`,
                           cursor: "move",
                         }}
+                        draggable
+                        onDragStart={(e) => changePosition(e, p.Num)}
                       >
                         <span>{p.Num}</span>
                       </div>
@@ -290,7 +302,7 @@ const Equipement = () => {
               </>
             )}
 
-         {positions?.map(
+            {positions?.map(
               (p, i) =>
                 p && (
                   <div
@@ -307,7 +319,7 @@ const Equipement = () => {
                     <span>{ListPoints[i].Num}</span>
                   </div>
                 )
-            ) ?? null} 
+            ) ?? null}
           </div>
 
           {!refe ? (
@@ -347,7 +359,9 @@ const Equipement = () => {
             {ListPoints.map((p, i) => (
               <div key={i} className={c.task}>
                 <span
-                  draggable={!ListPoints.find(point => point.Num === p.Num)?.Position}
+                  draggable={
+                    !ListPoints.find((point) => point.Num === p.Num)?.Position
+                  }
                   onDragStart={(e) => handleStart(e, i)}
                   className={c.taskNum}
                 >
@@ -435,7 +449,6 @@ const Equipement = () => {
             </button>
           </div>
         </div>
-        
       </div>
     </>
   );
