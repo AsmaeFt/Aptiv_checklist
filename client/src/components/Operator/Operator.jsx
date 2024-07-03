@@ -57,6 +57,7 @@ const Checklist = () => {
       navigate("/dpo");
     }
   };
+  console.log(datas);
 
   return (
     <>

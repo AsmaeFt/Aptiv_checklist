@@ -26,6 +26,8 @@ const Equipement = () => {
   const [editEquipment, seteditEquipment] = useState(null);
   const [activEditEquip, setactivEditEquip] = useState(null);
 
+  const [lpoints, setlpoints] = useState([]);
+
   ////////
 
   const GetEquipemnt = useCallback(async () => {
@@ -50,11 +52,8 @@ const Equipement = () => {
         const list = ListEquipement.find((e) => e.Name === Name);
         if (list) {
           setListPoints(list.Points);
-          setimage(list.Pic ? `http://10.236.148.30:8000/${list.Pic}` : null);
+          setimage(list.Pic ? `http://10.236.148.30:8080/${list.Pic}` : null);
           setrefe(list.ref ? list.ref : "");
-          list.Points.map((p) => {
-            console.log(p.Position);
-          });
           setPoints(list.Points);
         }
       }
@@ -64,6 +63,14 @@ const Equipement = () => {
   useEffect(() => {
     handleclick();
   }, [handleclick]);
+
+  const check = (name, num) => {
+    const list = ListEquipement.find((e) => e.Name === name);
+    if (list) {
+      const p = list.Points.find((m) => m.Num === num).map((x) => x.Position);
+      return p ? false : true;
+    }
+  };
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
@@ -86,9 +93,11 @@ const Equipement = () => {
   const handleStart = (e, i) => {
     setDraggedPoint(i);
   };
+
   const handleDragOver = (e) => {
     e.preventDefault();
   };
+
   const handleDrop = (e) => {
     e.preventDefault();
     if (draggedPoint !== null && imageRef.current) {
@@ -115,7 +124,7 @@ const Equipement = () => {
       num: i,
       Description: editText,
     };
-    
+    console.log(JSON.stringify(newPoint));
     try {
       const res = await axios.post(`${api}/Equipment/Update`, newPoint);
       const data = res.data;
@@ -160,6 +169,7 @@ const Equipement = () => {
       const data = res.data;
       setListEquipement(data);
       setListPoints([]);
+      setimage(null);
       return data;
     } catch (error) {
       console.error(
@@ -271,7 +281,6 @@ const Equipement = () => {
                     )}
                   </React.Fragment>
                 ))}
-                <span>{refe}</span>
               </>
             ) : (
               <>
@@ -280,8 +289,7 @@ const Equipement = () => {
                 </p>
               </>
             )}
-
-            {positions?.map(
+            {/* {positions?.map(
               (p, i) =>
                 p && (
                   <div
@@ -298,10 +306,10 @@ const Equipement = () => {
                     <span>{ListPoints[i].Num}</span>
                   </div>
                 )
-            ) ?? null}
+            ) ?? null} */}
           </div>
 
-          {activ && (
+          {!refe ? (
             <React.Fragment>
               <div className={c.ref}>
                 <textarea
@@ -317,6 +325,15 @@ const Equipement = () => {
                 </button>
               </div>
             </React.Fragment>
+          ) : (
+            <>
+              <div>
+                <fieldset>
+                  <legend style={{ color: "orangered" }}> Reference :</legend>
+                  <span>{refe}</span>
+                </fieldset>
+              </div>
+            </>
           )}
         </div>
 
@@ -329,12 +346,13 @@ const Equipement = () => {
             {ListPoints.map((p, i) => (
               <div key={i} className={c.task}>
                 <span
-                  draggable={activ ? true : false}
+                  draggable
                   onDragStart={(e) => handleStart(e, i)}
                   className={c.taskNum}
                 >
                   {p.Num}
                 </span>
+
                 {activeEdit === i ? (
                   <>
                     <textarea

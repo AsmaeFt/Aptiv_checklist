@@ -73,6 +73,27 @@ exports.Delete = async (req, res) => {
   }
 };
 
+exports.UpdateEquip = async (req, res) => {
+  const { Name, num, Description } = req.body;
+  try {
+    const existEquip = await Equipment.findOne({ Name });
+    if (!existEquip) {
+      return res.status(404).json({ message: "Equipement doesnt exist !" });
+    }
+    const point = existEquip.Points.find((p) => p.Num === num);
+    if (!point) {
+      return res.status(404).json({ message: "Point not found!" });
+    }
+
+    point.Description = Description;
+    await existEquip.save();
+    const datas = await Equipment.find({});
+    res.status(200).json(datas);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
 ////
 
 exports.Getequipment = async (req, res) => {
@@ -109,26 +130,7 @@ exports.getall = async (req, res) => {
   }
 };
 
-exports.UpdateEquip = async (req, res) => {
-  const { Name, num, Description } = req.body;
-  try {
-    const existEquip = await Equipment.findOne({ Name });
-    if (!existEquip) {
-      return res.status(404).json({ message: "Equipement doesnt exist !" });
-    }
-    const point = existEquip.Points.find((p) => p.Num === num);
-    if (!point) {
-      return res.status(404).json({ message: "Point not found!" });
-    }
 
-    point.Description = Description;
-    await existEquip.save();
-    const datas = await Equipment.find({});
-    res.status(200).json(datas);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
 
 exports.GetNames = async (req, res) => {
   try {
