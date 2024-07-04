@@ -15,7 +15,6 @@ const Equipement = () => {
   const [imageFile, setImageFile] = useState(null);
   const [points, setPoints] = useState([]);
   const [draggedPoint, setDraggedPoint] = useState(null);
-  const [activ, setactiv] = useState(true);
   const imageRef = useRef(null);
   const [ref, setRef] = useState("");
   const [selectedEquip, setSelectedEquip] = useState("");
@@ -43,7 +42,7 @@ const Equipement = () => {
     GetEquipemnt();
   }, [GetEquipemnt]);
 
-  const handleclick = useCallback(
+  const handleclick = 
     async (Name) => {
       setSelectedEquip(Name);
       if (ListEquipement) {
@@ -55,21 +54,7 @@ const Equipement = () => {
           setPoints(list.Points);
         }
       }
-    },
-    [ListEquipement]
-  );
-  useEffect(() => {
-    handleclick();
-  }, [handleclick]);
-
-  const check = (name, num) => {
-    const list = ListEquipement.find((e) => e.Name === name);
-    if (list) {
-      const p = list.Points.find((m) => m.Num === num).map((x) => x.Position);
-      return p ? false : true;
     }
-  };
-
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -108,7 +93,6 @@ const Equipement = () => {
       setDraggedPoint(null);
     }
   };
-
   ///
   const UpdatePoint = (i) => {
     setactiveEdit(i);
@@ -159,7 +143,6 @@ const Equipement = () => {
       message.error("Failed to load equipments.");
     }
   };
-
   const deleteEquipment = async (Name) => {
     try {
       const res = await axios.post(`${api}/Equipment/Delete`, { Name });
@@ -177,7 +160,6 @@ const Equipement = () => {
       throw error;
     }
   };
-
   ///
 
   const handleSave = async () => {
@@ -249,27 +231,89 @@ const Equipement = () => {
     }
   };
 
-  const changePosition = (e, num) => {
-    const list = ListEquipement.find((item) => item.Name === selectedEquip);
-    if (list) {
-      const p = list.points.find((x) => x.Num === num);
-      if (p && p.Position) {
-        const rect = imageRef.current.getBoundingClientRect();
-        p.Position.x = (e.clientX - rect.left) / rect.width;
-        p.Position.y = (e.clientY - rect.top) / rect.height;
-      }
+  ////
+  const changePosition = async (e, num) => {
+    e.preventDefault();
+    const rect = imageRef.current.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width;
+    const y = (e.clientY - rect.top) / rect.height;
+
+    setPoints((pre) =>
+      pre.map((pt) => (pt.Num === num ? { ...pt, Position: { x, y } } : pt))
+    );
+
+    const newPosition = {
+      Name: selectedEquip,
+      Num: num,
+      Position: {
+        x: x,
+        y: y,
+      },
+    };
+
+    console.log(newPosition);
+
+    try {
+      const res = await axios.post(`${api}/Equipment/updatePosition`, newPosition);
+      message.success("Position Updated");
+      const data = res.data;
+      console.log(data);
+      setListEquipement(data);
+      return res;
+    } catch (error) {
+      console.error("Error updating position:", error);
+      message.error("Failed to update position");
     }
   };
 
+  const updateImage = () => {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = "image/*";
+    input.onchange = async (e) => {
+      const imageFile = e.target.files[0];
+      if (imageFile) {
+        const url = URL.createObjectURL(imageFile);
+        setimage(url);
+        setImageFile(imageFile);
+
+        const formData = new FormData();
+        formData.append("Name", selectedEquip);
+        formData.append("pic", imageFile);
+
+        console.log("Sending data:", {
+          Name: selectedEquip,
+          pic: imageFile.name,
+        });
+
+        try {
+          const res = await axios.post(
+            `${api}/Equipment/updateimage`,
+            formData
+          );
+          message.success("Image Updated");
+          const data = res.data;
+          console.log(res);
+          setListEquipement(data);
+          return res;
+        } catch (error) {
+          console.error("Error updating image:", error);
+          message.error("Failed to update image");
+        }
+      }
+    };
+    input.click();
+  };
   return (
     <>
       <div className={c["Equip_Container"]}>
         <div className={c["Equip-Image"]}>
           <div
-            onClick={triggerImageUpload}
+            onClick={!image ? triggerImageUpload : undefined}
             className={c.img}
             onDragOver={handleDragOver}
             onDrop={handleDrop}
+            onDoubleClick={image ? updateImage : undefined}
             ref={imageRef}
           >
             {image ? (
@@ -286,7 +330,11 @@ const Equipement = () => {
                           cursor: "move",
                         }}
                         draggable
-                        onDragStart={(e) => changePosition(e, p.Num)}
+                        onDragStart={(e) =>
+                          e.dataTransfer.setData("text/plain", p.Num.toString())
+                        }
+                        onDrag={(e) => e.preventDefault()}
+                        onDragEnd={(e) => changePosition(e, p.Num)}
                       >
                         <span>{p.Num}</span>
                       </div>

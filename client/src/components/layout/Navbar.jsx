@@ -35,16 +35,14 @@ const NavBar = () => {
                   <li>
                     <NavLink to="/Equip">Equipments</NavLink>
                   </li>
-                  <li>
-                    <NavLink to="/new">new</NavLink>
-                  </li>
 
                   <li>
                     <NavLink to="/Layout">Layout</NavLink>
                   </li>
                 </React.Fragment>
               )}
-              <button className="button"
+              <button
+                className="button"
                 onClick={() => {
                   dispatch(loginActions.logOut());
                 }}

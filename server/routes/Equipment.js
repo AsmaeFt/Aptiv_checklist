@@ -29,6 +29,8 @@ router.post("/Delete", Equipment.Delete);
 
 router.post("/UpdateEq", Equipment.UpdateEquipName);
 router.get("/GetNames", Equipment.GetNames);
+router.post("/updateimage", upload.single("pic"), Equipment.UpdateImage);
+router.post("/updatePosition", Equipment.UpdatePosition);
 
 ///
 

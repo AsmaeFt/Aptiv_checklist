@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import c from "./checklist.module.css";
 import axios from "axios";
 import api from "../../services/api";
@@ -259,24 +259,32 @@ const Checklist = ({ equip, currentIndex, handleNext, operatorInfo }) => {
             <div className={c["Image"]}>
               {image && <img src={image} alt="Equipment" />}
               {points.map((p, i) => (
-                <div
-                  onClick={() => getProblem(p.Num, p.Description)}
-                  className={c["dragedpoints"]}
-                  key={i}
-                  style={{
-                    top: `${p.Position.y * 100}%`,
-                    left: `${p.Position.x * 100}%`,
-                    transform: "translate(-50%, -50%)",
-                    backgroundColor: getColor(p.Num),
-                  }}
-                >
-                  <span>{p.Num}</span>
-                </div>
+
+                <React.Fragment key={i}>
+                  {
+                    p.Position && (
+                      <div
+                      onClick={() => getProblem(p.Num, p.Description)}
+                      className={c["dragedpoints"]}
+                      key={i}
+                      style={{
+                        top: `${p.Position.y * 100}%`,
+                        left: `${p.Position.x * 100}%`,
+                        transform: "translate(-50%, -50%)",
+                        backgroundColor: getColor(p.Num),
+                      }}
+                    >
+                      <span>{p.Num}</span>
+                    </div>
+                    )
+                  }
+                </React.Fragment>
+
               ))}
-              <div>
+              {/* <div>
                 <span>Observation</span>
                 <textarea style={{width:'90%'}}/>
-              </div>
+              </div> */}
             </div>
 
             <div className={c["Points"]}>

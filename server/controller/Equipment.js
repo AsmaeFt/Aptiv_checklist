@@ -85,7 +85,47 @@ exports.UpdateEquip = async (req, res) => {
       return res.status(404).json({ message: "Point not found!" });
     }
 
-    point.Description = Description;
+    point.Description === Description;
+    await existEquip.save();
+    const datas = await Equipment.find({});
+    res.status(200).json(datas);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+exports.UpdatePosition = async (req, res) => {
+  const { Name, Num, Position } = req.body;
+  try {
+    const existEquip = await Equipment.findOne({ Name });
+    if (!existEquip) {
+      return res.status(404).json({ message: "Equipement doesnt exist !" });
+    }
+
+    const point = existEquip.Points.find((p) => p.Num === Num);
+    if (!point) {
+      return res.status(404).json({ message: "Point not found!" });
+    }
+    console.log(point);
+
+    point.Position = Position;
+    await existEquip.save();
+    const datas = await Equipment.find({});
+    res.status(200).json(datas);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+exports.UpdateImage = async (req, res) => {
+  const { Name } = req.body;
+  try {
+    const existEquip = await Equipment.findOne({ Name });
+    if (!existEquip) {
+      return res.status(404).json({ message: "Equipement doesnt exist !" });
+    }
+
+    existEquip.Pic = req.file ? req.file.path : existEquip.Pic;
     await existEquip.save();
     const datas = await Equipment.find({});
     res.status(200).json(datas);
@@ -119,7 +159,6 @@ exports.Getequipment = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
-
 exports.getall = async (req, res) => {
   const { Name } = req.query;
   try {
@@ -129,9 +168,6 @@ exports.getall = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
-
-
-
 exports.GetNames = async (req, res) => {
   try {
     const names = await Equipment.find({}, "Name");
