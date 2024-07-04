@@ -288,7 +288,7 @@ const Checklist = ({ equip, currentIndex, handleNext, operatorInfo }) => {
 
             <div className={c["Points"]}>
               <h3>{data.Name}</h3>
-              <div>
+              <div className={c.listPoints}>
                 {points.map((point, i) => (
                   <div
                     key={i}
@@ -321,6 +321,7 @@ const Checklist = ({ equip, currentIndex, handleNext, operatorInfo }) => {
                   </button>
                 )}
               </div>
+
             </div>
           </div>
         ):

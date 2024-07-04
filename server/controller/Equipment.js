@@ -134,6 +134,23 @@ exports.UpdateImage = async (req, res) => {
   }
 };
 
+exports.UpdateRef = async (req, res) => {
+  const { Name , ref } = req.body;
+  try {
+    const existEquip = await Equipment.findOne({ Name });
+    if (!existEquip) {
+      return res.status(404).json({ message: "Equipement doesnt exist !" });
+    }
+
+    existEquip.ref = ref;
+    await existEquip.save();
+    const datas = await Equipment.find({});
+    res.status(200).json(datas);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
 ////
 
 exports.Getequipment = async (req, res) => {

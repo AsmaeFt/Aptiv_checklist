@@ -42,19 +42,18 @@ const Equipement = () => {
     GetEquipemnt();
   }, [GetEquipemnt]);
 
-  const handleclick = 
-    async (Name) => {
-      setSelectedEquip(Name);
-      if (ListEquipement) {
-        const list = ListEquipement.find((e) => e.Name === Name);
-        if (list) {
-          setListPoints(list.Points);
-          setimage(list.Pic ? `http://10.236.148.30:8080/${list.Pic}` : null);
-          setrefe(list.ref ? list.ref : "");
-          setPoints(list.Points);
-        }
+  const handleclick = async (Name) => {
+    setSelectedEquip(Name);
+    if (ListEquipement) {
+      const list = ListEquipement.find((e) => e.Name === Name);
+      if (list) {
+        setListPoints(list.Points);
+        setimage(list.Pic ? `http://10.236.148.30:8080/${list.Pic}` : null);
+        setrefe(list.ref ? list.ref : "");
+        setPoints(list.Points);
       }
     }
+  };
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -93,6 +92,7 @@ const Equipement = () => {
       setDraggedPoint(null);
     }
   };
+
   ///
   const UpdatePoint = (i) => {
     setactiveEdit(i);
@@ -254,7 +254,10 @@ const Equipement = () => {
     console.log(newPosition);
 
     try {
-      const res = await axios.post(`${api}/Equipment/updatePosition`, newPosition);
+      const res = await axios.post(
+        `${api}/Equipment/updatePosition`,
+        newPosition
+      );
       message.success("Position Updated");
       const data = res.data;
       console.log(data);
@@ -304,6 +307,26 @@ const Equipement = () => {
     };
     input.click();
   };
+
+  const saveref = async () => {
+    const newRef = {
+      Name: selectedEquip,
+      ref: refe,
+    };
+    console.log(newRef);
+    try {
+      const res = await axios.post(`${api}/Equipment/updateRef`, newRef);
+      message.success("Reference Updated");
+      const data = res.data;
+      console.log(data);
+      setListEquipement(data);
+      return res;
+    } catch (error) {
+      console.error("Error updating Reference:", error);
+      message.error("Failed to update Reference");
+    }
+  };
+
   return (
     <>
       <div className={c["Equip_Container"]}>
@@ -379,7 +402,6 @@ const Equipement = () => {
                   onChange={(e) => setRef(e.target.value)}
                 />
               </div>
-
               <div>
                 <button onClick={handleSave} className="button">
                   save
@@ -390,8 +412,13 @@ const Equipement = () => {
             <>
               <div>
                 <fieldset>
-                  <legend style={{ color: "orangered" }}> Reference :</legend>
-                  <span>{refe}</span>
+                  <legend style={{ color: "orangered" }}>Reference:</legend>
+                  <input 
+                  style={{width:'90%' , padding:'0.3rem' , margin:'0.3rem', textAlign:'center',border:'1px dashed orangered'}}
+                    onChange={(e) => setrefe(e.target.value)}
+                    onBlur={saveref}
+                    value={refe}
+                  />
                 </fieldset>
               </div>
             </>

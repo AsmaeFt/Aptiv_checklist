@@ -31,6 +31,7 @@ router.post("/UpdateEq", Equipment.UpdateEquipName);
 router.get("/GetNames", Equipment.GetNames);
 router.post("/updateimage", upload.single("pic"), Equipment.UpdateImage);
 router.post("/updatePosition", Equipment.UpdatePosition);
+router.post("/updateRef", Equipment.UpdateRef);
 
 ///
 

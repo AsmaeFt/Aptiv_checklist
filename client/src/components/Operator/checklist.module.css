@@ -66,6 +66,11 @@
   .Points {
     width: 49%;
   }
+  .Points  .listPoints{
+    height: 30rem;
+    overflow: auto;
+    margin: 1rem 0;
+  }
 
 
  
