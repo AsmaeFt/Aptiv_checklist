@@ -200,7 +200,7 @@ const Layout = () => {
                   onChange={handleAddData}
                 />
               </label>
-              <button className={c.submit} onClick={addDataFile}>
+              <button className="button" onClick={addDataFile}>
                 Upload
               </button>
             </>

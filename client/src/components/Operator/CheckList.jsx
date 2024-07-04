@@ -202,8 +202,7 @@ const Checklist = ({ equip, currentIndex, handleNext, operatorInfo }) => {
     const exist = fch.find(
       (p) =>
         p.shift === Curent_Shift.shift &&
-        getExactdate(p.date) === getCurentdate(getdate) &&
-        p.equipmentName === data.Name
+        getExactdate(p.date) === getCurentdate(getdate) 
     );
     exist ? setshowCh(false) : setshowCh(true);
   }, [Curent_Shift.shift, data.Name, fch, getdate]);

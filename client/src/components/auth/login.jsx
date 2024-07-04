@@ -7,7 +7,6 @@ import Overlay from "../layout/Overlay";
 import axios from "axios";
 import { message } from "antd";
 
-
 const Auth = () => {
   const [Login, setLogin] = useState({
     userName: "",
@@ -24,7 +23,7 @@ const Auth = () => {
       return;
     }
     try {
-      const res = await axios.post(`${api}/users/login`,Login);
+      const res = await axios.post(`${api}/users/login`, Login);
       const data = res.data;
       console.log(data);
       dispatch(
@@ -46,37 +45,39 @@ const Auth = () => {
     <>
       <Overlay />
       <div className={c["Login-Form"]}>
-        <fieldset>
-          <legend>Login</legend>
-          <form onSubmit={ClickHandler}>
-            <div className={c["user-container"]}>
-              <input
-                type="text"
-                name="matricule"
-                placeholder="User Name"
-                className={c["username"]}
-                value={Login.userName}
-                onChange={(e) =>
-                  setLogin((p) => ({ ...p, userName: e.target.value }))
-                }
-              />
-            </div>
+        <div className={c["container"]} >
+          <fieldset>
+            <legend>Login</legend>
+            <form onSubmit={ClickHandler}>
+              <div className={c["user-container"]}>
+                <input
+                  type="text"
+                  name="matricule"
+                  placeholder="User Name"
+                  className={c["username"]}
+                  value={Login.userName}
+                  onChange={(e) =>
+                    setLogin((p) => ({ ...p, userName: e.target.value }))
+                  }
+                />
+              </div>
 
-            <div className={c["password-container"]}>
-              <input
-                type="password"
-                name="password"
-                placeholder="User Password"
-                className={c["userpassword"]}
-                value={Login.password}
-                onChange={(e) =>
-                  setLogin((p) => ({ ...p, password: e.target.value }))
-                }
-              />
-            </div>
-            <button className={c["Login"]}>Submit</button>
-          </form>
-        </fieldset>
+              <div className={c["password-container"]}>
+                <input
+                  type="password"
+                  name="password"
+                  placeholder="User Password"
+                  className={c["userpassword"]}
+                  value={Login.password}
+                  onChange={(e) =>
+                    setLogin((p) => ({ ...p, password: e.target.value }))
+                  }
+                />
+              </div>
+              <button className={c["Login"]}>Submit</button>
+            </form>
+          </fieldset>
+        </div>
       </div>
     </>
   );
