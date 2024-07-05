@@ -9,11 +9,12 @@
   border: 1px solid orangered;
   border-radius: 17px;
   backdrop-filter: blur(10px);
+  animation: fadUp 1.2s ease-in-out;
 }
 .Login-Form fieldset {
   padding: 1em 1rem;
   border: none;
-  animation: fadUp 1.2s ease-in-out;
+
 }
 @keyframes fadUp {
   from {

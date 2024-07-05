@@ -8,6 +8,7 @@ import { Add_Equipement } from "./Add_Equipement";
 import Selectdropdown from "../UI/SelectDropdown";
 import { OptionsFormat } from "../functions/utilitis";
 
+
 const Layout = () => {
   const [data, setdata] = useState([]);
   const [maxEquipLength, setMaxEquipLength] = useState(0);
@@ -121,6 +122,7 @@ const Layout = () => {
 
           <div className={c.header}>
             <h3>M4 Layout</h3>
+           
           </div>
           
           {/*  <div className={c.seach}>

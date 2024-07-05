@@ -6,6 +6,15 @@ import { getCurentdate, getShiftDate } from "../functions/utilitis";
 import { message } from "antd";
 import { getExactdate } from "../functions/utilitis";
 import AlreadyCgecked from "../UI/AlreadyCgecked";
+import Quote from "../../assets/quotation.png";
+import Check from "../../assets/checklist.png";
+import Car from "../../assets/carr.png";
+import Crew from "../../assets/crew.png";
+import User from "../../assets/User.png";
+import Station from "../../assets/station.png";
+import Submit from "../../assets/submit.png";
+import Next from "../../assets/next.png";
+
 const Checklist = ({ equip, currentIndex, handleNext, operatorInfo }) => {
   const [image, setImage] = useState("");
   const [points, setPoints] = useState([]);
@@ -93,6 +102,7 @@ const Checklist = ({ equip, currentIndex, handleNext, operatorInfo }) => {
     });
     setallpoinsts(Points);
   };
+
   const getColor = (num) => {
     const point = allpoinsts.find((p) => p.Num === num);
     if (point) {
@@ -101,7 +111,7 @@ const Checklist = ({ equip, currentIndex, handleNext, operatorInfo }) => {
     return "green";
   };
 
-  const handleSave = async () => {
+  const saveCheckList = async () => {
     const checkList_data = {
       OperatorID: operatorInfo.id,
       EquipmentName: data.Name,
@@ -115,9 +125,11 @@ const Checklist = ({ equip, currentIndex, handleNext, operatorInfo }) => {
       points: allpoinsts,
       flag: "checked",
     };
+
     if (currentIndex === equip.length - 1) {
       checkList_data.flag = "checked";
     }
+
     console.log(JSON.stringify(checkList_data, null, 2));
 
     try {
@@ -125,10 +137,12 @@ const Checklist = ({ equip, currentIndex, handleNext, operatorInfo }) => {
         `${api}/CheckList/NewCheckList`,
         checkList_data
       );
-      const data = res.data;
-      message.success("technician will soon verify with you !");
-      setsubmit(true);
 
+      const data = res.data;
+      message.success(
+        "technician will soon verify with you in case if any problem detected!سيقوم فني الصيانة بالتحقق معك قريبًا في حال اكتشاف أي مشكلة!"
+      );
+      setsubmit(true);
       return data;
     } catch (err) {
       message.error(err.message);
@@ -157,7 +171,7 @@ const Checklist = ({ equip, currentIndex, handleNext, operatorInfo }) => {
         }
       }
     }
-    return "not Aproved yet";
+    return "Not Aproved yet | لم تتم الموافقة بعد";
   };
 
   const approve_oper = async (id, num) => {
@@ -202,12 +216,12 @@ const Checklist = ({ equip, currentIndex, handleNext, operatorInfo }) => {
     const exist = fch.find(
       (p) =>
         p.shift === Curent_Shift.shift &&
-        getExactdate(p.date) === getCurentdate(getdate) 
+        getExactdate(p.date) === getCurentdate(getdate)
     );
     exist ? setshowCh(false) : setshowCh(true);
   }, [Curent_Shift.shift, data.Name, fch, getdate]);
 
-  console.log(data.Name);
+  console.log(problems);
   return (
     <>
       <div style={{ width: "100%" }}>
@@ -217,11 +231,15 @@ const Checklist = ({ equip, currentIndex, handleNext, operatorInfo }) => {
               <span className={c.highlight}>Maintenance 1er Niveau</span> A
               Effectuer Par Les Opérateurs
             </h3>
+            <img className="icons" src={Check} />
           </div>
 
           <div>
             <fieldset>
-              <legend>Ref</legend>
+              <legend>
+                Reference
+                <img className="icons" src={Quote} />
+              </legend>
               <span>{data && data.ref}</span>
             </fieldset>
           </div>
@@ -229,26 +247,36 @@ const Checklist = ({ equip, currentIndex, handleNext, operatorInfo }) => {
 
         <div className={c["Header2-Checklist"]}>
           <fieldset>
-            <legend>Project :</legend>
+            <legend>
+              Project <img className="icons" src={Car} />
+            </legend>
             <span>{operatorInfo.project}</span>
           </fieldset>
 
           <fieldset>
-            <legend>FAMILY :</legend>
+            <legend>
+              Family <img className="icons" src={Car} />
+            </legend>
             <span>{operatorInfo.family}</span>
           </fieldset>
           <fieldset>
-            <legend>STATION :</legend>
+            <legend>
+              Station <img className="icons" src={Station} />
+            </legend>
             <span>{operatorInfo.post}</span>
           </fieldset>
 
           <fieldset>
-            <legend>CREW :</legend>
+            <legend>
+              Crew <img className="icons" src={Crew} />
+            </legend>
             <span>{operatorInfo.crew}</span>
           </fieldset>
 
           <fieldset>
-            <legend>Operator Name :</legend>
+            <legend>
+              Operator Name <img className="icons" src={User} />
+            </legend>
             <span>{operatorInfo.name}</span>
           </fieldset>
         </div>
@@ -258,27 +286,28 @@ const Checklist = ({ equip, currentIndex, handleNext, operatorInfo }) => {
             <div className={c["Image"]}>
               {image && <img src={image} alt="Equipment" />}
               {points.map((p, i) => (
-
                 <React.Fragment key={i}>
-                  {
-                    p.Position && (
+                  {p.Position && (
+                    <React.Fragment>
                       <div
-                      onClick={() => getProblem(p.Num, p.Description)}
-                      className={c["dragedpoints"]}
-                      key={i}
-                      style={{
-                        top: `${p.Position.y * 100}%`,
-                        left: `${p.Position.x * 100}%`,
-                        transform: "translate(-50%, -50%)",
-                        backgroundColor: getColor(p.Num),
-                      }}
-                    >
-                      <span>{p.Num}</span>
-                    </div>
-                    )
-                  }
+                        onClick={() => getProblem(p.Num, p.Description)}
+                        className={c["dragedpoints"]}
+                        key={i}
+                        style={{
+                          top: `${p.Position.y * 100}%`,
+                          left: `${p.Position.x * 100}%`,
+                          transform: "translate(-50%, -50%)",
+                          backgroundColor: getColor(p.Num),
+                        }}
+                      >
+                        <span>{p.Num}</span>
+                        <span className={c.tooltiptext}>
+                          Click if you have a problem on this point!
+                        </span>
+                      </div>
+                    </React.Fragment>
+                  )}
                 </React.Fragment>
-
               ))}
               {/* <div>
                 <span>Observation</span>
@@ -287,7 +316,10 @@ const Checklist = ({ equip, currentIndex, handleNext, operatorInfo }) => {
             </div>
 
             <div className={c["Points"]}>
-              <h3>{data.Name}</h3>
+              <h3>
+                EQUIPEMENT :{" "}
+                <span style={{ color: "orangered" }}>{data.Name}</span>
+              </h3>
               <div className={c.listPoints}>
                 {points.map((point, i) => (
                   <div
@@ -311,24 +343,23 @@ const Checklist = ({ equip, currentIndex, handleNext, operatorInfo }) => {
                 }}
               >
                 {!submit && (
-                  <button className="button" onClick={handleSave}>
-                    Submit
+                  <button className="button" onClick={saveCheckList}>
+                    SUBMIT | تأكيد
+                    <img className="icons" src={Submit} />
                   </button>
                 )}
                 {equip.length > 1 && submit && (
                   <button className="button" onClick={handleClick}>
-                    Next
+                    Next | التالي
+                    <img className="icons" src={Next} />
                   </button>
                 )}
               </div>
-
             </div>
           </div>
-        ):
-        (<>
-        <AlreadyCgecked/>
-        </>)
-        }
+        ) : (
+          <>{problems.length === 0 && <AlreadyCgecked />}</>
+        )}
 
         {problems.length > 0 && (
           <div className="table">
@@ -375,8 +406,6 @@ const Checklist = ({ equip, currentIndex, handleNext, operatorInfo }) => {
             </table>
           </div>
         )}
-
-        
       </div>
     </>
   );

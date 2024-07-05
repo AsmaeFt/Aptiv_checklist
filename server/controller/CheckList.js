@@ -1,8 +1,8 @@
 const CheckList = require("../models/CheckList");
 const Equipment = require("../models/Equipment");
-const listEquip = require("../models/Equipment");
+
 const User = require("../models/Users");
-const { getExactdate } = require("../functions/utilis");
+
 
 exports.NewCheckList = async (req, res) => {
   const { EquipmentName, points, ...rest } = req.body;
@@ -58,8 +58,7 @@ exports.GetProblems = async (req, res) => {
         const docNokPoints = doc.points.filter(
           (point) => point.status === "NOK"
         );
-        const existEquip = await listEquip.findOne({ _id: doc.equipmentID });
-
+        const existEquip = await Equipment.findOne({ _id: doc.equipmentID });
         return docNokPoints.map((point) => ({
           _id: point._id,
           project: doc.project,

@@ -1,13 +1,11 @@
 import React, { useCallback, useEffect, useState } from "react";
 import c from "./Layout.module.css";
 import axios from "axios";
-import { message, Space, Switch, DatePicker } from "antd";
+import { message, Space, Switch } from "antd";
 import api from "../../services/api";
 import { getExactdate } from "../functions/utilitis";
 import Selectdropdown from "../UI/SelectDropdown";
 import { OptionsFormat } from "../functions/utilitis";
-
-const { RangePicker } = DatePicker;
 
 const CheckLists = () => {
   const [data, setdata] = useState([]);
@@ -17,16 +15,13 @@ const CheckLists = () => {
   const [project, setproject] = useState([]);
   const [family, setfamily] = useState([]);
   const [post, setpost] = useState([]);
+  const [equip, setequip] = useState([]);
 
   const [dataF, setDataF] = useState({
     p: [],
     f: [],
     po: [],
-    sdate: '',
-    edate: '',
-  });
-
-  const [Fdates, setFdates] = useState({
+    eq: [],
     sdate: "",
     edate: "",
   });
@@ -46,7 +41,6 @@ const CheckLists = () => {
       const datas = res.data;
       setfdata(datas);
       setdata(GetFiltredData(datas));
-
       return res.data;
     } catch (err) {
       message.error(err.message);
@@ -66,6 +60,10 @@ const CheckLists = () => {
 
     const ps = [...new Set(data.map((p) => p.post))];
     setpost(ps);
+
+    const eq = [...new Set(data.map((p) => p.equipment))];
+    setequip(eq);
+
   }, [data]);
 
   const handleSwitchChange = (c) => {
@@ -78,14 +76,21 @@ const CheckLists = () => {
     const projectMath = dataF.p.length === 0 || dataF.p.includes(item.project);
     const familyMatch = dataF.f.length === 0 || dataF.f.includes(item.family);
     const postMatch = dataF.po.length === 0 || dataF.po.includes(item.post);
-    const sdateMatch = dataF.sdate === '' || dataF.sdate <= item.date;
-    const edateMatch = dataF.edate === ''|| dataF.edate >= item.date;
-    return projectMath && familyMatch && postMatch && sdateMatch && edateMatch;
+    const EquiptMatch = dataF.eq.length === 0 || dataF.eq.includes(item.equipment);
 
+    const sdateMatch = dataF.sdate === "" || dataF.sdate <= item.date;
+    const edateMatch = dataF.edate === "" || dataF.edate >= item.date;
+    return (
+      projectMath &&
+      familyMatch &&
+      postMatch &&
+      EquiptMatch &&
+      sdateMatch &&
+      edateMatch
+    );
   });
 
-
-  console.log(FilterData);
+  console.log(dataF.eq);
 
   return (
     <>
@@ -96,26 +101,26 @@ const CheckLists = () => {
           </div>
           <div className={c.date}>
             <form>
-            <input
-              type="date"
-              name="start"
-              onChange={(e) =>
-                setDataF((prev) => ({ ...prev, sdate: e.target.value }))
-              }
-            />
-            <input
-              type="date"
-              name="end"
-              min={dataF.sdate}
-              onChange={(e) =>
-                setDataF((prev) => ({ ...prev, edate: e.target.value }))
-              }
-            />
+              <input
+                type="date"
+                name="start"
+                onChange={(e) =>
+                  setDataF((prev) => ({ ...prev, sdate: e.target.value }))
+                }
+              />
+              <input
+                type="date"
+                name="end"
+                min={dataF.sdate}
+                onChange={(e) =>
+                  setDataF((prev) => ({ ...prev, edate: e.target.value }))
+                }
+              />
             </form>
-           
           </div>
 
           <div className={c.filterdata}>
+
             <Selectdropdown
               options={OptionsFormat(project)}
               placeholder={"select Project ..."}
@@ -132,6 +137,12 @@ const CheckLists = () => {
               options={OptionsFormat(post)}
               placeholder={"select Post ..."}
               onChange={(e) => setDataF((prev) => ({ ...prev, po: e }))}
+            />
+
+            <Selectdropdown
+              options={OptionsFormat(equip)}
+              placeholder={"select Equipement ..."}
+              onChange={(e) => setDataF((prev) => ({ ...prev, eq: e }))}
             />
 
             <Space direction="vertical">
@@ -161,14 +172,14 @@ const CheckLists = () => {
                   <th>Shift </th>
                   <th>Status </th>
                   <th>Responsable Thechnician </th>
-
                   <th>Action </th>
                   <th>confirmation M </th>
-
                   <th>Confirmation P</th>
                 </tr>
               </thead>
+
               <tbody>
+                
                 {FilterData.map((d, i) =>
                   d.points.map((p, j) => (
                     <React.Fragment key={`${i},${j}`}>
@@ -189,8 +200,8 @@ const CheckLists = () => {
                               {d.technicienDecision.length > 0 ? (
                                 <>
                                   {d.technicienDecision.map((t) =>
-                                    t.points.map((pt) =>
-                                      pt.Num === p.Num ? <>{t.name}</> : <>-</>
+                                    t.points.map(
+                                      (pt) => pt.Num === p.Num && <>{t.name}</>
                                     )
                                   )}
                                 </>
@@ -202,10 +213,20 @@ const CheckLists = () => {
                                 </>
                               )}
                             </>
-                          ) : (
+                          ) : p.status === "OK" ? (
                             <>
-                              <span> </span>
+                              {d.technicienDecision.length > 0 && (
+                                <>
+                                  {d.technicienDecision.map((t) =>
+                                    t.points.map(
+                                      (pt) => pt.Num === p.Num && <>{t.name}</>
+                                    )
+                                  )}
+                                </>
+                              )}
                             </>
+                          ) : (
+                            <>-</>
                           )}
                         </td>
 
@@ -215,12 +236,11 @@ const CheckLists = () => {
                               {d.technicienDecision.length > 0 ? (
                                 <>
                                   {d.technicienDecision.map((t) =>
-                                    t.points.map((pt) =>
-                                      pt.Num === p.Num ? (
-                                        <>{pt.Action || "No Action Yet"}</>
-                                      ) : (
-                                        <>-</>
-                                      )
+                                    t.points.map(
+                                      (pt) =>
+                                        pt.Num === p.Num && (
+                                          <>{pt.Action || "No Action Yet"}</>
+                                        )
                                     )
                                   )}
                                 </>
@@ -302,6 +322,7 @@ const CheckLists = () => {
                     </React.Fragment>
                   ))
                 )}
+
               </tbody>
             </table>
           </div>

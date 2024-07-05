@@ -6,8 +6,12 @@ import { useParams } from "react-router-dom";
 import CheckList from "./CheckList";
 import { useNavigate } from "react-router-dom";
 import err from "../../assets/error.svg";
+import Good from "../UI/GreatJob";
 
 const Checklist = () => {
+
+  const [showGood, setShowGood] = useState(false);
+
   const navigate = useNavigate();
   const { id, nameoperator, project, family, post, crew } = useParams();
   const operatorInfo = {
@@ -20,7 +24,7 @@ const Checklist = () => {
   };
   /*  console.log(JSON.stringify({ id, nameoperator, project, family, post })); */
   const [datas, setdatas] = useState([]);
-  const [index, setindex] = useState(0);
+  const [index, setIndex] = useState(0);
 
   const getEquip = useCallback(async () => {
     const OperatorInfo = {
@@ -50,12 +54,14 @@ const Checklist = () => {
 
   const handelnext = () => {
     if (index < datas.length - 1) {
-      setindex(index + 1);
+      setIndex(index + 1);
       console.log(index);
       console.log(datas.length);
     } else {
-      navigate("/dpo");
-    }
+
+        navigate("/dpo");
+      }
+    
   };
   console.log(datas);
 
@@ -63,7 +69,12 @@ const Checklist = () => {
     <>
       {datas.length <= 0 ? (
         <div
-          style={{ height: "100%", display: "flex", justifyContent: "center", alignItems:'center' }}
+          style={{
+            height: "100%",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
         >
           <div>
             <img style={{ width: "30rem" }} src={err} />
@@ -76,7 +87,7 @@ const Checklist = () => {
         <>
           <CheckList
             equip={datas}
-            currentIndex={index} 
+            currentIndex={index}
             handleNext={handelnext}
             operatorInfo={operatorInfo}
           />

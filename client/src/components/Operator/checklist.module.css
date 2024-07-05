@@ -1,178 +1,211 @@
-.Time {
-    display: flex;
-    justify-content: end;
-    margin: 0 1rem;
-  }
-  .Header-Checklist {
-    margin: 1rem 1rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .Header-Checklist img {
-    width: 1.3rem;
-    margin: 0 0.2rem;
-  }
-  .Header-Checklist fieldset {
-    border: 1px dashed orangered;
-    border-radius: 9px;
-    padding: 10px;
-  }
-  .Header-Checklist fieldset legend {
-    font-weight: 600;
-  }
-  
-  .Header2-Checklist {
-    margin: 1rem 0;
-    display: flex;
-    align-items: center;
-    gap: 3rem;
-    border: 1px solid rgba(255, 68, 0, 0.37);
-    text-align: center;
-    padding: 1rem 0;
-  }
-  .Header2-Checklist fieldset {
-    border: 1px dashed orangered;
-    border-radius: 9px;
-    width: 10em;
-  }
-  .Header2-Checklist fieldset legend {
-    font-weight: 600;
-    color: #f84018;
-  }
-  .span {
-    color: orangered;
-    margin: 0 0.5rem;
-  }
-  .checklist {
-    width: 100%;
-    display: flex;
-    justify-content: space-evenly;
-  }
-  .Image {
-    aspect-ratio: 16 / 9;
-    width: 49%;
-    border: 1px solid orangered;
-    background-color: #3f3f3f;
-    position: relative;
-    animation: fade-up 1s ease-out;
-  }
-  .Image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-  
-  .Points {
-    width: 49%;
-  }
-  .Points  .listPoints{
-    height: 30rem;
-    overflow: auto;
-    margin: 1rem 0;
-  }
+/* header 1 */
+.Header-Checklist {
+  margin: 1rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.Header-Checklist h3 {
+  font-size: 1.3rem;
+}
+.Header-Checklist div {
+  width: 50%;
+}
 
+.Header-Checklist fieldset {
+  border: 2px solid #ff45006b;
+  border-radius: 9px;
+  padding: 10px;
+  background-color: #212121;
+}
+.Header-Checklist fieldset legend {
+  font-weight: 600;
+  letter-spacing: 1px;
+}
 
- 
-  
-  .point {
-    margin: 1rem 0;
-    overflow: auto;
-    height: 10rem;
-  }
-  .poin{
-    display: flex;
-    align-items: start;
-    gap: 0.5rem;
-    justify-content: center;
-    align-items: center;
-   padding: 1rem ;
-    background-color: #212121;
-    margin: 1rem 0;
-    border-radius: 5px;
-  }
-  
-  .poin img {
-    width: 1.5rem;
-  }
-  .dragedpoints {
-    width: 1.5rem;
-    height: 1.5rem;
-    border-radius: 11px;
-    position: absolute;
-    top: 27.7715%;
-    left: 85.4007%;
-    transform: translate(-50%, -50%);
-    background: green;
-    text-align: center;
-    animation: zoom-in-zoom-out 2s ease-out infinite;
-    cursor: pointer;
-  }
-  .dragedpoints::before,
-  .selected::before {
-    border: 1px solid #ff2e00;
-    border-radius: 50%;
-    content: "";
-    height: 2rem;
-    position: absolute;
-    right: -4px;
-    top: -5px;
-    width: 2rem;
-    box-shadow: 1px 1px 3px #f84018;
-  }
-  .selected {
-    width: 1.5rem;
-    height: 1.5rem;
-    border-radius: 11px;
-    position: absolute;
-    top: 27.7715%;
-    left: 85.4007%;
-    transform: translate(-50%, -50%);
-    background: red;
-    text-align: center;
-    position: "absolute";
-    animation: zoom-in-zoom-out 2s ease-out infinite;
-    cursor: pointer;
-  }
-  .fade-up {
-    animation: fade-up 0.5s ease-in-out forwards;
-    opacity: 0;
-  }
-  .highlight
-  {
-    /* background-color: orangered; */
-    color: orangered;
-  }
-  .taskNum{
-    min-width: 2rem;
-  height: 2rem;
-  background-color: orangered;
-  align-content: center;
-  margin: 0 5px;
-  border-radius: 50px;
+/* header 2 */
+
+.Header2-Checklist {
+  margin: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 3rem;
+  border: 1px solid rgba(255, 68, 0, 0.37);
+  text-align: center;
+  padding: 1rem;
+  border-radius: 9px;
+  background: #212121;
+}
+.Header2-Checklist fieldset {
+  border: 1px solid rgba(255, 68, 0, 0.384);
+  border-radius: 9px;
+  width: 11em;
+  height: 4rem;
+  box-shadow: 1px 1px 2px 1px black;
+  background: #7777771c;
+  backdrop-filter: blur(13px);
+}
+.Header2-Checklist fieldset legend {
+  font-weight: 600;
+  color: #f84018;
+}
+.span {
+  color: orangered;
+  margin: 0 0.5rem;
+}
+.checklist {
+  width: 100%;
+  display: flex;
+  justify-content: space-evenly;
+}
+.Image {
+  aspect-ratio: 16 / 9;
+  width: 49%;
+  border: 1px solid orangered;
+  background-color: #3f3f3f;
+  position: relative;
+  animation: fade-up 1s ease-out;
+}
+.Image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.Points {
+  width: 49%;
+}
+.Points .listPoints {
+  height: 30rem;
+  overflow: auto;
+  margin: 1rem 0;
+}
+
+.point {
+  margin: 1rem 0;
+  overflow: auto;
+  height: 10rem;
+}
+.poin {
+  display: flex;
+  align-items: start;
+  gap: 0.5rem;
+  justify-content: start;
+  align-items: center;
+  padding: 1rem;
+  background-color: #212121;
+  margin: 1rem 0;
+  border-radius: 5px;
+}
+
+.poin img {
+  width: 1.5rem;
+}
+.dragedpoints {
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 11px;
+  position: absolute;
+  top: 27.7715%;
+  left: 85.4007%;
+  transform: translate(-50%, -50%);
+  background: green;
+  text-align: center;
+  animation: zoom-in-zoom-out 2s ease-out infinite;
   cursor: pointer;
+  box-shadow: 0px 0px 0px 15px #3c3c3cb0;
   transition: all 0.3s ease-in-out;
-  }
+}
+.dragedpoints:hover{
+  box-shadow: 0px 0px 0px 15px #ff0000b0;
+}
+.tooltiptext{
+  visibility: hidden;
+  width: 17rem;
+  background-color: #4b4b4bbf;
+  backdrop-filter: blur(5px);
+  color: #fff;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+  font-size: 0.8rem;
+  top: 0;
+  top: -25px;
+  left: 24px;
+  animation: fade-up 1s ease-out;
+  transition: all 0.3s ease-in-out;
+}
+.dragedpoints:hover .tooltiptext {
+  visibility: visible;
+}
+
+.dragedpoints::before,
+.selected::before {
+  border: 1px solid #ff2e00;
+  border-radius: 50%;
+  content: "";
+  height: 2rem;
+  position: absolute;
+  right: -4px;
+  top: -5px;
+  width: 2rem;
+  box-shadow: 1px 1px 3px #f84018;
+}
+.selected {
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 11px;
+  position: absolute;
+  top: 27.7715%;
+  left: 85.4007%;
+  transform: translate(-50%, -50%);
+  background: red;
+  text-align: center;
+  position: "absolute";
+  animation: zoom-in-zoom-out 2s ease-out infinite;
+  cursor: pointer;
+}
+.fade-up {
+  animation: fade-up 0.5s ease-in-out forwards;
+  opacity: 0;
+}
+.highlight {
+  /* background-color: orangered; */
+  color: orangered;
+}
+.taskNum {
+  min-width: 2rem;
+    height: 2rem;
+    background-color: orangered;
+    align-content: center;
+    margin: 0 5px;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0px 0px 0px 5px #ff460163;
   
-  @keyframes fade-up {
-    0% {
-      opacity: 0;
-      transform: translateY(-6rem); 
-    }
-    100% {
-      opacity: 1;
-      transform: translateY(0); 
-    }
+}
+
+@keyframes fade-up {
+  0% {
+    opacity: 0;
+    transform: translateX(-6rem);
   }
-  
-  @keyframes zoom-in-zoom-out {
-    0% {
-      transform: scale(1, 1);
-    }
-    50% {
-      transform: scale(1.1, 1.1);
-    }
-    100% {
-      transform: scale(1, 1);
-    }
+  100% {
+    opacity: 1;
+    transform: translatex(0);
   }
+}
+
+@keyframes zoom-in-zoom-out {
+  0% {
+    transform: scale(1, 1);
+  }
+  50% {
+    transform: scale(1.1, 1.1);
+  }
+  100% {
+    transform: scale(1, 1);
+  }
+}
