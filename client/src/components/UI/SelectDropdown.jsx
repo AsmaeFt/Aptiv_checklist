@@ -9,7 +9,7 @@ const Selectdropdown = ({ options, placeholder, onChange, mode = "multiple", sty
       <Select
         mode={mode}
         style={{
-          width: "30%",
+          width: "22%",
           ...style
         }}
         placeholder={placeholder}

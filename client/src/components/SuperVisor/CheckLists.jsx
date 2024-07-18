@@ -90,8 +90,6 @@ const CheckLists = () => {
     );
   });
 
-  console.log(dataF.eq);
-
   return (
     <>
       <div className={c.container}>

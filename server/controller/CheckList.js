@@ -3,7 +3,6 @@ const Equipment = require("../models/Equipment");
 
 const User = require("../models/Users");
 
-
 exports.NewCheckList = async (req, res) => {
   const { EquipmentName, points, ...rest } = req.body;
   const FindEquipment = await Equipment.findOne({ Name: EquipmentName });
@@ -286,3 +285,4 @@ exports.GetAll = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+

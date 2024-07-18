@@ -8,7 +8,10 @@
   font-style: normal;
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #000000;
+/*   background-color: #000000; */
+background-image: url('../src/assets/black-elegant-background-with-copy-space.jpg');
+background-repeat: no-repeat;
+background-size: cover;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;

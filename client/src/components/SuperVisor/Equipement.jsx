@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState, useRef, act } from "react";
+import React, { useCallback, useEffect, useState, useRef } from "react";
 import c from "./etyle.module.css";
 import { message } from "antd";
 import axios from "axios";
@@ -211,9 +211,11 @@ const Equipement = () => {
       console.error(err);
     }
   };
+  
   const handleAddData = (e) => {
     setimportData(e.target.files[0]);
   };
+
   const addDataFile = async () => {
     if (!importData) return alert("please select a file first ! ");
 
@@ -326,6 +328,8 @@ const Equipement = () => {
       message.error("Failed to update Reference");
     }
   };
+
+
 
   return (
     <>
@@ -522,6 +526,7 @@ const Equipement = () => {
             <button className={c.submit} onClick={addDataFile}>
               Submit
             </button>
+
           </div>
         </div>
       </div>

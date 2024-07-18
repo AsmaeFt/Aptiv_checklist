@@ -1,4 +1,4 @@
-import c from "./style.module.css";
+import c from "./Add_Equipement.module.css";
 import { useCallback, useEffect, useState } from "react";
 import { message } from "antd";
 import axios from "axios";

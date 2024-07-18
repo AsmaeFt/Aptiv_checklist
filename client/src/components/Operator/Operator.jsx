@@ -6,7 +6,7 @@ import { useParams } from "react-router-dom";
 import CheckList from "./CheckList";
 import { useNavigate } from "react-router-dom";
 import err from "../../assets/error.svg";
-import Good from "../UI/GreatJob";
+
 
 const Checklist = () => {
 
