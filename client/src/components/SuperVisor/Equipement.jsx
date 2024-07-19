@@ -329,7 +329,7 @@ const Equipement = () => {
     }
   };
 
-
+console.log(activEditEquip);
 
   return (
     <>
@@ -466,6 +466,7 @@ const Equipement = () => {
                 </button>
               </div>
             ))}
+            
           </div>
         </div>
 
@@ -478,6 +479,7 @@ const Equipement = () => {
             {ListEquipement.map((p, i) => (
               <React.Fragment key={i}>
                 <div
+                 style={{ animationDelay: `${i * 0.1}s` }}
                   className={c.equipsContainet}
                   onClick={() => {
                     handleclick(p.Name);

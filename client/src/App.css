@@ -7,7 +7,7 @@
   overflow: hidden;
   width: 100%;
   box-sizing: border-box;
-  height: 90vh;
+  height:100vh;
 }
 ::-webkit-scrollbar {
   width: 3px;
@@ -59,7 +59,7 @@ h3 {
 h3::after {
   content: "";
   display: block;
-  border-bottom: 2px solid orangered;
+  border-bottom: 4px solid orangered;
   margin-top: 4px;
   width: 2rem;
   border-radius: 10px;
@@ -158,6 +158,8 @@ h3::after {
   border-radius:17px;
   border: 1px solid orangered;
   outline: none;
+  background-color: transparent;
+  color: white;
 }
 .icons {
   width: 1.2rem;
@@ -166,6 +168,10 @@ h3::after {
 p{
   text-align: justify;
   text-align: center;
+}
+textarea ,input{
+  background-color: transparent;
+  color: white;
 }
 
 
