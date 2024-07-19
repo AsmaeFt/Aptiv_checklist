@@ -126,6 +126,7 @@ const EquipementNew = () => {
               </React.Fragment>
             ))}
 
+
             <label>
               <input
                 type="file"
