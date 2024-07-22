@@ -127,25 +127,43 @@ const EquipementNew = () => {
     s.equipment.equipements.find((e) => e.Name === selectedEquip)
   );
 
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const url = URL.createObjectURL(file);
+    }
+  };
+
+  const triggerImageUpload = () => {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = "image/*";
+    input.onchange = handleImageUpload;
+    input.click();
+  };
+
   return (
     <div className={c.container}>
       <div className={c.equipimage}>
         <div className={c.image}>
-          <div  className={c.img}>
-          {Dataselected && Dataselected.Pic ? (
-            <>
-              <img className={c.uploaded} src={`http://10.236.148.30:8080/${Dataselected.Pic}`} alt=" Equipment Image " />
-            </>
-          ) : (
-            <>
-              <span>
-                <img className={c.upload} src={upload} />
-              </span>
-              <p>Upload image</p>
-            </>
-          )}
+          <div className={c.img} onClick={triggerImageUpload}>
+            {Dataselected && Dataselected.Pic ? (
+              <>
+                <img
+                  className={c.uploaded}
+                  src={`http://10.236.148.30:8080/${Dataselected.Pic}`}
+                  alt=" Equipment Image "
+                />
+              </>
+            ) : (
+              <>
+                <span>
+                  <img className={c.upload} src={upload} />
+                </span>
+                <p>Upload image</p>
+              </>
+            )}
           </div>
-
         </div>
 
         <div className={c.equips}>
