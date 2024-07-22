@@ -5,6 +5,7 @@ import axios from "axios";
 import api from "../../services/api";
 import edit from "../../assets/edit.png";
 import delet from "../../assets/delete.png";
+import upload from "../../assets/uploadimage.png";
 
 import { useSelector, useDispatch } from "react-redux";
 
@@ -16,9 +17,9 @@ const EquipementNew = () => {
 
   const [activEditEquip, setactivEditEquip] = useState(null);
   const [editEquipment, seteditEquipment] = useState(null);
-  const [dataselected, setdataselected] = useState();
   const [editText, seteditText] = useState(null);
   const [selectedEquip, setselectedEquip] = useState("");
+  const [importData, setimportData] = useState("");
 
   //get equips
   const GetEquipment = useCallback(async () => {
@@ -41,7 +42,6 @@ const EquipementNew = () => {
     setactivEditEquip(e);
     seteditEquipment(e);
   };
-
   const Edit_Equip = async (Name) => {
     setactivEditEquip(null);
     const newPoint = {
@@ -58,7 +58,6 @@ const EquipementNew = () => {
       message.error("Failed to update equipment.");
     }
   };
-
   const DeleteEquipment = async (Name) => {
     try {
       const res = await axios.post(`${api}/Equipment/Delete`, { Name });
@@ -72,10 +71,24 @@ const EquipementNew = () => {
       throw error;
     }
   };
+  const Add_Equip = async () => {
+    if (!importData) return alert("please select a file first ! ");
+    const formData = new FormData();
+    formData.append("excelFile", importData);
+    try {
+      const res = await axios.post(`${api}/equipe/ImportExcel`, formData);
+      const data = res.data;
+      console.log(data);
+      message.success("Equipement Added Succefuly !");
+      dispatch(equipmentActions.setAllEquipment(data));
+      return data;
+    } catch (err) {
+      console.error(err);
+    }
+  };
   //////////////// Equipments
 
   //////////////// points
-
   const UpdatePoint = (i, d) => {
     setactivEditEquip(i);
     seteditText(d);
@@ -94,7 +107,15 @@ const EquipementNew = () => {
       const data = res.data;
       console.log(data);
       message.success("Point Updated");
-     
+
+      dispatch(
+        equipmentActions.updatePoint({
+          equipName: selectedEquip,
+          pointNum: i,
+          newDescription: editText,
+        })
+      );
+
       return res.data;
     } catch (err) {
       console.error("Error updating point:", err);
@@ -102,25 +123,29 @@ const EquipementNew = () => {
     }
   };
   //////////////// points
-
-  const handleAddEquips = (e) => {
-    setimportData(e.target.files[0]);
-  };
-  const addDataFile = () => {};
-
-  const handleclick = async (Name) => {
-    setselectedEquip(Name);
-    const selected = equipments.find((e) => e.Name === Name);
-    if (selected) {
-      setdataselected(selected);
-    }
-  };
+  const Dataselected = useSelector((s) =>
+    s.equipment.equipements.find((e) => e.Name === selectedEquip)
+  );
 
   return (
     <div className={c.container}>
       <div className={c.equipimage}>
         <div className={c.image}>
-          <span>upload image +</span>
+          <div  className={c.img}>
+          {Dataselected && Dataselected.Pic ? (
+            <>
+              <img className={c.uploaded} src={`http://10.236.148.30:8080/${Dataselected.Pic}`} alt=" Equipment Image " />
+            </>
+          ) : (
+            <>
+              <span>
+                <img className={c.upload} src={upload} />
+              </span>
+              <p>Upload image</p>
+            </>
+          )}
+          </div>
+
         </div>
 
         <div className={c.equips}>
@@ -131,9 +156,7 @@ const EquipementNew = () => {
                 <div
                   className={c.equipsContainet}
                   style={{ animationDelay: `${i * 0.1}s` }}
-                  onClick={() => {
-                    handleclick(p.Name);
-                  }}
+                  onClick={() => setselectedEquip(p.Name)}
                 >
                   {activEditEquip === p.Name ? (
                     <>
@@ -174,19 +197,21 @@ const EquipementNew = () => {
               <input
                 type="file"
                 accept=".xlsx,.xls"
-                onChange={handleAddEquips}
+                onChange={(e) => {
+                  setimportData(e.target.files[0]);
+                }}
               />
             </label>
 
-            <button className={c.submit} onClick={addDataFile}>
+            <button className={c.submit} onClick={Add_Equip}>
               Submit
             </button>
           </div>
 
           <div className={c.pointsEquips}>
             <h3>Tasks to be performed</h3>
-            {dataselected &&
-              dataselected.Points.map((p, i) => (
+            {Dataselected &&
+              Dataselected.Points.map((p, i) => (
                 <div
                   key={i}
                   className={c.task}

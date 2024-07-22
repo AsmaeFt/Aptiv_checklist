@@ -23,18 +23,18 @@ const EquipementSlice = createSlice({
     deleteEquip(s, a) {
       s.equipements = s.equipements.filter((e) => e.Name !== a.payload);
     },
-    UpdatePoints(s, a) {
-      const { Name, num, Description } = a.payload;
-      const exist = s.equipements.find((e) => e.Name === Name);
-      if (exist) {
-        const point = exist.Points.find((p) => p.Num === num);
-        if (point) {
-          point.Description = Description;
+    updatePoint(state, action) {
+        const { equipName, pointNum, newDescription } = action.payload;
+        const equipment = state.equipements.find(e => e.Name === equipName);
+        if (equipment) {
+          const point = equipment.Points.find(p => p.Num === pointNum);
+          if (point) {
+            point.Description = newDescription;
+          }
         }
-      }
-    },
+      },
   },
 });
-export const { setAllEquipment, addEquipment, editNameEquip, deleteEquip , UpdatePoints } =
+export const { setAllEquipment, addEquipment, editNameEquip, deleteEquip , updatePoint } =
   EquipementSlice.actions;
 export default EquipementSlice.reducer;
