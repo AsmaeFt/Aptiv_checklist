@@ -19,7 +19,7 @@ export const authSlice = createSlice({
       };
       console.log("Auth State Updated:", st.isLoged);
     },
-    logOut: (st, act) => {
+    logOut: (st) => {
       st.isLoged = {
         logedIn: false,
         token: "",
