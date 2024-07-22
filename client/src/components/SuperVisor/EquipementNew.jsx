@@ -126,14 +126,16 @@ const EquipementNew = () => {
   const Dataselected = useSelector((s) =>
     s.equipment.equipements.find((e) => e.Name === selectedEquip)
   );
+  const [image, setimage] = useState("");
+  setimage(Dataselected && `http://10.236.148.30:8080/${Dataselected.Pic}`);
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
       const url = URL.createObjectURL(file);
+      setimage(url);
     }
   };
-
   const triggerImageUpload = () => {
     const input = document.createElement("input");
     input.type = "file";
@@ -151,7 +153,7 @@ const EquipementNew = () => {
               <>
                 <img
                   className={c.uploaded}
-                  src={`http://10.236.148.30:8080/${Dataselected.Pic}`}
+                  src={image}
                   alt=" Equipment Image "
                 />
               </>
