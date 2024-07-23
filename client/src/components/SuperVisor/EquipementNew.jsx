@@ -168,7 +168,6 @@ const EquipementNew = () => {
   const Start = (e, i) => {
     setDraggedPoint(i);
   };
-
   const Drop = (e) => {
     e.preventDefault();
     if (draggedPoint !== null && imageRef.current) {
@@ -177,16 +176,17 @@ const EquipementNew = () => {
       const y = (e.clientY - rect.top) / rect.height;
       const newPosition = [...positions];
       newPosition[draggedPoint] = { x, y };
-      setPositions({ 
-        Num : draggedPoint,
-        position : newPosition });
+      dispatch(
+        equipmentActions.Edit_Points({
+          Name: selectedEquip,
+          Num: draggedPoint,
+          Position: { x, y },
+        })
+      );
       setDraggedPoint(null);
     }
   };
-
-  console.log(draggedPoint);
-  console.log(positions);
-
+  console.log(Dataselected);
   /////// draging points
 
   return (
@@ -204,7 +204,33 @@ const EquipementNew = () => {
             /* draged points  */
           >
             {image ? (
-              <img className={c.uploaded} src={image} alt="Equipment" />
+              <>
+                <img className={c.uploaded} src={image} alt="Equipment" />
+                {Dataselected &&
+                  Dataselected.Points.map((p) => (
+                    <>
+                      {p.Position && (
+                       
+                           <div
+                          key={p.Num}
+                          className={c.point}
+                          style={{
+                            top: `${p.Position.y * 100}%`,
+                            left: `${p.Position.x * 100}%`,
+                            cursor: "move",
+                          }}
+                          draggable
+                          onDragStart={(e) => Start(e, p.Num)}
+                        >
+                          {p.Num}
+                        </div>
+                        
+                       
+
+                      )}
+                    </>
+                  ))}
+              </>
             ) : (
               <>
                 <span>

@@ -69,6 +69,9 @@
   overflow: auto;
   border: 1px solid rgba(255, 68, 0, 0.301);
   border-radius: 9px;
+  backdrop-filter: blur(5px);
+  background-color: #ffffff21;
+
 }
 textarea {
   width: 100%;
@@ -79,7 +82,6 @@ textarea {
   border-radius: 17px;
   animation: faderight 0.3s ease-in-out;
 }
-
 .submit {
   width: 4rem;
   background-color: white;
@@ -99,7 +101,6 @@ textarea {
   border: none;
   cursor: pointer;
 }
-
 .edit img {
   width: 1rem;
   background-color: rgb(255, 255, 255);
@@ -113,7 +114,6 @@ textarea {
 .edit img:hover {
   transform: scale(1.1);
 }
-
 .equipsContainet {
   margin: 1rem 0;
   backdrop-filter: blur(3px);
@@ -130,7 +130,6 @@ textarea {
 .equipsContainet:hover {
   background-color: rgba(255, 68, 0, 0.288);
 }
-
 @keyframes faderight {
   from {
     opacity: 0;
@@ -141,7 +140,6 @@ textarea {
     transform: translateX(0);
   }
 }
-
 .task {
   display: flex;
   margin: 1rem 0;
@@ -161,4 +159,49 @@ textarea {
   border-radius: 50px;
   cursor: pointer;
   transition: all 0.3s ease-in-out;
+}
+
+.point {
+  position: absolute;
+  width: 2.5rem;
+  height: 2.5rem;
+  background-color: orangered;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-weight: bold;
+  cursor: move;
+  user-select: none;
+}
+
+.point::before,
+.point::after {
+  content: "";
+  border: 2px solid orangered;
+  border-radius: 50%;
+  position: absolute;
+  box-shadow: 1px 1px 6px black;
+}
+.point::before {
+  height: 2.8rem;
+  width: 2.8rem;
+  animation: zoom1 1s ease-in-out infinite alternate;
+}
+
+.point::after {
+  height: 3rem;
+  width: 3rem;
+  animation: zoom2 1.4s ease-in-out infinite alternate;
+} 
+
+@keyframes zoom1 {
+  0% { transform: scale(0.8); }
+  100% { transform: scale(1.1); }
+}
+
+@keyframes zoom2 {
+  0% { transform: scale(0.8); }
+  100% { transform: scale(1.1); }
 }
