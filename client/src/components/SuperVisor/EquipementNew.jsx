@@ -21,6 +21,7 @@ const EquipementNew = () => {
   const [selectedEquip, setselectedEquip] = useState("");
   const [importData, setimportData] = useState("");
 
+
   //get equips
   const GetEquipment = useCallback(async () => {
     try {
@@ -127,9 +128,6 @@ const EquipementNew = () => {
     s.equipment.equipements.find((e) => e.Name === selectedEquip)
   );
 
-/*   const [image, setimage] = useState("");
-  setimage(Dataselected && `http://10.236.148.30:8080/${Dataselected.Pic}`); */
-
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -154,7 +152,10 @@ const EquipementNew = () => {
               <>
                 <img
                   className={c.uploaded}
-                  src={Dataselected && `http://10.236.148.30:8080/${Dataselected.Pic}`}
+                  src={
+                    Dataselected &&
+                    `http://10.236.148.30:8080/${Dataselected.Pic}`
+                  }
                   alt=" Equipment Image "
                 />
               </>

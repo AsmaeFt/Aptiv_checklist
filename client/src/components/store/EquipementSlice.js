@@ -23,9 +23,9 @@ const EquipementSlice = createSlice({
     deleteEquip(s, a) {
       s.equipements = s.equipements.filter((e) => e.Name !== a.payload);
     },
-    updatePoint(state, action) {
-        const { equipName, pointNum, newDescription } = action.payload;
-        const equipment = state.equipements.find(e => e.Name === equipName);
+    updatePoint(s, a) {
+        const { equipName, pointNum, newDescription } = a.payload;
+        const equipment = s.equipements.find(e => e.Name === equipName);
         if (equipment) {
           const point = equipment.Points.find(p => p.Num === pointNum);
           if (point) {
@@ -33,6 +33,9 @@ const EquipementSlice = createSlice({
           }
         }
       },
+      add_pic(s,a){
+
+      }
   },
 });
 export const { setAllEquipment, addEquipment, editNameEquip, deleteEquip , updatePoint } =
