@@ -9,5 +9,7 @@ router.use("/Equipment", require("./Equipment"));
 router.use("/CheckList", require("./CheckList"));
 
 router.use("/Layout", require("./Layout"));
+router.use("/Equips", require("./Equips"));
+
 
 module.exports = router;

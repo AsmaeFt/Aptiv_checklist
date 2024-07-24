@@ -1,5 +1,4 @@
 const Equipment = require("../models/Equipment");
-const listEquip = require("../models/ListEquip");
 const Layout = require("../models/Layout");
 
 ////
@@ -12,7 +11,6 @@ exports.Get = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
-
 exports.AddEquipenet = async (req, res) => {
   try {
     const { Name, ref, Points } = req.body;
@@ -42,7 +40,6 @@ exports.AddEquipenet = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
-
 exports.UpdateEquipName = async (req, res) => {
   const { Name, newOne } = req.body;
   try {
@@ -58,7 +55,6 @@ exports.UpdateEquipName = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
-
 exports.Delete = async (req, res) => {
   const { Name } = req.body;
   try {
@@ -72,7 +68,6 @@ exports.Delete = async (req, res) => {
       .json({ error: "An error occurred while deleting the equipment" });
   }
 };
-
 exports.UpdateEquip = async (req, res) => {
   const { Name, num, Description } = req.body;
   try {
@@ -93,7 +88,6 @@ exports.UpdateEquip = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
-
 exports.UpdatePosition = async (req, res) => {
   const { Name, Num, Position } = req.body;
   try {
@@ -116,7 +110,6 @@ exports.UpdatePosition = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
-
 exports.UpdateImage = async (req, res) => {
   const { Name } = req.body;
   try {
@@ -133,7 +126,6 @@ exports.UpdateImage = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
-
 exports.UpdateRef = async (req, res) => {
   const { Name , ref } = req.body;
   try {
@@ -150,9 +142,7 @@ exports.UpdateRef = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
-
 ////
-
 exports.Getequipment = async (req, res) => {
   const { project, family, post } = req.body;
 
@@ -192,5 +182,6 @@ exports.GetNames = async (req, res) => {
     res.status(200).json(name);
   } catch (err) {
     res.status(500).json({ error: err.message });
+    console.log("");
   }
 };

@@ -27,7 +27,10 @@
   text-align: center;
   cursor: pointer;
   animation: faderight 0.3s ease-in-out;
+  display: flex;
+  flex-direction: column;
 }
+
 .image .upload {
   width: 10rem;
   opacity: 0.3;
@@ -44,17 +47,29 @@
 .img {
   aspect-ratio: 16 / 9;
   width: 100%;
-  height: 100%;
+  height: 94%;
   align-content: center;
   border: 1px dashed rgb(63, 63, 63);
   border-radius: 9px;
-  
 }
 .img .uploaded {
   width: 100%;
-  height: 100%;
   object-fit: cover;
+  height: 100%;
 }
+.ref {
+  height: 6%;
+}
+.submitequip{
+  position: absolute;
+    top: 0;
+    right: 0;
+}
+.submitequip button{
+  box-shadow: -2px -1px 10px 3px #000000;
+  height: 2.5rem;
+}
+
 .equips {
   width: 24%;
   height: 100%;
@@ -69,9 +84,10 @@
   overflow: auto;
   border: 1px solid rgba(255, 68, 0, 0.301);
   border-radius: 9px;
-  backdrop-filter: blur(5px);
-  background-color: #ffffff21;
-
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
 }
 textarea {
   width: 100%;
@@ -130,16 +146,7 @@ textarea {
 .equipsContainet:hover {
   background-color: rgba(255, 68, 0, 0.288);
 }
-@keyframes faderight {
-  from {
-    opacity: 0;
-    transform: translateX(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
+
 .task {
   display: flex;
   margin: 1rem 0;
@@ -175,7 +182,6 @@ textarea {
   cursor: move;
   user-select: none;
 }
-
 .point::before,
 .point::after {
   content: "";
@@ -194,14 +200,66 @@ textarea {
   height: 3rem;
   width: 3rem;
   animation: zoom2 1.4s ease-in-out infinite alternate;
-} 
+}
 
 @keyframes zoom1 {
-  0% { transform: scale(0.8); }
-  100% { transform: scale(1.1); }
+  0% {
+    transform: scale(0.8);
+  }
+  100% {
+    transform: scale(1.1);
+  }
 }
 
 @keyframes zoom2 {
-  0% { transform: scale(0.8); }
-  100% { transform: scale(1.1); }
+  0% {
+    transform: scale(0.8);
+  }
+  100% {
+    transform: scale(1.1);
+  }
+}
+.deleteNum {
+  visibility: hidden;
+  background: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0.1rem;
+  border-radius: 17px;
+  position: absolute;
+  top: -0.4rem;
+  left: 1.7rem;
+  z-index: 1000;
+  box-shadow: 2px 1px 6px 2px #3f3f3f;
+  cursor: pointer;
+}
+.deleteNum img {
+  width: 1rem;
+}
+.point:hover .deleteNum {
+  visibility: visible;
+  animation: faderUp 0.5s ease-in-out both;
+}
+
+@keyframes faderUp {
+  from {
+    opacity: 0;
+    transform: translateY(-3px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes faderight {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }

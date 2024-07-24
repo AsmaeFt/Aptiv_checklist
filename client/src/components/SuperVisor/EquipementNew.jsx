@@ -19,9 +19,10 @@ const EquipementNew = () => {
   const [selectedEquip, setSelectedEquip] = useState("");
   const [importData, setImportData] = useState(null);
   const [image, setImage] = useState("");
+  const [activEquip, setactivEquip] = useState(false);
+  const [ref_equip, setref_equip] = useState("");
 
   //get equips
-
   const GetEquipment = useCallback(async () => {
     try {
       const res = await axios.get(`${api}/Equipment/Gete`);
@@ -45,14 +46,22 @@ const EquipementNew = () => {
   };
   const Edit_Equip = async (Name) => {
     setActivEditEquip(null);
-    const newPoint = {
+
+    const updateData = {
       Name: Name,
-      newOne: editEquipment,
+      field: "Name",
+      value: editEquipment,
     };
+    console.log(updateData);
     try {
-      await axios.post(`${api}/Equipment/UpdateEq`, newPoint);
+      await axios.post(`${api}/Equips/EDIT`, updateData);
       message.success("Equipment is Updated");
-      dispatch(equipmentActions.editNameEquip(newPoint));
+      dispatch(
+        equipmentActions.editNameEquip({
+          Name: Name,
+          newOne: editEquipment,
+        })
+      );
     } catch (err) {
       console.error("Error updating equipment:", err);
       message.error("Failed to update equipment.");
@@ -60,7 +69,7 @@ const EquipementNew = () => {
   };
   const DeleteEquipment = async (Name) => {
     try {
-      await axios.post(`${api}/Equipment/Delete`, { Name });
+      await axios.post(`${api}/Equips/Delete`, { Name });
       dispatch(equipmentActions.deleteEquip(Name));
       message.success("Equipment deleted successfully");
     } catch (error) {
@@ -86,6 +95,7 @@ const EquipementNew = () => {
   };
   const handleClick = useCallback(
     (name) => {
+      setactivEquip(name);
       setSelectedEquip(name);
       const selected = equipments.find((e) => e.Name === name);
       if (selected && selected.Pic) {
@@ -96,7 +106,6 @@ const EquipementNew = () => {
     },
     [equipments]
   );
-
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -105,9 +114,11 @@ const EquipementNew = () => {
       const formData = new FormData();
       formData.append("pic", file);
       formData.append("Name", selectedEquip);
+      formData.append("field", "pic");
+      formData.append("value", "");
 
       try {
-        const res = await axios.post(`${api}/Equipment/updateimage`, formData);
+        const res = await axios.post(`${api}/Equips/EDIT`, formData);
         message.success("Image Updated");
         dispatch(equipmentActions.setAllEquipment(res.data));
         return res;
@@ -133,13 +144,13 @@ const EquipementNew = () => {
   };
   const saveUpdates = async (i) => {
     setActivEditEquip(null);
-    const newPoint = {
+    const updateData = {
       Name: selectedEquip,
-      num: i,
-      Description: editText,
+      field: `points.${i}.Description`,
+      value: editText,
     };
     try {
-      await axios.post(`${api}/Equipment/Update`, newPoint);
+      await axios.post(`${api}/Equips/EDIT`, updateData);
       message.success("Point Updated");
       dispatch(
         equipmentActions.updatePoint({
@@ -152,6 +163,14 @@ const EquipementNew = () => {
       console.error("Error updating point:", err);
       message.error("Failed to update point.");
     }
+  };
+  const DeleteP = async (Num) => {
+    dispatch(
+      equipmentActions.Delete_Points({
+        Name: selectedEquip,
+        Num: Num,
+      })
+    );
   };
   //////////////// points
 
@@ -183,12 +202,51 @@ const EquipementNew = () => {
           Position: { x, y },
         })
       );
-      setDraggedPoint(null);
     }
   };
-  console.log(Dataselected);
   /////// draging points
 
+  //////////save equip
+
+  const handleSave = async () => {
+    if (!ref_equip.trim()) {
+      message.warning("Please provide a reference.");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("Name", Dataselected.Name);
+    formData.append("ref", ref_equip.trim());
+    formData.append("Points", Dataselected.Points);
+    console.log("Sending data:", {
+      Name: selectedEquip,
+      ref: ref_equip.trim(),
+      Points: Dataselected.Points,
+    });
+
+    /*     try {
+      const res = await axios.post(
+        `${api}/Equipment/AddNew_Equipment`,
+        formData
+      );
+      const data = res.data;
+      console.log(res.data);
+      message.success("Equipment Successfully Added");
+      setImageFile(null);
+      setimage(null);
+      setPositions([]);
+      setSelectedEquip("");
+      setListEquipement(data);
+    } catch (err) {
+      message.error(err.message || "An error occurred while saving.");
+      console.error(err);
+    } */
+  };
+  //////////save equip
+
+  const color = (n) => {
+    return n === selectedEquip ? "#797979" : "transparent";
+  };
   return (
     <div className={c.container}>
       <div className={c.equipimage}>
@@ -210,8 +268,7 @@ const EquipementNew = () => {
                   Dataselected.Points.map((p) => (
                     <>
                       {p.Position && (
-                       
-                           <div
+                        <div
                           key={p.Num}
                           className={c.point}
                           style={{
@@ -222,11 +279,14 @@ const EquipementNew = () => {
                           draggable
                           onDragStart={(e) => Start(e, p.Num)}
                         >
+                          <span
+                            onClick={() => DeleteP(p.Num)}
+                            className={c.deleteNum}
+                          >
+                            <img src={delet} alt="Delete" />
+                          </span>
                           {p.Num}
                         </div>
-                        
-                       
-
                       )}
                     </>
                   ))}
@@ -240,6 +300,23 @@ const EquipementNew = () => {
               </>
             )}
           </div>
+
+          <div className={c.ref}>
+            <input
+              className="input"
+              placeholder="Enter Reference here"
+              value={ref_equip}
+              onChange={(e) => setref_equip(e.target.value)}
+            />
+          </div>
+
+          {selectedEquip && (
+            <div className={c.submitequip}>
+              <button onClick={handleSave} className="button">
+                Submit Equipement
+              </button>
+            </div>
+          )}
         </div>
 
         <div className={c.equips}>
@@ -249,7 +326,10 @@ const EquipementNew = () => {
               <div
                 key={i}
                 className={c.equipsContainet}
-                style={{ animationDelay: `${i * 0.1}s` }}
+                style={{
+                  animationDelay: `${i * 0.1}s`,
+                  backgroundColor: activEquip ? color(p.Name) : undefined,
+                }}
                 onClick={() => handleClick(p.Name)}
               >
                 {activEditEquip === p.Name ? (

@@ -42,9 +42,9 @@ const EquipementSlice = createSlice({
       console.log("Updated equipements:", a.payload);
     },
 
-    Edit_Points(state, action) {
-      const { Name, Num, Position } = action.payload;
-      const exist = state.equipements.find((e) => e.Name === Name);
+    Edit_Points(s, a) {
+      const { Name, Num, Position } = a.payload;
+      const exist = s.equipements.find((e) => e.Name === Name);
       if (exist) {
         const exactP = exist.Points.find((p) => p.Num === Num);
         if (exactP) {
@@ -53,7 +53,16 @@ const EquipementSlice = createSlice({
       }
     },
  
-    Delete_Points(s, a) {}
+    Delete_Points(state, action) {
+      const { Name, Num } = action.payload;
+      const equipment = state.equipements.find((e) => e.Name === Name);
+      if (equipment) {
+        const point = equipment.Points.find((p) => p.Num === Num);
+        if (point) {
+          delete point.Position;
+        }
+      }
+    }
   },
 });
 export const {
@@ -64,5 +73,6 @@ export const {
   updatePoint,
   add_pic,
   Edit_Points,
+  Delete_Points,
 } = EquipementSlice.actions;
 export default EquipementSlice.reducer;
