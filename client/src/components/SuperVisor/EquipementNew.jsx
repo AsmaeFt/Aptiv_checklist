@@ -167,7 +167,6 @@ const EquipementNew = () => {
       message.error("Failed to update point.");
     }
   };
-
   const DeleteP = async (Num) => {
     const data = {
       Name: selectedEquip,
@@ -188,13 +187,19 @@ const EquipementNew = () => {
       console.error("Error deleting point:", err);
       message.error("Failed to delete point.");
     }
-
   };
   //////////////// points
 
   const Dataselected = useSelector((s) =>
     s.equipment.equipements.find((e) => e.Name === selectedEquip)
   );
+  useEffect(() => {
+    if (Dataselected && Dataselected.ref) {
+      setref_equip(Dataselected.ref);
+    } else {
+      setref_equip("");
+    }
+  }, [Dataselected]);
 
   /////// draging points
 
@@ -313,9 +318,8 @@ const EquipementNew = () => {
               <div className={c.ref}>
                 <input
                   className="input"
-                  placeholder="Enter Reference here"
-                  value={Dataselected.ref ? Dataselected.ref : ref_equip}
-                  /*  onChange={(e) => setref_equip(e.target.value)} */
+                  value={ref_equip}
+                  onChange={(e) => setref_equip(e.target.value)}
                 />
               </div>
             </>
