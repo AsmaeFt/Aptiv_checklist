@@ -74,3 +74,12 @@
   align-content: center;
   outline: none;
 }
+.uploadlayout{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  background-color: #ffffff14;
+  padding: 1rem 0;
+  backdrop-filter: blur(10px);
+}

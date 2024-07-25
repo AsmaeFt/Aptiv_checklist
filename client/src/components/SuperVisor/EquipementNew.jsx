@@ -197,9 +197,9 @@ const EquipementNew = () => {
     if (Dataselected && Dataselected.ref) {
       setref_equip(Dataselected.ref);
     } else {
-      setref_equip("");
+      setref_equip(ref_equip);
     }
-  }, [Dataselected]);
+  }, [Dataselected,ref_equip]);
 
   /////// draging points
 

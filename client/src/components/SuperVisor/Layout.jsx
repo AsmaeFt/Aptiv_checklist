@@ -2,12 +2,12 @@ import { useCallback, useEffect, useState } from "react";
 import c from "./Layout.module.css";
 import axios from "axios";
 import { message } from "antd";
-
+import Empty from "../../assets/empty.png";
+import Upload from "../../assets/icons8-upload-48.png";
 import api from "../../services/api";
 import { Add_Equipement } from "./Add_Equipement";
 import Selectdropdown from "../UI/SelectDropdown";
 import { OptionsFormat } from "../functions/utilitis";
-
 
 const Layout = () => {
   const [data, setdata] = useState([]);
@@ -119,12 +119,10 @@ const Layout = () => {
     <>
       <div className={c.container}>
         <div className={c.cont}>
-
           <div className={c.header}>
             <h3>M4 Layout</h3>
-           
           </div>
-          
+
           {/*  <div className={c.seach}>
             <input
               type="text"
@@ -133,6 +131,7 @@ const Layout = () => {
             />
           </div> */}
           {/*   <SelectDropdown /> */}
+
           <div className={c.filterdata}>
             <Selectdropdown
               options={OptionsFormat(project)}
@@ -151,49 +150,49 @@ const Layout = () => {
             />
           </div>
 
-          {FilterData.length > 0 ? (
-            <div className="table">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Project</th>
-                    <th>Family</th>
-                    <th>Post</th>
+          <div className="table">
+            <table>
+              <thead>
+                <tr>
+                  <th>Project</th>
+                  <th>Family</th>
+                  <th>Post</th>
 
-                    <th colSpan={maxEquipLength}>Equipement</th>
+                  <th colSpan={maxEquipLength}>Equipement</th>
+                </tr>
+              </thead>
+              <tbody>
+                {FilterData.map((p, i) => (
+                  <tr
+                    key={i}
+                    onClick={() => {
+                      update(p.project, p.family, p.post);
+                    }}
+                    style={{ cursor: "pointer" }}
+                  >
+                    <td>{p.project}</td>
+                    <td>{p.family}</td>
+                    <td>{p.post}</td>
+                    {p.Equipement.map((e, i) => (
+                      <td key={i}>{e}</td>
+                    ))}
+                    {maxEquipLength.length != 0 && (
+                      <>
+                        {Array(maxEquipLength - p.Equipement.length)
+                          .fill("")
+                          .map((_, i) => (
+                            <td key={i + p.Equipement.length}><img className="icons" src={Empty}/></td>
+                          ))}
+                      </>
+                    )}
                   </tr>
-                </thead>
-                <tbody>
-                  {FilterData.map((p, i) => (
-                    <tr
-                      key={i}
-                      onClick={() => {
-                        update(p.project, p.family, p.post);
-                      }}
-                      style={{ cursor: "pointer" }}
-                    >
-                      <td>{p.project}</td>
-                      <td>{p.family}</td>
-                      <td>{p.post}</td>
-                      {p.Equipement.map((e, i) => (
-                        <td key={i}>{e}</td>
-                      ))}
-                      {maxEquipLength.length != 0 && (
-                        <>
-                          {Array(maxEquipLength - p.Equipement.length)
-                            .fill("")
-                            .map((_, i) => (
-                              <td key={i + p.Equipement.length}>-</td>
-                            ))}
-                        </>
-                      )}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          ) : (
-            <>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <>
+            <div className={c.uploadlayout}>
               <span>Upload Data</span>{" "}
               <label>
                 <input
@@ -204,9 +203,10 @@ const Layout = () => {
               </label>
               <button className="button" onClick={addDataFile}>
                 Upload
+                <img className="icons" src={Upload}/>
               </button>
-            </>
-          )}
+            </div>
+          </>
         </div>
         {showpopup && (
           <Add_Equipement close={togglePopup} pr={pr} fm={fm} po={po} />
