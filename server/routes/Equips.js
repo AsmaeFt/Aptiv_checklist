@@ -22,5 +22,6 @@ const upload = multer({ storage: storage });
 router.get("/GET", Equipment.Get);
 router.post("/EDIT", upload.single("pic"), Equipment.EDIT);
 router.post("/Delete", upload.single("pic"), Equipment.Delete);
+router.post("/ADD", Equipment.ADD);
 
 module.exports = router;

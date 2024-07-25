@@ -59,13 +59,18 @@
 }
 .ref {
   height: 6%;
+  width: 100%;
 }
-.submitequip{
+.ref span {
+  width: 100%;
+  border: 1px solid orangered;
+}
+.submitequip {
   position: absolute;
-    top: 0;
-    right: 0;
+  top: 0;
+  right: 0;
 }
-.submitequip button{
+.submitequip button {
   box-shadow: -2px -1px 10px 3px #000000;
   height: 2.5rem;
 }

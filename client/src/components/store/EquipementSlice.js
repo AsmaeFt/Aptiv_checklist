@@ -65,6 +65,7 @@ const EquipementSlice = createSlice({
     }
   },
 });
+
 export const {
   setAllEquipment,
   addEquipment,

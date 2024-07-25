@@ -93,11 +93,13 @@ const EquipementNew = () => {
       message.error("Failed to add equipment");
     }
   };
+
   const handleClick = useCallback(
     (name) => {
       setactivEquip(name);
       setSelectedEquip(name);
       const selected = equipments.find((e) => e.Name === name);
+      
       if (selected && selected.Pic) {
         setImage(`http://10.236.148.30:8080/${selected.Pic}`);
       } else {
@@ -106,6 +108,7 @@ const EquipementNew = () => {
     },
     [equipments]
   );
+
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -209,38 +212,27 @@ const EquipementNew = () => {
   //////////save equip
 
   const handleSave = async () => {
+    console.log(ref_equip);
     if (!ref_equip.trim()) {
       message.warning("Please provide a reference.");
       return;
     }
 
-    const formData = new FormData();
-    formData.append("Name", Dataselected.Name);
-    formData.append("ref", ref_equip.trim());
-    formData.append("Points", Dataselected.Points);
-    console.log("Sending data:", {
-      Name: selectedEquip,
+    const data = {
+      Name: Dataselected.Name,
       ref: ref_equip.trim(),
       Points: Dataselected.Points,
-    });
+    };
+    console.log("Sending data:", JSON.stringify(data));
 
-    /*     try {
-      const res = await axios.post(
-        `${api}/Equipment/AddNew_Equipment`,
-        formData
-      );
-      const data = res.data;
+    try {
+      const res = await axios.post(`${api}/Equips/ADD`, data);
       console.log(res.data);
       message.success("Equipment Successfully Added");
-      setImageFile(null);
-      setimage(null);
-      setPositions([]);
-      setSelectedEquip("");
-      setListEquipement(data);
     } catch (err) {
       message.error(err.message || "An error occurred while saving.");
       console.error(err);
-    } */
+    }
   };
   //////////save equip
 
@@ -301,14 +293,29 @@ const EquipementNew = () => {
             )}
           </div>
 
-          <div className={c.ref}>
-            <input
-              className="input"
-              placeholder="Enter Reference here"
-              value={ref_equip}
-              onChange={(e) => setref_equip(e.target.value)}
-            />
-          </div>
+          {Dataselected && Dataselected.ref ? (
+            <>
+              <div className={c.ref}>
+                <input
+                  className="input"
+                  placeholder="Enter Reference here"
+                  value={Dataselected.ref? Dataselected.ref : ref_equip}
+                 /*  onChange={(e) => setref_equip(e.target.value)} */
+                />
+              </div>
+            </>
+          ) : (
+            <>
+              <div className={c.ref}>
+                <input
+                  className="input"
+                  placeholder="Enter Reference here"
+                  value={ref_equip}
+                  onChange={(e) => setref_equip(e.target.value)}
+                />
+              </div>
+            </>
+          )}
 
           {selectedEquip && (
             <div className={c.submitequip}>
