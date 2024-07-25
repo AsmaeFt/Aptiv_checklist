@@ -23,5 +23,6 @@ router.get("/GET", Equipment.Get);
 router.post("/EDIT", upload.single("pic"), Equipment.EDIT);
 router.post("/Delete", upload.single("pic"), Equipment.Delete);
 router.post("/ADD", Equipment.ADD);
+router.post("/Delete_Point", Equipment.Delete_Point);
 
 module.exports = router;

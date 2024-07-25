@@ -99,7 +99,7 @@ const EquipementNew = () => {
       setactivEquip(name);
       setSelectedEquip(name);
       const selected = equipments.find((e) => e.Name === name);
-      
+
       if (selected && selected.Pic) {
         setImage(`http://10.236.148.30:8080/${selected.Pic}`);
       } else {
@@ -167,13 +167,28 @@ const EquipementNew = () => {
       message.error("Failed to update point.");
     }
   };
+
   const DeleteP = async (Num) => {
-    dispatch(
-      equipmentActions.Delete_Points({
-        Name: selectedEquip,
-        Num: Num,
-      })
-    );
+    const data = {
+      Name: selectedEquip,
+      Num: Num,
+    };
+
+    console.log("Sending data:", JSON.stringify(data));
+    try {
+      await axios.post(`${api}/Equips/Delete_Point`, data);
+      message.success("Point Deleted");
+      dispatch(
+        equipmentActions.Delete_Points({
+          Name: selectedEquip,
+          Num: Num,
+        })
+      );
+    } catch (err) {
+      console.error("Error deleting point:", err);
+      message.error("Failed to delete point.");
+    }
+
   };
   //////////////// points
 
@@ -299,8 +314,8 @@ const EquipementNew = () => {
                 <input
                   className="input"
                   placeholder="Enter Reference here"
-                  value={Dataselected.ref? Dataselected.ref : ref_equip}
-                 /*  onChange={(e) => setref_equip(e.target.value)} */
+                  value={Dataselected.ref ? Dataselected.ref : ref_equip}
+                  /*  onChange={(e) => setref_equip(e.target.value)} */
                 />
               </div>
             </>

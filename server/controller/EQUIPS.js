@@ -87,14 +87,15 @@ exports.Delete = async (req, res) => {
 //// DELETE
 
 //// DELETE POINT
+
 exports.Delete_Point = async (req, res) => {
   const { Name, Num } = req.body;
   try {
     const findEquip = await Equipment.findOne({ Name });
     if (findEquip) {
-      const point = findEquip.Points.find((p) => p.Num === Num);
-      if (point) {
-        delete point.Position;
+      const pointIndex = findEquip.Points.findIndex((p) => p.Num === Num);
+      if (pointIndex !== -1) {
+        findEquip.Points[pointIndex].set("Position", undefined);
         await findEquip.save();
         return res.status(200).json("Position deleted successfully!");
       }
@@ -102,10 +103,10 @@ exports.Delete_Point = async (req, res) => {
     }
     return res.status(404).json({ error: "Equipment not found." });
   } catch (err) {
-    console.error("Error deleting point:", err);
+    console.error("Error deleting position:", err);
     res
       .status(500)
-      .json({ error: "An error occurred while deleting the point" });
+      .json({ error: "An error occurred while deleting the position." });
   }
 };
 //// DELETE POINT
