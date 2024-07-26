@@ -175,8 +175,8 @@ textarea {
 
 .point {
   position: absolute;
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 1.5rem;
+  height: 1.5rem;
   background-color: orangered;
   border-radius: 50%;
   display: flex;
@@ -196,14 +196,14 @@ textarea {
   box-shadow: 1px 1px 6px black;
 }
 .point::before {
-  height: 2.8rem;
-  width: 2.8rem;
+  height: 2rem;
+  width: 2rem;
   animation: zoom1 1s ease-in-out infinite alternate;
 }
 
 .point::after {
-  height: 3rem;
-  width: 3rem;
+  height: 2.1rem;
+  width: 2.1rem;
   animation: zoom2 1.4s ease-in-out infinite alternate;
 }
 
