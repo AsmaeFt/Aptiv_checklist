@@ -63,7 +63,6 @@ const CheckLists = () => {
 
     const eq = [...new Set(data.map((p) => p.equipment))];
     setequip(eq);
-
   }, [data]);
 
   const handleSwitchChange = (c) => {
@@ -76,7 +75,8 @@ const CheckLists = () => {
     const projectMath = dataF.p.length === 0 || dataF.p.includes(item.project);
     const familyMatch = dataF.f.length === 0 || dataF.f.includes(item.family);
     const postMatch = dataF.po.length === 0 || dataF.po.includes(item.post);
-    const EquiptMatch = dataF.eq.length === 0 || dataF.eq.includes(item.equipment);
+    const EquiptMatch =
+      dataF.eq.length === 0 || dataF.eq.includes(item.equipment);
 
     const sdateMatch = dataF.sdate === "" || dataF.sdate <= item.date;
     const edateMatch = dataF.edate === "" || dataF.edate >= item.date;
@@ -90,6 +90,16 @@ const CheckLists = () => {
     );
   });
 
+  const getColor = (status) => {
+    switch (status) {
+      case 'OK':
+        return 'green';
+      case 'NOK':
+        return 'red';
+      default:
+        return 'white';
+    }
+  };
   return (
     <>
       <div className={c.container}>
@@ -118,7 +128,6 @@ const CheckLists = () => {
           </div>
 
           <div className={c.filterdata}>
-
             <Selectdropdown
               options={OptionsFormat(project)}
               placeholder={"select Project ..."}
@@ -177,7 +186,6 @@ const CheckLists = () => {
               </thead>
 
               <tbody>
-                
                 {FilterData.map((d, i) =>
                   d.points.map((p, j) => (
                     <React.Fragment key={`${i},${j}`}>
@@ -190,7 +198,7 @@ const CheckLists = () => {
                         <td>{p.Num || "-"}</td>
                         <td>{getExactdate(d.date) || "-"}</td>
                         <td>{d.shift || "-"}</td>
-                        <td>{p.status || "-"}</td>
+                        <td style={{ color: getColor(p.status) , fontWeight:'600'}}>{p.status || "-"}</td>
 
                         <td>
                           {p.status === "NOK" ? (
@@ -199,7 +207,7 @@ const CheckLists = () => {
                                 <>
                                   {d.technicienDecision.map((t) =>
                                     t.points.map(
-                                      (pt) => pt.Num === p.Num && <>{t.name}</>
+                                      (pt) => pt.Num === p.Num && <>{t.name} </>
                                     )
                                   )}
                                 </>
@@ -243,17 +251,28 @@ const CheckLists = () => {
                                   )}
                                 </>
                               ) : (
+                                <span style={{ color: "red" }}>
+                                  No tech checked yet
+                                </span>
+                              )}
+                            </>
+                          ) : p.status === "OK" ? (
+                            <>
+                              {d.technicienDecision.length > 0 && (
                                 <>
-                                  <span style={{ color: "red" }}>
-                                    No Action Yet
-                                  </span>
+                                  {d.technicienDecision.map((t) =>
+                                    t.points.map(
+                                      (pt) =>
+                                        pt.Num === p.Num && (
+                                          <>{pt.Action || "-"}</>
+                                        )
+                                    )
+                                  )}
                                 </>
                               )}
                             </>
                           ) : (
-                            <>
-                              <span> </span>
-                            </>
+                            <>-</>
                           )}
                         </td>
 
@@ -263,27 +282,37 @@ const CheckLists = () => {
                               {d.technicienDecision.length > 0 ? (
                                 <>
                                   {d.technicienDecision.map((t) =>
-                                    t.points.map((pt) =>
-                                      pt.Num === p.Num ? (
-                                        <>{pt.status}</>
-                                      ) : (
-                                        <>-</>
-                                      )
+                                    t.points.map(
+                                      (pt) =>
+                                        pt.Num === p.Num && (
+                                          <>{pt.status || "No Status Yet"}</>
+                                        )
                                     )
                                   )}
                                 </>
                               ) : (
+                                <span style={{ color: "red" }}>
+                                  No tech checked yet
+                                </span>
+                              )}
+                            </>
+                          ) : p.status === "OK" ? (
+                            <>
+                              {d.technicienDecision.length > 0 && (
                                 <>
-                                  <span style={{ color: "red" }}>
-                                    Not Checked yet
-                                  </span>
+                                  {d.technicienDecision.map((t) =>
+                                    t.points.map(
+                                      (pt) =>
+                                        pt.Num === p.Num && (
+                                          <>{pt.status || "-"}</>
+                                        )
+                                    )
+                                  )}
                                 </>
                               )}
                             </>
                           ) : (
-                            <>
-                              <span> </span>
-                            </>
+                            <>-</>
                           )}
                         </td>
 
@@ -293,34 +322,44 @@ const CheckLists = () => {
                               {d.OperatornDecision.length > 0 ? (
                                 <>
                                   {d.OperatornDecision.map((t) =>
-                                    t.points.map((pt) =>
-                                      pt.Num === p.Num ? (
-                                        <>{pt.status}</>
-                                      ) : (
-                                        <>-</>
-                                      )
+                                    t.points.map(
+                                      (pt) =>
+                                        pt.Num === p.Num && (
+                                          <>{pt.status || "No Status Yet"}</>
+                                        )
                                     )
                                   )}
                                 </>
                               ) : (
+                                <span style={{ color: "red" }}>
+                                  No operator checked yet
+                                </span>
+                              )}
+                            </>
+                          ) : p.status === "OK" ? (
+                            <>
+                              {d.OperatornDecision.length > 0 && (
                                 <>
-                                  <span style={{ color: "red" }}>
-                                    Not Checked yet
-                                  </span>
+                                  {d.OperatornDecision.map((t) =>
+                                    t.points.map(
+                                      (pt) =>
+                                        pt.Num === p.Num && (
+                                          <>{pt.status || "-"}</>
+                                        )
+                                    )
+                                  )}
                                 </>
                               )}
                             </>
                           ) : (
-                            <>
-                              <span> </span>
-                            </>
+                            <>-</>
                           )}
                         </td>
+
                       </tr>
                     </React.Fragment>
                   ))
                 )}
-
               </tbody>
             </table>
           </div>

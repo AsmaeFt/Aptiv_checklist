@@ -2,6 +2,7 @@ const Layout = require("../models/Layout");
 const xlsx = require("xlsx");
 const fs = require("fs");
 const { error } = require("console");
+const Equipement = require("../models/Equipment");
 
 exports.importLayout = async (req, res) => {
   try {
@@ -24,6 +25,10 @@ exports.importLayout = async (req, res) => {
       // Collect all non-project/family/post columns as equipment
       for (const [key, value] of Object.entries(row)) {
         if (key !== "Projet" && key !== "Famille" && key !== "Poste" && value) {
+          const ExistEquip = await Equipement.findOne({ Name: value });
+          if(!ExistEquip){
+            return res.status(404).json(`Equipement "${value}" do not exist in Equipements List!`)
+          }
           equipement.push(value);
         }
       }

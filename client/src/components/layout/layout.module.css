@@ -54,6 +54,10 @@
   .navbar-container ul li a{
     text-decoration: none;
     color: orangered;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    
   }
   .active{
     color: white;

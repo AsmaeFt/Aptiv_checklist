@@ -110,6 +110,8 @@ const Layout = () => {
       message.success("Layout Data Added Succefuly !");
       return data;
     } catch (err) {
+      
+      message.error(err.response.data);
       console.error(err);
     }
   };
@@ -158,7 +160,7 @@ const Layout = () => {
                   <th>Family</th>
                   <th>Post</th>
 
-                  <th colSpan={maxEquipLength}>Equipement</th>
+                  <th colSpan={maxEquipLength}>Equipements</th>
                 </tr>
               </thead>
               <tbody>
@@ -181,7 +183,9 @@ const Layout = () => {
                         {Array(maxEquipLength - p.Equipement.length)
                           .fill("")
                           .map((_, i) => (
-                            <td key={i + p.Equipement.length}><img className="icons" src={Empty}/></td>
+                            <td key={i + p.Equipement.length}>
+                              <img className="icons" src={Empty} />
+                            </td>
                           ))}
                       </>
                     )}
@@ -203,7 +207,7 @@ const Layout = () => {
               </label>
               <button className="button" onClick={addDataFile}>
                 Upload
-                <img className="icons" src={Upload}/>
+                <img className="icons" src={Upload} />
               </button>
             </div>
           </>

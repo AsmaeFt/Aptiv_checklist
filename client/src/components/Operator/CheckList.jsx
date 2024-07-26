@@ -301,9 +301,6 @@ const Checklist = ({ equip, currentIndex, handleNext, operatorInfo }) => {
                         }}
                       >
                         <span>{p.Num}</span>
-                        <span className={c.tooltiptext}>
-                          Click if you have a problem on this point!
-                        </span>
                       </div>
                     </React.Fragment>
                   )}
@@ -317,7 +314,7 @@ const Checklist = ({ equip, currentIndex, handleNext, operatorInfo }) => {
 
             <div className={c["Points"]}>
               <h3>
-                EQUIPEMENT :{" "}
+                EQUIPEMENT :
                 <span style={{ color: "orangered" }}>{data.Name}</span>
               </h3>
               <div className={c.listPoints}>
