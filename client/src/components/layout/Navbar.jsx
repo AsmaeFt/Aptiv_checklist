@@ -5,11 +5,14 @@ import logo from "../../assets/aptiv-logo.png";
 import c from "./layout.module.css";
 import { useSelector, useDispatch } from "react-redux";
 import { loginActions } from "../store/loginSlice";
-import prob from "../../assets/icons8-error-64.png"
-import dashboard from "../../assets/icons8-chart-64.png"
-import equips from "../../assets/icons8-machine-30.png"
-import layout from "../../assets/icons8-layout-50.png"
-
+import prob from "../../assets/icons8-error-64.png";
+import dashboard from "../../assets/icons8-chart-64.png";
+import equips from "../../assets/icons8-machine-30.png";
+import layout from "../../assets/icons8-layout-50.png";
+import LogOut from "../../assets/icons8-log-out-64.png";
+import User from "../../assets/User.png";
+import Set from "../../assets/Settings.png";
+import Plan from "../../assets/icons8-plan-50.png";
 const NavBar = () => {
   const dispatch = useDispatch();
   const isAuthenticated = useSelector((st) => st.login.isLoged);
@@ -25,33 +28,56 @@ const NavBar = () => {
         {isAuthenticated.logedIn && (
           <div className={c.links}>
             <ul>
-              <li>welcome {" " + isAuthenticated.userName}</li>
               {isAuthenticated.role === "supervisor" && (
                 <React.Fragment>
                   <li>
-                    <NavLink to="/main">View Problems <img className="icons" src={prob} /></NavLink>
+                    <NavLink to="/main">
+                      View Problems <img className="icons" src={prob} />
+                    </NavLink>
                   </li>
 
                   <li>
-                    <NavLink to="/Dashboard">Dashboard <img className="icons" src={dashboard} /> </NavLink>
+                    <NavLink to="/Dashboard">
+                      Dashboard <img className="icons" src={dashboard} />{" "}
+                    </NavLink>
                   </li>
 
                   <li>
-                    <NavLink to="/Equip">Equipments <img className="icons" src={equips} /> </NavLink>
+                    <NavLink to="/Equip">
+                      Equipments <img className="icons" src={equips} />{" "}
+                    </NavLink>
                   </li>
 
                   <li>
-                    <NavLink to="/Layout">Layout <img className="icons" src={layout} /> </NavLink>
+                    <NavLink to="/Layout">
+                      Layout <img className="icons" src={layout} />{" "}
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink to="/Manage_Thechnicians">
+                      Manage Thechs <img className="icons" src={Plan} />{" "}
+                    </NavLink>
                   </li>
                 </React.Fragment>
               )}
+              <li>
+                <NavLink>
+                  settings
+                  <img className="icons" src={Set} />
+                </NavLink>
+              </li>
+              <li className={c.User}>
+                <span>{isAuthenticated.userName}</span>{" "}
+                <img className="icons" src={User} />
+              </li>
               <button
-                className="button"
+                title="Log Out"
+                className={c.LogOut}
                 onClick={() => {
                   dispatch(loginActions.logOut());
                 }}
               >
-                log out
+                <img src={LogOut} />
               </button>
             </ul>
           </div>

@@ -199,7 +199,7 @@ const EquipementNew = () => {
     } else {
       setref_equip(ref_equip);
     }
-  }, [Dataselected,ref_equip]);
+  }, [Dataselected, ref_equip]);
 
   /////// draging points
 
@@ -297,7 +297,7 @@ const EquipementNew = () => {
                           >
                             <img src={delet} alt="Delete" />
                           </span>
-                          {p.Num}
+                          <span className={c.taskNum}>{p.Num}</span>
                         </div>
                       )}
                     </>

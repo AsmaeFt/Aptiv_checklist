@@ -1,10 +1,18 @@
-import React from 'react'
-import c from "./Ui.module.css"
+import c from "./Backdrop.module.css";
 
-const BackDrop = () => {
+const BackDrop = (p) => {
+  const onClickHandler = (e) => {
+    p.click();
+  };
+
   return (
-    <div ></div>
-  )
-}
-
-export default BackDrop
+    <div
+      className={c.backdrop}
+      onClick={onClickHandler}
+      style={p.zindex !== undefined ? { zIndex: p.zindex } : {}}
+    >
+        
+    </div>
+  );
+};
+export default BackDrop;

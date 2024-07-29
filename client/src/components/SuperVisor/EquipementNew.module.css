@@ -183,9 +183,9 @@ textarea {
   justify-content: center;
   align-items: center;
   color: white;
-  font-weight: bold;
   cursor: move;
   user-select: none;
+  animation: faderUp 0.7s ease-in-out;
 }
 .point::before,
 .point::after {

@@ -14,6 +14,7 @@ import User from "../../assets/User.png";
 import Station from "../../assets/station.png";
 import Submit from "../../assets/submit.png";
 import Next from "../../assets/next.png";
+import Notification from "../UI/Notification";
 
 const Checklist = ({ equip, currentIndex, handleNext, operatorInfo }) => {
   const [image, setImage] = useState("");
@@ -21,6 +22,7 @@ const Checklist = ({ equip, currentIndex, handleNext, operatorInfo }) => {
   const [fadeIn, setFadeIn] = useState(false);
   const [data, setdata] = useState({});
   const [submit, setsubmit] = useState(false);
+
   const [allpoinsts, setallpoinsts] = useState([
     {
       Description: "",
@@ -28,6 +30,7 @@ const Checklist = ({ equip, currentIndex, handleNext, operatorInfo }) => {
       status: "OK",
     },
   ]);
+
   const [show, setshow] = useState(false);
   const [fch, setfch] = useState([]);
   const [showCh, setshowCh] = useState(true);
@@ -222,8 +225,12 @@ const Checklist = ({ equip, currentIndex, handleNext, operatorInfo }) => {
   }, [Curent_Shift.shift, data.Name, fch, getdate]);
 
   console.log(problems);
+
+
+
   return (
     <>
+       <Notification message="This is a notification that will disappear in 5 seconds!" />
       <div style={{ width: "100%" }}>
         <div className={c["Header-Checklist"]}>
           <div style={{ display: "flex", alignItems: "center" }}>
@@ -292,7 +299,7 @@ const Checklist = ({ equip, currentIndex, handleNext, operatorInfo }) => {
                       <div
                         onClick={() => getProblem(p.Num, p.Description)}
                         className={c["dragedpoints"]}
-                        key={i}
+                        key={p.Num}
                         style={{
                           top: `${p.Position.y * 100}%`,
                           left: `${p.Position.x * 100}%`,
@@ -319,11 +326,7 @@ const Checklist = ({ equip, currentIndex, handleNext, operatorInfo }) => {
               </h3>
               <div className={c.listPoints}>
                 {points.map((point, i) => (
-                  <div
-                    key={i}
-                    className={`${fadeIn ? c["fade-up"] : ""}`}
-                    style={{ animationDelay: `${i * 0.3}s` }}
-                  >
+                  <div key={i} style={{ animationDelay: `${i * 0.3}s` }}>
                     <div className={c["poin"]}>
                       <span className={c.taskNum}>{point.Num} </span>
                       <p> {point.Description}</p>

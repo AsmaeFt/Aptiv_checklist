@@ -5,6 +5,7 @@ import Dashboard from "../SuperVisor/Dashboard";
 import Layout from "../SuperVisor/Layout";
 import Equip from "../SuperVisor/EquipementNew";
 import Check from "../SuperVisor/CheckLists";
+import Manage from "../SuperVisor/ManageTech"
 
 const SuperVisor = () => {
   return (
@@ -16,6 +17,7 @@ const SuperVisor = () => {
         <Route exact path="/Dashboard" element={<Dashboard />} />
         <Route exact path="/Equip" element={<Equip />} />
         <Route exact path="/Layout" element={<Layout />} />
+        <Route exact path="/Manage_Thechnicians" element={<Manage />} />
       </Routes>
     </Suspense>
   );

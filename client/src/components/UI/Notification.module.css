@@ -1,0 +1,26 @@
+.Notification{
+    width: 100vw;
+    height: 100vh;
+    backdrop-filter: blur(10px);
+    position: fixed;
+    z-index: 200;
+    top: 0;
+    left: 0;
+    animation: faderight 0.5s ease-in-out forwards;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+
+@keyframes faderight {
+    0% {
+      opacity: 0;
+      transform: translateY(-5rem);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
