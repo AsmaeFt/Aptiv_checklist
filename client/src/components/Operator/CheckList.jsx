@@ -230,7 +230,7 @@ const Checklist = ({ equip, currentIndex, handleNext, operatorInfo }) => {
 
   return (
     <>
-       <Notification message="This is a notification that will disappear in 5 seconds!" />
+       <Notification message="Please make sure to check all the points in the picture. You can see the description of each point on the right or left. If any point is not okay and needs to be checked, you can simply click on it in the picture and click 'Next' until you have reviewed all the equipment. A technician will check with you" />
       <div style={{ width: "100%" }}>
         <div className={c["Header-Checklist"]}>
           <div style={{ display: "flex", alignItems: "center" }}>
